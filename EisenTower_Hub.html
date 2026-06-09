@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EisenTower Hub</title>
+  <style>
+    :root {
+      --bg: #f1f4f7;
+      --ink: #151f2b;
+      --muted: #657386;
+      --panel: #ffffff;
+      --line: #d9e1ea;
+      --nixon: #224f7a;
+      --wave: #5b5fc7;
+      --urahara: #116b5f;
+      --living: #8a5a10;
+      --shadow: 0 14px 32px rgba(21, 31, 43, 0.12);
+      --soft: #eef7f4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    header {
+      padding: 22px 18px 16px;
+      background: #151f2b;
+      color: #fff;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 8vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      max-width: 680px;
+      margin: 10px 0 0;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 14px 36px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      min-height: 164px;
+      display: grid;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .card.primary {
+      border-color: rgba(17, 107, 95, 0.35);
+      background: linear-gradient(180deg, #ffffff 0%, #f2fbf8 100%);
+    }
+
+    .card:active { transform: translateY(1px); }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.18rem;
+      letter-spacing: 0;
+    }
+
+    p { margin: 0; color: var(--muted); }
+
+    .pill {
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .nixon { background: var(--nixon); }
+    .wave { background: var(--wave); }
+    .urahara { background: var(--urahara); }
+    .living { background: var(--living); }
+
+    .meta {
+      margin-top: auto;
+      overflow-wrap: anywhere;
+      font: 0.78rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: #475569;
+    }
+
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+      .card { min-height: 142px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>EisenTower Hub</h1>
+      <p class="sub">Operational links open the canonical EisenTower source files. Steve receives PDF delivery only.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="grid">
+      <a class="card primary" href="http://127.0.0.1:8790/NixonFeeds.html">
+        <div class="top">
+          <h2>NixonFeeds</h2>
+          <span class="pill nixon">daily</span>
+        </div>
+        <p>Canonical operational HTML. Steve delivery is PDF.</p>
+        <div class="meta">02_Functional_Agents/Nixon/NixonFeeds/NixonFeedsFromEisenTower.html</div>
+      </a>
+
+      <a class="card" href="http://127.0.0.1:8790/NixonCockpit.html">
+        <div class="top">
+          <h2>Nixon Cockpit</h2>
+          <span class="pill nixon">weekly</span>
+        </div>
+        <p>Canonical operational cockpit. Steve delivery is PDF.</p>
+        <div class="meta">02_Functional_Agents/Nixon/Nixon_Cockpit.html</div>
+      </a>
+
+      <a class="card" href="http://127.0.0.1:8790/Catch_a_Wave.html">
+        <div class="top">
+          <h2>Catch a Wave</h2>
+          <span class="pill wave">weekly</span>
+        </div>
+        <p>Canonical WAVE dashboard in Nixon workspace.</p>
+        <div class="meta">02_Functional_Agents/Nixon/Catch_a_Wave/catch_a_wave_dashboard.html</div>
+      </a>
+
+      <a class="card" href="http://127.0.0.1:8790/UraharaDashboard.html">
+        <div class="top">
+          <h2>Urahara Trading Dashboard</h2>
+          <span class="pill urahara">daily</span>
+        </div>
+        <p>Canonical Urahara dashboard link. No hub copy.</p>
+        <div class="meta">02_Functional_Agents/Urahara/Urahara Dashboard/Urahara Dashboard v2.html</div>
+      </a>
+
+      <a class="card" href="http://127.0.0.1:8790/UraharaOrdersRR.html">
+        <div class="top">
+          <h2>Urahara Orders &amp; R:R</h2>
+          <span class="pill urahara">risk</span>
+        </div>
+        <p>Canonical Urahara Orders/R:R link. No hub copy.</p>
+        <div class="meta">02_Functional_Agents/Urahara/Urahara Dashboard/Urahara Orders-RR v1.html</div>
+      </a>
+
+      <a class="card" href="http://127.0.0.1:8790/Board/board.html">
+        <div class="top">
+          <h2>Livingroom Board</h2>
+          <span class="pill living">room</span>
+        </div>
+        <p>Live view of canonical Board.md through the Hub server.</p>
+        <div class="meta">04_Livingroom/Board/Board.md</div>
+      </a>
+    </section>
+  </main>
+</body>
+</html>
