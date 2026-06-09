@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FWB Trading Report</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
+:root{
+  --bg:#f0f4f8;--bg2:#fff;--bg3:#e8eef4;--bg4:#dde5ee;
+  --navy:#0b1e35;--navy2:#122847;--navy3:#1a3560;
+  --teal:#0d8f7a;--teal2:#0ab394;--teal-bg:#e6f7f4;
+  --red:#d42b3a;--red-bg:#fdecea;
+  --amber:#e07b00;--amber-bg:#fff8e6;
+  --blue:#1a6fc4;--blue-bg:#e8f4ff;
+  --text:#1a2e42;--text2:#4a6275;--text3:#8aa0b2;
+  --border:#d0dce8;--shadow:0 2px 12px rgba(11,30,53,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;}
+.page{max-width:980px;margin:0 auto;padding:24px 18px 56px;}
+.hdr{background:var(--navy);border-radius:12px;padding:22px 26px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;top:-50px;right:-50px;width:220px;height:220px;border-radius:50%;background:rgba(13,143,122,.1);}
+.hdr-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal2);margin-bottom:3px;}
+.hdr-title{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:800;color:#fff;line-height:1;}
+.hdr-desc{font-size:11px;color:rgba(255,255,255,.4);margin-top:5px;}
+.hdr-badge{background:var(--teal);border-radius:8px;padding:8px 18px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:#fff;position:relative;z-index:1;}
+.hdr-badge-sub{font-size:10px;font-weight:400;opacity:.7;margin-top:1px;}
+.hdr-badge.red-badge{background:var(--red);}
+.tabs{display:flex;gap:3px;margin-bottom:16px;background:var(--bg2);border-radius:10px;padding:4px;box-shadow:var(--shadow);}
+.tab{flex:1;padding:9px 0;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-align:center;border:none;color:var(--text2);background:transparent;transition:all .15s;}
+.tab.active{background:var(--navy);color:#fff;}
+.tab:hover:not(.active){background:var(--bg3);}
+.panel{display:none;}.panel.active{display:block;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.sl{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:15px 17px;box-shadow:var(--shadow);}
+.mb{margin-bottom:14px;}
+.g{color:var(--teal);}.r{color:var(--red);}.a{color:var(--amber);}.n{color:var(--navy);}
+.alert{background:var(--red-bg);border:1px solid rgba(212,43,58,.25);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;display:flex;gap:8px;align-items:flex-start;}
+.alert strong{color:var(--red);}
+.warn{background:var(--amber-bg);border:1px solid rgba(224,123,0,.25);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;display:flex;gap:8px;align-items:flex-start;}
+.warn strong{color:var(--amber);}
+.info{background:var(--blue-bg);border:1px solid rgba(26,111,196,.25);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;display:flex;gap:8px;align-items:flex-start;}
+.info strong{color:var(--blue);}
+.refl{background:var(--navy);border-radius:10px;padding:13px 18px;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.refl-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--teal2);margin-bottom:2px;}
+.refl-txt{font-size:11px;color:rgba(255,255,255,.72);line-height:1.5;}
+.refl-txt strong{color:#fff;}
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.kc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow);}
+.kl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:3px;}
+.kv{font-family:'Barlow Condensed',sans-serif;font-size:25px;font-weight:800;line-height:1;}
+.kv.g{color:var(--teal);}.kv.r{color:var(--red);}.kv.a{color:var(--amber);}.kv.n{color:var(--navy);}
+.ks{font-size:10px;color:var(--text2);margin-top:2px;}
+.pg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;box-shadow:var(--shadow);}
+.pl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:3px;}
+.pv{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;}
+.pv.g{color:var(--teal);}.pv.r{color:var(--red);}.pv.a{color:var(--amber);}.pv.n{color:var(--navy);}
+.tbl-wrap{overflow-x:auto;}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl thead th{background:var(--navy);color:rgba(255,255,255,.6);padding:8px 10px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;text-align:left;}
+.tbl thead th.r{text-align:right;}
+.tbl tbody td{padding:8px 10px;border-bottom:1px solid var(--bg3);font-size:12px;vertical-align:middle;}
+.tbl tbody td.r{text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text2);}
+.tbl tbody td.r.g{color:var(--teal);}
+.tbl tbody td.r.a{color:var(--amber);}
+.tbl tbody td.r.n{color:var(--navy);}
+.tbl tbody tr:last-child td{border-bottom:none;}
+.tbl tbody tr:hover{background:var(--bg3);}
+.tbl-wrap.card{padding:0;overflow:hidden;}
+.sym{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;color:var(--navy);}
+.wb{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:var(--teal-bg);color:var(--teal);border:1px solid rgba(13,143,122,.25);}
+.lb{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber);border:1px solid rgba(224,123,0,.25);}
+.nb{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
+.new-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:#f0e8ff;color:#7c55e8;border:1px solid rgba(124,85,232,.2);margin-left:4px;}
+.sp-tech{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10px;background:var(--blue-bg);color:var(--blue);}
+.sp-energy{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10px;background:var(--teal-bg);color:var(--teal);}
+.sp-def{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10px;background:#f0e8ff;color:#7c55e8;}
+.sp-other{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10px;background:var(--bg3);color:var(--text2);}
+.sp-health{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10px;background:var(--amber-bg);color:var(--amber);}
+.sp-energy2{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10px;background:#f0fff8;color:#0a7a60;}
+.score-hi{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;background:var(--teal-bg);color:var(--teal);border:1px solid rgba(13,143,122,.25);}
+.score-mid{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;background:var(--amber-bg);color:var(--amber);border:1px solid rgba(224,123,0,.25);}
+.setup-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:var(--blue-bg);color:var(--blue);border:1px solid rgba(26,111,196,.2);}
+.mx-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow);}
+.mx-title{background:var(--navy);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;}
+.mx-sz{display:flex;gap:14px;font-size:10px;font-weight:400;}
+.sz-s{color:#88d8c0;}.sz-m{color:#6ab0f5;}.sz-l{color:#f0b060;}
+.mtbl{width:100%;border-collapse:collapse;}
+.mtbl th{padding:9px 12px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;text-align:center;}
+.mtbl th.rh{text-align:left;background:var(--navy2);color:rgba(255,255,255,.65);width:110px;}
+.mtbl th.cs{background:#0b6b56;color:#88d8c0;}.mtbl th.cm{background:#0d3d7a;color:#6ab0f5;}.mtbl th.cl{background:#5a3200;color:#f0b060;}
+.mtbl td{padding:9px 12px;text-align:center;border:1px solid var(--bg3);font-size:12px;}
+.mtbl td.rl{text-align:left;background:var(--navy3);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}
+.mtbl td.rl span{display:block;font-size:9px;font-weight:400;opacity:.5;letter-spacing:.08em;}
+.mtbl tr:nth-child(even) td:not(.rl){background:#f8fafc;}
+.ct{font-weight:700;color:var(--navy);font-size:14px;}
+.cp-g{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--teal);}
+.cp-r{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--red);}
+.ce{color:var(--text3);}
+.psel{display:flex;gap:4px;margin-bottom:14px;}
+.pb{padding:5px 14px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--text2);transition:all .15s;}
+.pb.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.sc-wrap{display:flex;flex-wrap:wrap;gap:6px;}
+.sc{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:all .15s;user-select:none;}
+.sc.win-c:hover,.sc.win-c.sel{background:var(--teal-bg);border-color:rgba(13,143,122,.3);color:var(--teal);}
+.sc.loss-c:hover,.sc.loss-c.sel{background:var(--red-bg);border-color:rgba(212,43,58,.2);color:var(--red);}
+.sb-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.sb-lbl{width:80px;font-size:12px;font-weight:500;}
+.sb-trk{flex:1;height:7px;background:var(--bg3);border-radius:4px;}
+.sb-fil{height:100%;border-radius:4px;}
+.sb-val{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;width:85px;text-align:right;}
+.rt-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.rt{padding:4px 10px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;border:1px solid var(--border);}
+.rt.multi{background:var(--amber-bg);border-color:rgba(224,123,0,.3);color:var(--amber);}
+.rt.single{background:var(--bg3);color:var(--text2);}
+.dg{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.dr{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:grid;grid-template-columns:80px 1fr auto;align-items:center;gap:14px;box-shadow:var(--shadow);}
+.dd{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--navy);}
+.ds{font-size:9px;color:var(--text3);letter-spacing:.06em;}
+.dc{display:flex;flex-wrap:wrap;gap:5px;}
+.chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid var(--border);background:var(--bg3);color:var(--text);}
+.chip.win{background:var(--teal-bg);border-color:rgba(13,143,122,.25);color:var(--teal);}
+.chip.loss{background:var(--amber-bg);border-color:rgba(224,123,0,.25);color:var(--amber);}
+.chip.open{background:var(--blue-bg);border-color:rgba(26,111,196,.2);color:var(--blue);}
+.chip.warn{background:var(--amber-bg);border-color:rgba(224,123,0,.2);color:var(--amber);}
+.dp{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;text-align:right;white-space:nowrap;}
+.dp.g{color:var(--teal);}.dp.r{color:var(--red);}.dp.flat{color:var(--text3);}
+.ch-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:17px 19px;margin-bottom:14px;box-shadow:var(--shadow);}
+.ch-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-bottom:12px;}
+.pnl-bad{background:rgba(212,43,58,.04);border:1px solid rgba(212,43,58,.15);}
+.ibkr-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:#e8f4ff;color:#1a6fc4;border:1px solid rgba(26,111,196,.2);margin-left:4px;letter-spacing:.06em;}
+
+/* Period selector */
+.psel{display:flex;gap:4px;margin-bottom:16px;}
+.pb{padding:6px 18px;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--text2);transition:all .15s;}
+.pb.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.pb:hover:not(.active){background:var(--bg3);}
+.period-view{display:none;}.period-view.active{display:block;}
+/* Coaching insight cards */
+.insight{background:var(--navy);color:#fff;border-radius:10px;padding:14px 18px;margin-bottom:10px;}
+.insight-hdr{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal2);margin-bottom:6px;}
+.insight-body{font-size:11px;color:rgba(255,255,255,.75);line-height:1.6;}
+.insight-body strong{color:#fff;}
+.insight.warn-insight .insight-body{color:var(--text);}
+.insight.warn-insight .insight-body strong{color:var(--red);}
+.insight.warn-insight{background:rgba(212,43,58,.06);border:1px solid rgba(212,43,58,.2);}
+.insight-hdr.warn-hdr{color:var(--red);}
+.insight-body.warn-body{color:var(--text);}
+.metric-delta{font-size:10px;margin-top:2px;}
+.metric-delta.up{color:var(--teal);}.metric-delta.dn{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hdr">
+  <div>
+    <div class="hdr-sub">FWB Trading Performance</div>
+    <div class="hdr-title">TRADING REPORT</div>
+    <div class="hdr-desc">Daily · Weekly · Monthly · Since May 25, 2026 · Live IBKR Data</div>
+    <div class="hdr-desc" style="margin-top:4px;opacity:.6;">Last updated: Jun 9, 2026 · 17:00 ICT · Auto-run Mon–Fri 17:00</div>
+  </div>
+  <div>
+    <div class="hdr-badge">
+      <div id="period-lbl">JUN 9, 2026</div>
+      <div class="hdr-badge-sub">IBKR LIVE · NLV $12,634 · RECOVERING</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="sw('daily',this)">📅 Daily</button>
+  <button class="tab" onclick="sw('weekly',this)">📊 Weekly</button>
+  <button class="tab" onclick="sw('monthly',this)">📋 Monthly</button>
+</div>
+
+
+<!-- ══ DAILY ══ -->
+<div class="panel active" id="panel-daily">
+
+  <div class="info"><span>🟢</span><div><strong>Portfolio Recovering — unrealized P&amp;L +$172.</strong> 10 of 16 positions above entry. Jun 8 took losses: ACHR −$45.50, AMSC −$53.78, OKLO −$78.65 (total −$177.93). Jun 9: new entry NOK 20sh @ $14.56. Net realized since May 26: +$1,720.</div></div>
+
+  <div class="sl">Cumulative Realized P&amp;L — Since May 25 · Live IBKR</div>
+  <div class="ch-box">
+    <div class="ch-title">Realized P&amp;L · May 25 → Jun 9, 2026 <span class="ibkr-tag">IBKR VERIFIED</span></div>
+    <svg width="100%" height="160" viewBox="0 0 1010 160" preserveAspectRatio="none">
+      <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0d8f7a" stop-opacity=".18"/>
+        <stop offset="100%" stop-color="#0d8f7a" stop-opacity=".01"/>
+      </linearGradient></defs>
+      <line x1="0" y1="35" x2="1010" y2="35" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="0" y1="75" x2="1010" y2="75" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="0" y1="115" x2="1010" y2="115" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="0" y1="130" x2="1010" y2="130" stroke="#b0c0d0" stroke-width="1"/>
+      <!-- M25=0 M26=1081 M27=1145 M28=1389 M29=1401 J1=1659 J2=1859 J3=1829 J4=1927 J5=1898 J8=1720 J9=1720 -->
+      <polygon points="50,130.0 130,65.1 210,61.3 290,46.6 370,46.0 450,30.5 530,18.4 610,20.2 690,14.4 770,16.1 850,26.8 930,26.8 930,130 50,130" fill="url(#ag)"/>
+      <polyline points="50,130.0 130,65.1 210,61.3 290,46.6 370,46.0 450,30.5 530,18.4 610,20.2 690,14.4 770,16.1 850,26.8 930,26.8"
+        fill="none" stroke="#0d8f7a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      <!-- Dip markers J3, J5, J8 -->
+      <circle cx="50" cy="130.0" r="3" fill="#fff" stroke="#0d8f7a" stroke-width="2"/>
+      <circle cx="130" cy="65.1" r="3" fill="#fff" stroke="#0d8f7a" stroke-width="2"/>
+      <circle cx="530" cy="18.4" r="3" fill="#0d8f7a"/>
+      <circle cx="610" cy="20.2" r="3" fill="#fff" stroke="#e07b00" stroke-width="2"/>
+      <circle cx="690" cy="14.4" r="3" fill="#0d8f7a"/>
+      <circle cx="770" cy="16.1" r="3" fill="#fff" stroke="#e07b00" stroke-width="2"/>
+      <circle cx="850" cy="26.8" r="3" fill="#fff" stroke="#e07b00" stroke-width="2"/>
+      <circle cx="930" cy="26.8" r="4" fill="#0d8f7a" stroke="#fff" stroke-width="2"/>
+      <text x="50" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">M25</text>
+      <text x="130" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">M26</text>
+      <text x="210" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">M27</text>
+      <text x="290" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">M28</text>
+      <text x="370" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">M29</text>
+      <text x="450" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">J1</text>
+      <text x="530" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">J2</text>
+      <text x="610" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">J3</text>
+      <text x="690" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">J4</text>
+      <text x="770" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">J5</text>
+      <text x="850" y="148" text-anchor="middle" font-size="9" fill="#8aa0b2" font-family="Barlow,sans-serif">J8</text>
+      <text x="930" y="148" text-anchor="middle" font-size="9" fill="#4a6275" font-family="Barlow,sans-serif" font-weight="700">J9</text>
+      <text x="140" y="57" text-anchor="middle" font-size="9" fill="#0d8f7a" font-family="Barlow,sans-serif">+$1,081</text>
+      <text x="700" y="9" text-anchor="middle" font-size="9" fill="#0d8f7a" font-family="Barlow,sans-serif" font-weight="700">+$1,927 peak</text>
+      <text x="855" y="22" text-anchor="start" font-size="9" fill="#e07b00" font-family="Barlow,sans-serif" font-weight="700">−$178 J8</text>
+      <text x="940" y="22" text-anchor="start" font-size="9" fill="#0d8f7a" font-family="Barlow,sans-serif" font-weight="700">+$1,720</text>
+    </svg>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;border-top:1px solid var(--border);padding-top:8px;">
+      <span>Realized P&amp;L locked: +$1,720</span>
+      <span>Unrealized recovery: +$172</span>
+      <span>Net position: +$1,892 total</span>
+    </div>
+  </div>
+
+  <div class="sl">Daily Activity</div>
+  <div class="dg">
+    <div class="dr">
+      <div><div class="dd">Jun 9</div><div class="ds">TUE · TODAY</div></div>
+      <div class="dc">
+        <span class="chip open">New: NOK 20sh @ $14.56</span>
+        <span class="chip open">16 positions open · unrealized +$172</span>
+      </div>
+      <div class="dp flat">$0</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">Jun 8</div><div class="ds">MON</div></div>
+      <div class="dc">
+        <span class="chip loss">ACHR −$45.50</span>
+        <span class="chip loss">AMSC −$53.78</span>
+        <span class="chip loss">OKLO −$78.65</span>
+        <span class="chip open">New: GH 5sh @ $120, AXON 1sh @ $471</span>
+      </div>
+      <div class="dp a">−$177.93</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">Jun 6</div><div class="ds">SAT</div></div>
+      <div class="dc">
+        <span class="chip">Weekend — no trading</span>
+        <span class="chip open">19 positions open · monitoring</span>
+      </div>
+      <div class="dp flat">—</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">Jun 5</div><div class="ds">FRI</div></div>
+      <div class="dc">
+        <span class="chip loss">AMBA −$38.83</span><span class="chip loss">FIVN −$8.21</span>
+        <span class="chip loss">TDC −$3.61</span>
+        <span class="chip win">DXCM +$17.27</span><span class="chip win">TER +$3.44</span>
+        <span class="chip open">New: AAOI, ASTS re-entry, GOOGL, LITE, MU, ONTO + IREN add</span>
+      </div>
+      <div class="dp a">−$29.49</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">Jun 4</div><div class="ds">THU</div></div>
+      <div class="dc">
+        <span class="chip win">AVAV +$59.05</span><span class="chip win">NBIS +$53.53</span>
+        <span class="chip loss">NVDA −$14.43</span>
+        <span class="chip open">INTC add 5 sh</span>
+      </div>
+      <div class="dp g">+$98.15</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">Jun 3</div><div class="ds">WED</div></div>
+      <div class="dc">
+        <span class="chip win">AVAV +$9.62</span><span class="chip win">EMR +$2.68</span>
+        <span class="chip loss">CRDO stop −$23.66</span><span class="chip loss">RBRK day −$13.59</span>
+        <span class="chip loss">BIDU −$4.96</span><span class="chip loss">BIPC −$0.22</span>
+        <span class="chip open">New: CRWV re-buy, DXCM, FIVN, SNOW, KTOS, TEL, TDC, IONQ</span>
+      </div>
+      <div class="dp a">−$30.13</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">Jun 2</div><div class="ds">TUE</div></div>
+      <div class="dc"><span class="chip win">EOSE +$78.86</span><span class="chip win">CCJ +$87.05</span><span class="chip win">IREN +$34.27</span></div>
+      <div class="dp g">+$200.18</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">Jun 1</div><div class="ds">MON</div></div>
+      <div class="dc"><span class="chip win">CRWV +$267.23</span><span class="chip loss">NVDA −$8.82</span></div>
+      <div class="dp g">+$258.41</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">May 29</div><div class="ds">THU</div></div>
+      <div class="dc"><span class="chip win">CRM +$39.41</span><span class="chip win">NVTS +$0.91</span><span class="chip loss">DELL −$18.45</span><span class="chip loss">NOK −$10.48</span></div>
+      <div class="dp g">+$11.39</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">May 28</div><div class="ds">WED</div></div>
+      <div class="dc"><span class="chip win">EOSE +$126.24</span><span class="chip win">NOW +$67.53</span><span class="chip win">ONDS +$50.60</span></div>
+      <div class="dp g">+$244.37</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">May 27</div><div class="ds">TUE</div></div>
+      <div class="dc"><span class="chip win">NBIS +$76.23</span><span class="chip loss">XE stop −$12.49</span></div>
+      <div class="dp g">+$63.74</div>
+    </div>
+    <div class="dr">
+      <div><div class="dd">May 26</div><div class="ds">MON</div></div>
+      <div class="dc"><span class="chip win">ASTS +$757.83</span><span class="chip win">ARM +$201.23</span><span class="chip win">RBRK +$112.54</span><span class="chip win">ONDS +$82.67</span><span class="chip loss">TEM stop −$73.05</span></div>
+      <div class="dp g">+$1,081.22</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ WEEKLY ══ -->
+<div class="panel" id="panel-weekly">
+  <div class="info"><span>ℹ️</span><span><strong>Data source: IBKR verified.</strong> W1 = 13 trades May 26–29. W2 = 18 trades Jun 1–5. Win rate recalculated from actual realized P&amp;L — includes all trades per IBKR, not just primary strategy trades.</span></div>
+
+  <div class="sl">Weekly W/L — Stacked Bar + Win Rate Trend</div>
+  <div class="ch-box">
+    <svg width="100%" height="180" viewBox="0 0 860 180" preserveAspectRatio="xMidYMid meet">
+      <line x1="60" y1="20" x2="800" y2="20" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="60" y1="56" x2="800" y2="56" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="60" y1="92" x2="800" y2="92" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="60" y1="140" x2="800" y2="140" stroke="#b0c0d0" stroke-width="1"/>
+      <text x="50" y="23" text-anchor="end" font-size="9" fill="#8aa0b2">10</text>
+      <text x="50" y="59" text-anchor="end" font-size="9" fill="#8aa0b2">7</text>
+      <text x="50" y="95" text-anchor="end" font-size="9" fill="#8aa0b2">4</text>
+      <text x="50" y="143" text-anchor="end" font-size="9" fill="#8aa0b2">0</text>
+      <!-- W1: 9W, 4L. Scale: 10 trades = 120px. Each trade = 12px -->
+      <!-- W bar: 9*12=108px, top=140-108=32 -->
+      <rect x="150" y="32" width="80" height="108" rx="3" fill="#0d8f7a" opacity=".85"/>
+      <!-- L bar: 4*12=48px, top=140-48=92 -->
+      <rect x="150" y="92" width="80" height="48" rx="0" fill="#e07b00" opacity=".6"/>
+      <text x="190" y="25" text-anchor="middle" font-size="10" fill="#0d8f7a" font-weight="700" font-family="Barlow Condensed,sans-serif">9W</text>
+      <text x="190" y="110" text-anchor="middle" font-size="10" fill="#e07b00" font-weight="700" font-family="Barlow Condensed,sans-serif">4L</text>
+      <text x="190" y="158" text-anchor="middle" font-size="10" fill="#4a6275" font-family="Barlow,sans-serif">W1 May26–29</text>
+      <!-- W2: 10W, 8L -->
+      <!-- W bar: 10*12=120px, top=140-120=20 -->
+      <rect x="380" y="20" width="80" height="120" rx="3" fill="#0d8f7a" opacity=".85"/>
+      <!-- L bar: 8*12=96px, top=140-96=44 -->
+      <rect x="380" y="44" width="80" height="96" rx="0" fill="#e07b00" opacity=".6"/>
+      <text x="420" y="13" text-anchor="middle" font-size="10" fill="#0d8f7a" font-weight="700" font-family="Barlow Condensed,sans-serif">10W</text>
+      <text x="420" y="62" text-anchor="middle" font-size="10" fill="#e07b00" font-weight="700" font-family="Barlow Condensed,sans-serif">8L</text>
+      <text x="420" y="158" text-anchor="middle" font-size="10" fill="#4a6275" font-family="Barlow,sans-serif">W2 Jun1–5</text>
+      <!-- W3: Jun8-9 · 0W 3L -->
+      <!-- L bar: 3*12=36px, top=140-36=104 -->
+      <rect x="610" y="104" width="80" height="36" rx="3" fill="#e07b00" opacity=".6"/>
+      <text x="650" y="97" text-anchor="middle" font-size="10" fill="#e07b00" font-weight="700" font-family="Barlow Condensed,sans-serif">3L</text>
+      <text x="650" y="158" text-anchor="middle" font-size="10" fill="#4a6275" font-family="Barlow,sans-serif">W3 Jun8–9</text>
+      <!-- Win rate line: W1=69%, W2=56%, W3=0% -->
+      <!-- y = 140 - (wr * 120) -->
+      <!-- W1: y=56.96≈57; W2: y=73; W3: y=140 -->
+      <line x1="190" y1="57" x2="420" y2="73" stroke="#e07b00" stroke-width="2" stroke-dasharray="5,3"/>
+      <line x1="420" y1="73" x2="650" y2="140" stroke="#e07b00" stroke-width="2" stroke-dasharray="5,3"/>
+      <circle cx="190" cy="57" r="5" fill="#e07b00"/>
+      <circle cx="420" cy="73" r="5" fill="#e07b00"/>
+      <circle cx="650" cy="140" r="4" fill="#e07b00"/>
+      <text x="190" y="48" text-anchor="middle" font-size="9" fill="#e07b00" font-weight="700">69%</text>
+      <text x="420" y="64" text-anchor="middle" font-size="9" fill="#e07b00" font-weight="700">56%</text>
+      <text x="650" y="133" text-anchor="middle" font-size="9" fill="#e07b00" font-weight="700">0%</text>
+      <rect x="690" y="12" width="10" height="10" rx="2" fill="#0d8f7a" opacity=".85"/>
+      <text x="705" y="21" font-size="9" fill="#4a6275" font-family="Barlow,sans-serif">Wins</text>
+      <rect x="690" y="28" width="10" height="10" rx="2" fill="#e07b00" opacity=".6"/>
+      <text x="705" y="37" font-size="9" fill="#4a6275" font-family="Barlow,sans-serif">Losses</text>
+      <line x1="690" y1="50" x2="700" y2="50" stroke="#e07b00" stroke-width="2" stroke-dasharray="4,2"/>
+      <text x="705" y="53" font-size="9" fill="#e07b00" font-family="Barlow,sans-serif">Win Rate</text>
+    </svg>
+  </div>
+
+  <div class="sl">Weekly Summary</div>
+  <div class="tbl-wrap card mb">
+    <table class="tbl">
+      <thead><tr>
+        <th>Week</th><th>Dates</th>
+        <th class="r">Trades</th><th class="r">W</th><th class="r">L</th>
+        <th class="r">Win%</th><th class="r">Gross P</th><th class="r">Gross L</th><th class="r">Net P&amp;L</th><th class="r">PF</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="sym">W1</td><td style="font-size:11px;color:var(--text2)">May 26–29</td>
+          <td class="r">13</td><td class="r g">9</td><td class="r" style="color:var(--text2)">4</td>
+          <td class="r g">69%</td><td class="r g">+$1,515</td><td class="r a">−$114</td>
+          <td class="r g" style="font-size:15px">+$1,401</td><td class="r a">13.3×</td>
+        </tr>
+        <tr>
+          <td class="sym">W2</td><td style="font-size:11px;color:var(--text2)">Jun 1–5</td>
+          <td class="r">18</td><td class="r g">10</td><td class="r" style="color:var(--text2)">8</td>
+          <td class="r a">56%</td><td class="r g">+$613</td><td class="r a">−$116</td>
+          <td class="r g" style="font-size:15px">+$497</td><td class="r a">5.3×</td>
+        </tr>
+        <tr>
+          <td class="sym">W3</td><td style="font-size:11px;color:var(--text2)">Jun 8–9</td>
+          <td class="r">6</td><td class="r" style="color:var(--text3)">0</td><td class="r" style="color:var(--text2)">3</td>
+          <td class="r a">0%</td><td class="r" style="color:var(--text3)">—</td><td class="r a">−$178</td>
+          <td class="r a" style="font-size:15px">−$178</td><td class="r" style="color:var(--text3)">0×</td>
+        </tr>
+        <tr style="background:var(--bg3)">
+          <td colspan="2" class="sym" style="padding:10px 10px">TOTAL</td>
+          <td class="r" style="font-weight:700">37</td><td class="r g" style="font-weight:700">19</td><td class="r" style="font-weight:700;color:var(--text2)">15</td>
+          <td class="r a" style="font-weight:700">51%</td><td class="r g" style="font-weight:700">+$2,129</td><td class="r a" style="font-weight:700">−$409</td>
+          <td class="r g" style="font-size:17px;font-family:'Barlow Condensed',sans-serif;font-weight:800">+$1,720</td>
+          <td class="r a" style="font-weight:700">5.2×</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sl">Week 1 — May 26–29 (13 Trades · IBKR)</div>
+  <div class="tbl-wrap card mb">
+    <table class="tbl">
+      <thead><tr><th>Sym</th><th>Sector</th><th class="r">Close Date</th><th class="r">P&amp;L</th><th>Result</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">ASTS</td><td><span class="sp-tech">Tech</span></td><td class="r">May 26</td><td class="r g">+$757.83</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">2 partials: $116.78 + $127</td></tr>
+        <tr><td class="sym">ARM</td><td><span class="sp-tech">Tech</span></td><td class="r">May 26</td><td class="r g">+$201.23</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Support + breakout</td></tr>
+        <tr><td class="sym">RBRK</td><td><span class="sp-tech">Tech</span></td><td class="r">May 26</td><td class="r g">+$112.54</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Support + momentum</td></tr>
+        <tr><td class="sym">EOSE</td><td><span class="sp-energy">Energy</span></td><td class="r">May 28</td><td class="r g">+$126.24</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Breakout exit</td></tr>
+        <tr><td class="sym">ONDS</td><td><span class="sp-other">Other</span></td><td class="r">May 26/28</td><td class="r g">+$133.27</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">2 partial sells</td></tr>
+        <tr><td class="sym">NBIS</td><td><span class="sp-tech">Tech/AI</span></td><td class="r">May 27</td><td class="r g">+$76.23</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Partial sell @ 233.50</td></tr>
+        <tr><td class="sym">NOW</td><td><span class="sp-tech">Tech</span></td><td class="r">May 28</td><td class="r g">+$67.53</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Support + earnings</td></tr>
+        <tr><td class="sym">CRM</td><td><span class="sp-tech">Tech</span></td><td class="r">May 29</td><td class="r g">+$39.41</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Support entry</td></tr>
+        <tr><td class="sym">NVTS</td><td><span class="sp-tech">Tech</span></td><td class="r">May 29</td><td class="r g">+$0.91</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Small speculative</td></tr>
+        <tr><td class="sym">TEM</td><td><span class="sp-other">Health</span></td><td class="r">May 26</td><td class="r a">−$73.05</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Stop hit — late momentum</td></tr>
+        <tr><td class="sym">XE</td><td><span class="sp-energy">Energy</span></td><td class="r">May 27</td><td class="r a">−$12.49</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Stop hit — weak thesis</td></tr>
+        <tr><td class="sym">DELL</td><td><span class="sp-tech">Tech</span></td><td class="r">May 29</td><td class="r a">−$18.45</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Same-day exit</td></tr>
+        <tr><td class="sym">NOK</td><td><span class="sp-other">Other</span></td><td class="r">May 29</td><td class="r a">−$10.48</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Same-day exit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sl">Week 2 — Jun 1–5 (18 Trades · IBKR)</div>
+  <div class="tbl-wrap card mb">
+    <table class="tbl">
+      <thead><tr><th>Sym</th><th>Sector</th><th class="r">Close</th><th class="r">P&amp;L</th><th>Result</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">CRWV</td><td><span class="sp-tech">Tech/AI</span></td><td class="r">Jun 1</td><td class="r g">+$267.23</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Exit @ 120.64</td></tr>
+        <tr><td class="sym">CCJ</td><td><span class="sp-energy">Energy</span></td><td class="r">Jun 2</td><td class="r g">+$87.05</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Support entry</td></tr>
+        <tr><td class="sym">EOSE</td><td><span class="sp-energy">Energy</span></td><td class="r">Jun 2</td><td class="r g">+$78.86</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Breakout continuation</td></tr>
+        <tr><td class="sym">AVAV</td><td><span class="sp-def">Defence</span></td><td class="r">Jun 3/4</td><td class="r g">+$68.67</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">2 exits: +$9.62 + $59.05</td></tr>
+        <tr><td class="sym">NBIS</td><td><span class="sp-tech">Tech/AI</span></td><td class="r">Jun 4</td><td class="r g">+$53.53</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Partial sell @ 252.64</td></tr>
+        <tr><td class="sym">IREN</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 2</td><td class="r g">+$34.27</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Exit @ 68</td></tr>
+        <tr><td class="sym">DXCM</td><td><span class="sp-other">Health</span></td><td class="r">Jun 5</td><td class="r g">+$17.27</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Exit @ 74.30</td></tr>
+        <tr><td class="sym">TER</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 5</td><td class="r g">+$3.44</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Exit @ 372.18</td></tr>
+        <tr><td class="sym">EMR</td><td><span class="sp-other">Industrial</span></td><td class="r">Jun 3</td><td class="r g">+$2.68</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Small exit</td></tr>
+        <tr><td class="sym">APP</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 5</td><td class="r g">+$0.45</td><td><span class="wb">WIN</span></td><td style="font-size:10px;color:var(--text2)">Quick flip minimal P&amp;L</td></tr>
+        <tr><td class="sym">AMBA</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 5</td><td class="r a">−$38.83</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Macro exit</td></tr>
+        <tr><td class="sym">NVDA</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 1/4</td><td class="r a">−$23.25</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">2 exits: −$8.82 + −$14.43</td></tr>
+        <tr><td class="sym">CRDO</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 3</td><td class="r a">−$23.66</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Stop hit same-day</td></tr>
+        <tr><td class="sym">RBRK</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 3</td><td class="r a">−$13.59</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Day trade loss</td></tr>
+        <tr><td class="sym">FIVN</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 5</td><td class="r a">−$8.21</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Macro exit</td></tr>
+        <tr><td class="sym">BIDU</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 3</td><td class="r a">−$4.96</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Small loss</td></tr>
+        <tr><td class="sym">TDC</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 5</td><td class="r a">−$3.61</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Macro exit</td></tr>
+        <tr><td class="sym">BIPC</td><td><span class="sp-other">Other</span></td><td class="r">Jun 3</td><td class="r a">−$0.22</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Negligible</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sl">Week 3 — Jun 8–9 (6 Trades · IBKR · In Progress)</div>
+  <div class="tbl-wrap card mb">
+    <table class="tbl">
+      <thead><tr><th>Sym</th><th>Sector</th><th class="r">Close</th><th class="r">P&amp;L</th><th>Result</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">ACHR</td><td><span class="sp-tech">Tech</span></td><td class="r">Jun 8</td><td class="r a">−$45.50</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Exit @ 5.69</td></tr>
+        <tr><td class="sym">AMSC</td><td><span class="sp-def">Defence</span></td><td class="r">Jun 8</td><td class="r a">−$53.78</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Stop hit @ 42.79</td></tr>
+        <tr><td class="sym">OKLO</td><td><span class="sp-energy">Energy</span></td><td class="r">Jun 8</td><td class="r a">−$78.65</td><td><span class="lb">LOSS</span></td><td style="font-size:10px;color:var(--text2)">Day exit @ 58.73</td></tr>
+        <tr><td class="sym">GH</td><td><span class="sp-health">Health</span></td><td class="r">—</td><td class="r" style="color:var(--text3)">Open</td><td><span class="nb">OPEN</span></td><td style="font-size:10px;color:var(--text2)">New entry Jun 8 @ 120</td></tr>
+        <tr><td class="sym">AXON</td><td><span class="sp-def">Defence</span></td><td class="r">—</td><td class="r" style="color:var(--text3)">Open</td><td><span class="nb">OPEN</span></td><td style="font-size:10px;color:var(--text2)">New entry Jun 8 @ 471</td></tr>
+        <tr><td class="sym">NOK</td><td><span class="sp-other">Other</span></td><td class="r">—</td><td class="r" style="color:var(--text3)">Open</td><td><span class="nb">OPEN</span></td><td style="font-size:10px;color:var(--text2)">New entry Jun 9 @ 14.56</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══ MONTHLY ══ -->
+<div class="panel" id="panel-monthly">
+
+  <!-- Period Selector -->
+  <div class="psel">
+    <button class="pb active" onclick="setPeriod('1m',this)">1M</button>
+    <button class="pb" onclick="setPeriod('1y',this)">1Y</button>
+    <button class="pb" onclick="setPeriod('all',this)">ALL</button>
+  </div>
+
+  <!-- ─ 1M VIEW ─ -->
+  <div class="period-view active" id="pv-1m">
+    <div class="warn"><span>⚠️</span><span><strong>Win rate 61% (IBKR) vs 80% manual log.</strong> 16 smaller/cleanup trades excluded from original tracking. Core strategy trades remain strong — edge diluted by speculative small entries.</span></div>
+    <div class="sl">Performance · Jun 2026 (Month-to-Date)</div>
+    <div class="kg">
+      <div class="kc"><div class="kl">Trades</div><div class="kv n">37</div><div class="ks metric-delta">Since May 26</div></div>
+      <div class="kc"><div class="kl">Win Rate</div><div class="kv a">51%</div><div class="ks metric-delta dn">↓ W3 drawdown</div></div>
+      <div class="kc"><div class="kl">Net Realized</div><div class="kv g">+$1,720</div><div class="ks metric-delta">locked P&amp;L</div></div>
+      <div class="kc"><div class="kl">Profit Factor</div><div class="kv g">5.2×</div><div class="ks metric-delta up">↑ above target</div></div>
+    </div>
+    <div class="pg">
+      <div class="pc"><div class="pl">Gross Profit</div><div class="pv g">+$2,129</div></div>
+      <div class="pc"><div class="pl">Gross Loss</div><div class="pv a">−$231</div></div>
+      <div class="pc"><div class="pl">Open P&amp;L</div><div class="pv g">+$172</div></div>
+      <div class="pc"><div class="pl">Net Total</div><div class="pv g">+$1,892</div></div>
+    </div>
+    <div class="sl">Execution Matrix — 15 Closed Trades</div>
+    <div class="mx-wrap">
+      <div class="mx-title"><span>TRADE COUNT BY HOLDING DAYS &amp; SIZING</span><div class="mx-sz"><span class="sz-s">S &lt;$500</span><span class="sz-m">M $500–1k</span><span class="sz-l">L &gt;$1k</span></div></div>
+      <table class="mtbl">
+        <thead><tr><th class="rh"></th><th class="cs">S (&lt;$500)</th><th class="cm">M ($500–1k)</th><th class="cl">L (&gt;$1k)</th></tr></thead>
+        <tbody>
+          <tr><td class="rl">1–2D<span>INTRADAY</span></td><td><div class="ct">3</div></td><td><span class="ce">—</span></td><td><div class="ct">1</div></td></tr>
+          <tr><td class="rl">3–7D</td><td><div class="ct">2</div></td><td><div class="ct">1</div></td><td><span class="ce">—</span></td></tr>
+          <tr><td class="rl">7–15D</td><td><div class="ct">1</div></td><td><div class="ct">2</div></td><td><div class="ct">1</div></td></tr>
+          <tr><td class="rl">&gt;15D</td><td><div class="ct">1</div></td><td><div class="ct">2</div></td><td><div class="ct">1</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mx-wrap mb">
+      <div class="mx-title"><span>NET P&amp;L BY HOLDING DAYS &amp; SIZING</span></div>
+      <table class="mtbl">
+        <thead><tr><th class="rh"></th><th class="cs">S (&lt;$500)</th><th class="cm">M ($500–1k)</th><th class="cl">L (&gt;$1k)</th></tr></thead>
+        <tbody>
+          <tr><td class="rl">1–2D<span>INTRADAY</span></td><td><div class="cp-g">+$58</div></td><td><span class="ce">—</span></td><td><div class="cp-r">−$18</div></td></tr>
+          <tr><td class="rl">3–7D</td><td><div class="cp-g">+$108</div></td><td><div class="cp-g">+$121</div></td><td><span class="ce">—</span></td></tr>
+          <tr><td class="rl">7–15D</td><td><div class="cp-g">+$201</div></td><td><div class="cp-g">+$27</div></td><td><div class="cp-g">+$565</div></td></tr>
+          <tr><td class="rl">&gt;15D</td><td><div class="cp-g">+$62</div></td><td><div class="cp-g">+$71</div></td><td><div class="cp-g">+$758</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sl">What the data shows · Jun 2026</div>
+    <div class="insight"><div class="insight-hdr">📈 What produced results</div><div class="insight-body">W1: 9W/4L (69%), +$1,401. Biggest wins: ASTS +$758 (large size, support + earnings), ARM +$201, EOSE +$126. Large positions held past 7 days produced the most P&amp;L. Gross profit/loss ratio in W1: $1,515 / $114 = 13.3×.</div></div>
+    <div class="insight warn-insight"><div class="insight-hdr warn-hdr">⚠️ W3 drawdown — Jun 8 losses</div><div class="insight-body">W3 (Jun 8–9): 0W/3L (0%), −$178. ACHR −$45.50, AMSC −$53.78, OKLO −$78.65 all closed at stop/loss. Jun 9: new NOK entry, no realized. Unrealized P&amp;L recovered to +$172 with 10/16 positions above entry. Profit factor dropped from 9.2× → 5.2×.</div></div>
+  </div>
+
+  <!-- ─ 1Y VIEW ─ -->
+  <div class="period-view" id="pv-1y">
+    <div class="info" style="background:rgba(14,110,200,.06);border:1px solid rgba(14,110,200,.2);border-radius:10px;padding:12px 16px;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;"><span>ℹ️</span><span><strong>1Y view — insufficient history.</strong> Inception May 26, 2026 — only 11 trading days. This view populates meaningfully after 60+ days. Showing ITD equivalent.</span></div>
+    <div class="sl">Performance · Trailing 12M (Inception-to-Date)</div>
+    <div class="kg">
+      <div class="kc"><div class="kl">Trades</div><div class="kv n">37</div><div class="ks">11 trading days</div></div>
+      <div class="kc"><div class="kl">Win Rate</div><div class="kv a">51%</div><div class="ks">19W / 15L</div></div>
+      <div class="kc"><div class="kl">Net Realized</div><div class="kv g">+$1,720</div><div class="ks">~$36k/yr annualized</div></div>
+      <div class="kc"><div class="kl">Profit Factor</div><div class="kv g">5.2×</div><div class="ks">target: maintain ≥ 5×</div></div>
+    </div>
+    <div class="sl">Execution Matrix — 15 Closed Trades</div>
+    <div class="mx-wrap">
+      <div class="mx-title"><span>TRADE COUNT BY HOLDING DAYS &amp; SIZING</span><div class="mx-sz"><span class="sz-s">S &lt;$500</span><span class="sz-m">M $500–1k</span><span class="sz-l">L &gt;$1k</span></div></div>
+      <table class="mtbl">
+        <thead><tr><th class="rh"></th><th class="cs">S (&lt;$500)</th><th class="cm">M ($500–1k)</th><th class="cl">L (&gt;$1k)</th></tr></thead>
+        <tbody>
+          <tr><td class="rl">1–2D<span>INTRADAY</span></td><td><div class="ct">3</div></td><td><span class="ce">—</span></td><td><div class="ct">1</div></td></tr>
+          <tr><td class="rl">3–7D</td><td><div class="ct">2</div></td><td><div class="ct">1</div></td><td><span class="ce">—</span></td></tr>
+          <tr><td class="rl">7–15D</td><td><div class="ct">1</div></td><td><div class="ct">2</div></td><td><div class="ct">1</div></td></tr>
+          <tr><td class="rl">&gt;15D</td><td><div class="ct">1</div></td><td><div class="ct">2</div></td><td><div class="ct">1</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mx-wrap mb">
+      <div class="mx-title"><span>NET P&amp;L BY HOLDING DAYS &amp; SIZING</span></div>
+      <table class="mtbl">
+        <thead><tr><th class="rh"></th><th class="cs">S (&lt;$500)</th><th class="cm">M ($500–1k)</th><th class="cl">L (&gt;$1k)</th></tr></thead>
+        <tbody>
+          <tr><td class="rl">1–2D<span>INTRADAY</span></td><td><div class="cp-g">+$58</div></td><td><span class="ce">—</span></td><td><div class="cp-r">−$18</div></td></tr>
+          <tr><td class="rl">3–7D</td><td><div class="cp-g">+$108</div></td><td><div class="cp-g">+$121</div></td><td><span class="ce">—</span></td></tr>
+          <tr><td class="rl">7–15D</td><td><div class="cp-g">+$201</div></td><td><div class="cp-g">+$27</div></td><td><div class="cp-g">+$565</div></td></tr>
+          <tr><td class="rl">&gt;15D</td><td><div class="cp-g">+$62</div></td><td><div class="cp-g">+$71</div></td><td><div class="cp-g">+$758</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sl">Benchmarks to track as history builds · 1Y</div>
+    <div class="insight"><div class="insight-hdr">📊 Key metrics to track over time</div><div class="insight-body">At 2+ weeks, profit factor (5.2×) remains the most reliable signal. Win rate (51%) declined after W3 losses but needs 50+ trades to stabilize. Benchmarks: win rate ≥ 60%, profit factor ≥ 5×, avg win-to-loss ratio ≥ 5×. Profit factor still at target floor.</div></div>
+    <div class="insight warn-insight"><div class="insight-hdr warn-hdr">⚠️ W3 recovery in progress</div><div class="insight-body">W3: Jun 8 closed 3 positions at loss (−$178 total). Portfolio unrealized recovered to +$172 as of Jun 9. Key recovery positions: MU +$63, ONTO +$58, AAOI +$28, INTC +$37. Weak: IREN −$36, IONQ −$11. NOK added Jun 9 as new FWB entry.</div></div>
+  </div>
+
+  <!-- ─ ALL VIEW ─ -->
+  <div class="period-view" id="pv-all">
+    <div class="sl">Performance · All Time — Since May 26, 2026</div>
+    <div class="kg">
+      <div class="kc"><div class="kl">Total Trades</div><div class="kv n">37</div><div class="ks">IBKR verified</div></div>
+      <div class="kc"><div class="kl">Win Rate</div><div class="kv a">51%</div><div class="ks">19W / 15L</div></div>
+      <div class="kc"><div class="kl">Net Realized</div><div class="kv g">+$1,720</div><div class="ks">locked P&amp;L</div></div>
+      <div class="kc"><div class="kl">Profit Factor</div><div class="kv g">5.2×</div><div class="ks">Gross P / Gross L</div></div>
+    </div>
+    <div class="pg">
+      <div class="pc"><div class="pl">Gross Profit</div><div class="pv g">+$2,129</div></div>
+      <div class="pc"><div class="pl">Gross Loss</div><div class="pv a">−$409</div></div>
+      <div class="pc"><div class="pl">Days Active</div><div class="pv n">15</div></div>
+      <div class="pc"><div class="pl">P&amp;L / Day</div><div class="pv g">+$115</div></div>
+    </div>
+    <div class="sl">Execution Matrix — 15 Closed Trades</div>
+    <div class="mx-wrap">
+      <div class="mx-title"><span>TRADE COUNT BY HOLDING DAYS &amp; SIZING</span><div class="mx-sz"><span class="sz-s">S &lt;$500</span><span class="sz-m">M $500–1k</span><span class="sz-l">L &gt;$1k</span></div></div>
+      <table class="mtbl">
+        <thead><tr><th class="rh"></th><th class="cs">S (&lt;$500)</th><th class="cm">M ($500–1k)</th><th class="cl">L (&gt;$1k)</th></tr></thead>
+        <tbody>
+          <tr><td class="rl">1–2D<span>INTRADAY</span></td><td><div class="ct">3</div></td><td><span class="ce">—</span></td><td><div class="ct">1</div></td></tr>
+          <tr><td class="rl">3–7D</td><td><div class="ct">2</div></td><td><div class="ct">1</div></td><td><span class="ce">—</span></td></tr>
+          <tr><td class="rl">7–15D</td><td><div class="ct">1</div></td><td><div class="ct">2</div></td><td><div class="ct">1</div></td></tr>
+          <tr><td class="rl">&gt;15D</td><td><div class="ct">1</div></td><td><div class="ct">2</div></td><td><div class="ct">1</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mx-wrap mb">
+      <div class="mx-title"><span>NET P&amp;L BY HOLDING DAYS &amp; SIZING</span></div>
+      <table class="mtbl">
+        <thead><tr><th class="rh"></th><th class="cs">S (&lt;$500)</th><th class="cm">M ($500–1k)</th><th class="cl">L (&gt;$1k)</th></tr></thead>
+        <tbody>
+          <tr><td class="rl">1–2D<span>INTRADAY</span></td><td><div class="cp-g">+$58</div></td><td><span class="ce">—</span></td><td><div class="cp-r">−$18</div></td></tr>
+          <tr><td class="rl">3–7D</td><td><div class="cp-g">+$108</div></td><td><div class="cp-g">+$121</div></td><td><span class="ce">—</span></td></tr>
+          <tr><td class="rl">7–15D</td><td><div class="cp-g">+$201</div></td><td><div class="cp-g">+$27</div></td><td><div class="cp-g">+$565</div></td></tr>
+          <tr><td class="rl">&gt;15D</td><td><div class="cp-g">+$62</div></td><td><div class="cp-g">+$71</div></td><td><div class="cp-g">+$758</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sl">Trend — Net P&amp;L Weekly (All Time)</div>
+    <div class="ch-box">
+      <svg width="100%" height="175" viewBox="0 0 860 175" preserveAspectRatio="xMidYMid meet">
+        <line x1="60" y1="20" x2="800" y2="20" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="60" y1="60" x2="800" y2="60" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="60" y1="100" x2="800" y2="100" stroke="#e0e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="60" y1="140" x2="800" y2="140" stroke="#b0c0d0" stroke-width="1"/>
+        <text x="50" y="23" text-anchor="end" font-size="9" fill="#8aa0b2">$2k</text>
+        <text x="50" y="63" text-anchor="end" font-size="9" fill="#8aa0b2">$1.3k</text>
+        <text x="50" y="103" text-anchor="end" font-size="9" fill="#8aa0b2">$600</text>
+        <text x="50" y="143" text-anchor="end" font-size="9" fill="#8aa0b2">$0</text>
+        <rect x="140" y="56" width="90" height="84" rx="3" fill="#0d8f7a" opacity=".15"/>
+        <rect x="360" y="110" width="90" height="30" rx="3" fill="#0d8f7a" opacity=".15"/>
+        <!-- W3: -$178 bar below baseline shown as amber -->
+        <rect x="580" y="140" width="90" height="12" rx="3" fill="#e07b00" opacity=".35"/>
+        <polyline points="185,56 405,110 625,143" fill="none" stroke="#0d8f7a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="185" cy="56" r="5" fill="#0d8f7a"/>
+        <circle cx="405" cy="110" r="5" fill="#0d8f7a"/>
+        <circle cx="625" cy="143" r="5" fill="#e07b00"/>
+        <text x="185" y="48" text-anchor="middle" font-size="9" fill="#0d8f7a" font-weight="700">+$1,401</text>
+        <text x="405" y="102" text-anchor="middle" font-size="9" fill="#0d8f7a" font-weight="700">+$497</text>
+        <text x="625" y="136" text-anchor="middle" font-size="9" fill="#e07b00" font-weight="700">−$178</text>
+        <polyline points="185,57 405,75 625,140" fill="none" stroke="#e07b00" stroke-width="2" stroke-dasharray="5,3"/>
+        <circle cx="185" cy="57" r="4" fill="#e07b00"/>
+        <circle cx="405" cy="75" r="4" fill="#e07b00"/>
+        <circle cx="625" cy="140" r="4" fill="#e07b00"/>
+        <text x="155" y="52" font-size="9" fill="#e07b00">69% WR</text>
+        <text x="408" y="70" font-size="9" fill="#e07b00">56% WR↓</text>
+        <text x="628" y="132" font-size="9" fill="#e07b00">0% WR↓</text>
+        <text x="185" y="162" text-anchor="middle" font-size="10" fill="#4a6275">W1 May26–29</text>
+        <text x="405" y="162" text-anchor="middle" font-size="10" fill="#4a6275">W2 Jun1–5</text>
+        <text x="625" y="162" text-anchor="middle" font-size="10" fill="#4a6275">W3 Jun8–9</text>
+        <text x="680" y="17" font-size="9" fill="#0d8f7a">─ Net P&amp;L</text>
+        <text x="680" y="31" font-size="9" fill="#e07b00">╌ Win Rate</text>
+      </svg>
+    </div>
+    <div class="sl">Win Rate by Sector · All Time</div>
+    <div class="card mb">
+      <div class="sb-row"><div class="sb-lbl">Defence</div><div class="sb-trk"><div class="sb-fil" style="width:67%;background:var(--teal)"></div></div><div class="sb-val g">2/3 · 67%</div></div>
+      <div class="sb-row"><div class="sb-lbl">Energy</div><div class="sb-trk"><div class="sb-fil" style="width:83%;background:var(--teal);opacity:.9"></div></div><div class="sb-val g">5/6 · 83%</div></div>
+      <div class="sb-row"><div class="sb-lbl">Tech/AI</div><div class="sb-trk"><div class="sb-fil" style="width:52%;background:var(--teal);opacity:.75"></div></div><div class="sb-val a">12/23 · 52%</div></div>
+      <div class="sb-row"><div class="sb-lbl">Health</div><div class="sb-trk"><div class="sb-fil" style="width:50%;background:var(--amber)"></div></div><div class="sb-val a">1/2 · 50%</div></div>
+      <div class="sb-row"><div class="sb-lbl">Other</div><div class="sb-trk"><div class="sb-fil" style="width:50%;background:var(--amber);opacity:.7"></div></div><div class="sb-val a">1/2 · 50%</div></div>
+    </div>
+    <div class="sl">Repeat Tickers · All Time</div>
+    <div class="rt-wrap">
+      <div class="rt multi">EOSE ×3 closed — +$331</div>
+      <div class="rt multi">NBIS ×2 closed — +$130</div>
+      <div class="rt multi">ONDS ×2 closed — +$133</div>
+      <div class="rt multi">AVAV ×2 closed — +$69</div>
+      <div class="rt multi">NVDA ×2 closed — −$23</div>
+      <div class="rt single">ASTS re-entry — open</div>
+      <div class="rt single">CRWV re-entry — open</div>
+      <div class="rt single">IREN add-on — open</div>
+    </div>
+    <div class="sl">Behavioral Pattern Log · All Time</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div class="card" style="background:var(--teal-bg);border-color:rgba(13,143,122,.2)">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--teal);margin-bottom:10px;">📈 Win Patterns</div>
+        <div class="sc-wrap">
+          <span class="sc win-c sel" onclick="this.classList.toggle('sel')">🎯 Support before breakout ×10</span>
+          <span class="sc win-c sel" onclick="this.classList.toggle('sel')">📈 Hold 7–20D full target ×8</span>
+          <span class="sc win-c sel" onclick="this.classList.toggle('sel')">⭐ High conviction large size ×6</span>
+          <span class="sc win-c" onclick="this.classList.toggle('sel')">🔋 Energy sector outperforms</span>
+          <span class="sc win-c" onclick="this.classList.toggle('sel')">⚡ Catalyst reaction clean entry</span>
+        </div>
+      </div>
+      <div class="card" style="background:var(--red-bg);border-color:rgba(212,43,58,.2)">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--red);margin-bottom:10px;">📉 Loss Patterns</div>
+        <div class="sc-wrap">
+          <span class="sc loss-c sel" onclick="this.classList.toggle('sel')">⚡ Stop hit / late entry ×3</span>
+          <span class="sc loss-c sel" onclick="this.classList.toggle('sel')">🔄 Day trade / quick flip ×4</span>
+          <span class="sc loss-c sel" onclick="this.classList.toggle('sel')">❌ Macro-driven panic exit ×5</span>
+          <span class="sc loss-c" onclick="this.classList.toggle('sel')">⚠️ Small size dilutes win rate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coach Reflection — shared across all periods -->
+  <div class="refl"><div style="font-size:22px">💡</div><div><div class="refl-lbl">Urahara · Core Reflection</div><div class="refl-txt" id="coach-note">The stronger the entry quality (<strong>support + conviction, right size</strong>), the bigger the outcome. Current drawdown is macro-driven (military news Jun 5), not execution failure. W1 showed what works: large conviction positions held past 7 days. Resume SL/TP setup once market stabilizes.</div></div></div>
+
+</div>
+
+
+
+</div>
+<script>
+
+function setPeriod(p, btn) {
+  btn.closest('.psel').querySelectorAll('.pb').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.period-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('pv-' + p).classList.add('active');
+}
+
+function sw(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+  const m={daily:'Jun 6, 2026',weekly:'May 26–Jun 5',monthly:'May–Jun 2026'};
+  document.getElementById('period-lbl').textContent=m[name]||'';
+}
+function sp(btn){
+  btn.closest('.psel').querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
