@@ -12,11 +12,10 @@
       --panel: #ffffff;
       --line: #d9e1ea;
       --nixon: #224f7a;
+      --bull: #7a2e22;
       --wave: #5b5fc7;
       --urahara: #116b5f;
-      --living: #8a5a10;
       --shadow: 0 14px 32px rgba(21, 31, 43, 0.12);
-      --soft: #eef7f4;
     }
 
     * { box-sizing: border-box; }
@@ -79,8 +78,8 @@
     }
 
     .card.primary {
-      border-color: rgba(17, 107, 95, 0.35);
-      background: linear-gradient(180deg, #ffffff 0%, #f2fbf8 100%);
+      border-color: rgba(122, 46, 34, 0.35);
+      background: linear-gradient(180deg, #ffffff 0%, #fff7f4 100%);
     }
 
     .card:active { transform: translateY(1px); }
@@ -110,9 +109,9 @@
     }
 
     .nixon { background: var(--nixon); }
+    .bull { background: var(--bull); }
     .wave { background: var(--wave); }
     .urahara { background: var(--urahara); }
-    .living { background: var(--living); }
 
     .meta {
       margin-top: auto;
@@ -131,64 +130,55 @@
   <header>
     <div class="wrap">
       <h1>EisenTower Hub</h1>
-      <p class="sub">Operational links open the canonical EisenTower source files. Steve receives PDF delivery only.</p>
+      <p class="sub">Five public master links for Jay's decision dashboards.</p>
     </div>
   </header>
 
   <main>
     <section class="grid">
-      <a class="card primary" href="http://127.0.0.1:8790/NixonFeeds.html">
+      <a class="card primary" href="BullFeeds.html">
         <div class="top">
-          <h2>NixonFeeds</h2>
-          <span class="pill nixon">daily</span>
+          <h2>BullFeeds</h2>
+          <span class="pill bull">daily</span>
         </div>
-        <p>Canonical operational HTML. Steve delivery is PDF.</p>
-        <div class="meta">02_Functional_Agents/Nixon/NixonFeeds/NixonFeedsFromEisenTower.html</div>
+        <p>Canonical Bull feed dashboard.</p>
+        <div class="meta">BullFeeds.html</div>
       </a>
 
-      <a class="card" href="http://127.0.0.1:8790/NixonCockpit.html">
-        <div class="top">
-          <h2>Nixon Cockpit</h2>
-          <span class="pill nixon">weekly</span>
-        </div>
-        <p>Canonical operational cockpit. Steve delivery is PDF.</p>
-        <div class="meta">02_Functional_Agents/Nixon/Nixon_Cockpit.html</div>
-      </a>
-
-      <a class="card" href="http://127.0.0.1:8790/Catch_a_Wave.html">
+      <a class="card" href="catch_a_wave_dashboard.html">
         <div class="top">
           <h2>Catch a Wave</h2>
           <span class="pill wave">weekly</span>
         </div>
-        <p>Canonical WAVE dashboard in Nixon workspace.</p>
-        <div class="meta">02_Functional_Agents/Nixon/Catch_a_Wave/catch_a_wave_dashboard.html</div>
+        <p>Canonical WAVE dashboard.</p>
+        <div class="meta">catch_a_wave_dashboard.html</div>
       </a>
 
-      <a class="card" href="http://127.0.0.1:8790/UraharaDashboard.html">
+      <a class="card" href="Nixon_Cockpit.html">
+        <div class="top">
+          <h2>Nixon Cockpit</h2>
+          <span class="pill nixon">weekly</span>
+        </div>
+        <p>Canonical operational cockpit.</p>
+        <div class="meta">Nixon_Cockpit.html</div>
+      </a>
+
+      <a class="card" href="Urahara%20Dashboard%20v2.html">
         <div class="top">
           <h2>Urahara Trading Dashboard</h2>
           <span class="pill urahara">daily</span>
         </div>
-        <p>Canonical Urahara dashboard link. No hub copy.</p>
-        <div class="meta">02_Functional_Agents/Urahara/Urahara Dashboard/Urahara Dashboard v2.html</div>
+        <p>Canonical Urahara dashboard link.</p>
+        <div class="meta">Urahara Dashboard v2.html</div>
       </a>
 
-      <a class="card" href="http://127.0.0.1:8790/UraharaOrdersRR.html">
+      <a class="card" href="Urahara%20Orders-RR%20v1.html">
         <div class="top">
           <h2>Urahara Orders &amp; R:R</h2>
           <span class="pill urahara">risk</span>
         </div>
-        <p>Canonical Urahara Orders/R:R link. No hub copy.</p>
-        <div class="meta">02_Functional_Agents/Urahara/Urahara Dashboard/Urahara Orders-RR v1.html</div>
-      </a>
-
-      <a class="card" href="http://127.0.0.1:8790/Board/board.html">
-        <div class="top">
-          <h2>Livingroom Board</h2>
-          <span class="pill living">room</span>
-        </div>
-        <p>Live view of canonical Board.md through the Hub server.</p>
-        <div class="meta">04_Livingroom/Board/Board.md</div>
+        <p>Canonical Urahara Orders/R:R link.</p>
+        <div class="meta">Urahara Orders-RR v1.html</div>
       </a>
     </section>
   </main>
