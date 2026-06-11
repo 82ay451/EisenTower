@@ -15,171 +15,51 @@
       --bull: #7a2e22;
       --wave: #5b5fc7;
       --urahara: #116b5f;
+      --pulse: #236984;
+      --board: #4b5563;
       --shadow: 0 14px 32px rgba(21, 31, 43, 0.12);
     }
-
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      letter-spacing: 0;
-    }
-
-    header {
-      padding: 22px 18px 16px;
-      background: #151f2b;
-      color: #fff;
-    }
-
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2rem, 8vw, 4rem);
-      line-height: 0.95;
-      letter-spacing: 0;
-    }
-
-    .sub {
-      max-width: 680px;
-      margin: 10px 0 0;
-      color: rgba(255, 255, 255, 0.75);
-    }
-
-    main {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 16px 14px 36px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .card {
-      min-height: 164px;
-      display: grid;
-      gap: 10px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      padding: 14px;
-      box-shadow: var(--shadow);
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .card.primary {
-      border-color: rgba(122, 46, 34, 0.35);
-      background: linear-gradient(180deg, #ffffff 0%, #fff7f4 100%);
-    }
-
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: 0; }
+    header { padding: 22px 18px 16px; background: #151f2b; color: #fff; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    h1 { margin: 0; font-size: clamp(2rem, 8vw, 4rem); line-height: 0.95; letter-spacing: 0; }
+    .sub { max-width: 680px; margin: 10px 0 0; color: rgba(255, 255, 255, 0.75); }
+    main { max-width: 980px; margin: 0 auto; padding: 16px 14px 36px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .card { min-height: 164px; display: grid; gap: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px; box-shadow: var(--shadow); color: inherit; text-decoration: none; }
+    .card.primary { border-color: rgba(122, 46, 34, 0.35); background: linear-gradient(180deg, #ffffff 0%, #fff7f4 100%); }
     .card:active { transform: translateY(1px); }
-
-    .top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: 1.18rem;
-      letter-spacing: 0;
-    }
-
+    .top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+    h2 { margin: 0; font-size: 1.18rem; letter-spacing: 0; }
     p { margin: 0; color: var(--muted); }
-
-    .pill {
-      border-radius: 999px;
-      padding: 4px 8px;
-      color: #fff;
-      font-size: 0.72rem;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
+    .pill { border-radius: 999px; padding: 4px 8px; color: #fff; font-size: 0.72rem; font-weight: 800; white-space: nowrap; }
     .nixon { background: var(--nixon); }
     .bull { background: var(--bull); }
     .wave { background: var(--wave); }
     .urahara { background: var(--urahara); }
-
-    .meta {
-      margin-top: auto;
-      overflow-wrap: anywhere;
-      font: 0.78rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      color: #475569;
-    }
-
-    @media (max-width: 720px) {
-      .grid { grid-template-columns: 1fr; }
-      .card { min-height: 142px; }
-    }
+    .pulse { background: var(--pulse); }
+    .board { background: var(--board); }
+    .meta { margin-top: auto; overflow-wrap: anywhere; font: 0.78rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #475569; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } .card { min-height: 142px; } }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
       <h1>EisenTower Hub</h1>
-      <p class="sub">Five public master links for Jay's decision dashboards.</p>
+      <p class="sub">Public master links for Jay's decision dashboards and operating surfaces.</p>
     </div>
   </header>
-
   <main>
     <section class="grid">
-      <a class="card primary" href="BullFeeds.html">
-        <div class="top">
-          <h2>BullFeeds</h2>
-          <span class="pill bull">daily</span>
-        </div>
-        <p>Canonical Bull feed dashboard.</p>
-        <div class="meta">BullFeeds.html</div>
-      </a>
-
-      <a class="card" href="catch_a_wave_dashboard.html">
-        <div class="top">
-          <h2>Catch a Wave</h2>
-          <span class="pill wave">weekly</span>
-        </div>
-        <p>Canonical WAVE dashboard.</p>
-        <div class="meta">catch_a_wave_dashboard.html</div>
-      </a>
-
-      <a class="card" href="Nixon_Cockpit.html">
-        <div class="top">
-          <h2>Nixon Cockpit</h2>
-          <span class="pill nixon">weekly</span>
-        </div>
-        <p>Canonical operational cockpit.</p>
-        <div class="meta">Nixon_Cockpit.html</div>
-      </a>
-
-      <a class="card" href="Urahara%20Dashboard%20v2.html">
-        <div class="top">
-          <h2>Urahara Trading Dashboard</h2>
-          <span class="pill urahara">daily</span>
-        </div>
-        <p>Canonical Urahara dashboard link.</p>
-        <div class="meta">Urahara Dashboard v2.html</div>
-      </a>
-
-      <a class="card" href="Urahara%20Orders-RR%20v1.html">
-        <div class="top">
-          <h2>Urahara Orders &amp; R:R</h2>
-          <span class="pill urahara">risk</span>
-        </div>
-        <p>Canonical Urahara Orders/R:R link.</p>
-        <div class="meta">Urahara Orders-RR v1.html</div>
-      </a>
+      <a class="card primary" href="BullFeeds.html"><div class="top"><h2>BullFeeds</h2><span class="pill bull">daily</span></div><p>Canonical Bull feed dashboard.</p><div class="meta">BullFeeds.html</div></a>
+      <a class="card" href="catch_a_wave_dashboard.html"><div class="top"><h2>Catcha Wave</h2><span class="pill wave">weekly</span></div><p>WAVE portfolio operating console.</p><div class="meta">catch_a_wave_dashboard.html</div></a>
+      <a class="card" href="PulseFeeds.html"><div class="top"><h2>PulseFeeds</h2><span class="pill pulse">feeds</span></div><p>Curated feed signals through Jay's filter.</p><div class="meta">PulseFeeds.html</div></a>
+      <a class="card" href="board.html"><div class="top"><h2>Tower Board</h2><span class="pill board">board</span></div><p>Shared crew board and system notes.</p><div class="meta">board.html</div></a>
+      <a class="card" href="Nixon_Cockpit.html"><div class="top"><h2>Nixon Cockpit</h2><span class="pill nixon">weekly</span></div><p>Canonical operational cockpit.</p><div class="meta">Nixon_Cockpit.html</div></a>
+      <a class="card" href="Urahara%20Dashboard%20v2.html"><div class="top"><h2>Urahara Trading Dashboard</h2><span class="pill urahara">daily</span></div><p>Canonical Urahara dashboard link.</p><div class="meta">Urahara Dashboard v2.html</div></a>
+      <a class="card" href="Urahara%20Orders-RR%20v1.html"><div class="top"><h2>Urahara Orders &amp; R:R</h2><span class="pill urahara">risk</span></div><p>Canonical Urahara Orders/R:R link.</p><div class="meta">Urahara Orders-RR v1.html</div></a>
     </section>
   </main>
 </body>
