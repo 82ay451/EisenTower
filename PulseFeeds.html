@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PulseFeeds</title>
+  <style>
+    :root {
+      --ink: #172026;
+      --muted: #61707a;
+      --line: #dbe2e6;
+      --soft: #f5f7f2;
+      --panel: #ffffff;
+      --green: #1f7a52;
+      --blue: #236984;
+      --amber: #925f0c;
+      --shadow: 0 12px 34px rgba(27, 39, 45, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--soft);
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .hero {
+      min-height: auto;
+      display: grid;
+      align-content: center;
+      gap: 18px;
+      padding: 24px 0 10px;
+    }
+
+    .back-link {
+      color: var(--blue);
+      font-weight: 800;
+      text-decoration: none;
+      width: fit-content;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 7vw, 70px);
+      line-height: 0.95;
+      font-weight: 800;
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .brief {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .brief h2 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.15;
+    }
+
+    .brief p {
+      margin: 0;
+      color: #34444d;
+      line-height: 1.48;
+    }
+
+    .brief-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      min-height: 82px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfa;
+      padding: 12px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .metric strong {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .toolbar {
+      margin: 18px 0 12px;
+      display: block;
+    }
+
+    .search,
+    select {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .search:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(35, 105, 132, 0.14);
+    }
+
+    .section-title {
+      margin: 22px 0 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: baseline;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .feed-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .feed-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .feed-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .source {
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .source strong {
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .saved-at {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f3f6f6;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .badge.high {
+      background: #eaf5ee;
+      border-color: #c5e0ce;
+      color: var(--green);
+    }
+
+    .badge.medium {
+      background: #fbf0d9;
+      border-color: #efd7a7;
+      color: var(--amber);
+    }
+
+    .feed-card h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .topic-icon,
+    .thought-icon {
+      flex: 0 0 auto;
+      line-height: 1.15;
+    }
+
+    .summary {
+      margin: 0;
+      color: #34444d;
+      line-height: 1.48;
+      font-size: 14px;
+    }
+
+    .decision {
+      border-left: 4px solid var(--blue);
+      background: #f0f6f8;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .decision strong {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .pulse-take {
+      margin: 0;
+    }
+
+    .bullets {
+      margin: 0;
+      padding-left: 19px;
+      color: #34444d;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      background: #edf2f5;
+      padding: 5px 8px;
+      font-size: 12px;
+      color: #31454f;
+    }
+
+    .chip.ticker {
+      background: #e8f2fb;
+      color: #1d5c80;
+      font-weight: 700;
+    }
+
+    details {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 12px 14px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .system-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .system-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfcfa;
+      min-height: 86px;
+    }
+
+    .system-card span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .system-card strong {
+      display: block;
+      margin-top: 5px;
+    }
+
+    .empty {
+      padding: 24px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.68);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        padding: 12px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 12px;
+      }
+
+      .hero-top,
+      .feed-head {
+        display: grid;
+      }
+
+      .brief-grid,
+      .toolbar,
+      .system-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero" aria-label="Daily brief">
+      <a class="back-link" href="../../04_Livingroom/Hub/EisenTower_Hub.html">Back to EisenTower</a>
+      <div class="hero-top">
+        <div>
+          <h1>PulseFeeds</h1>
+          <div class="date">Signals from the field.</div>
+          <div class="date" id="updatedAt">Last updated: checking feed log</div>
+          <div class="date">Data source: Pulse feed log</div>
+        </div>
+      </div>
+
+      <div class="brief">
+        <div class="brief-grid">
+          <div class="metric"><span>New</span><strong id="newCount">0</strong></div>
+          <div class="metric"><span>Useful</span><strong id="usefulCount">0</strong></div>
+          <div class="metric"><span>High relevance</span><strong id="highCount">0</strong></div>
+          <div class="metric"><span>Garbage</span><strong id="garbageCount">0</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-title">
+      <h2>Signal Feed</h2>
+    </div>
+
+    <div class="toolbar">
+      <input id="search" class="search" type="search" placeholder="Search signal, source, theme, narrative..." autocomplete="off">
+    </div>
+
+    <section class="feed-list" id="feedList" aria-label="Pulse signal entries"></section>
+  </main>
+
+  <script>
+    let skippedGarbageCount = 1;
+
+    let feedEntries = [
+      {
+        id: "2026-06-05-0700-001",
+        batch: "2026-06-05 07:00",
+        source: "ลงทุนอะไรดี",
+        title: "ประชุมผู้ถือหุ้น TSMC: ดีมานด์ AI, กำลังผลิต, High-NA EUV",
+        bullets: [
+          "TSMC ระบุว่าดีมานด์ AI โตเร็วกว่าที่อุตสาหกรรมคาด",
+          "บริษัทยังเร่งขยายกำลังผลิตเพราะอุปสงค์ชิปขั้นสูงแข็งแรง",
+          "สั่งซื้อเครื่อง ASML High-NA EUV แล้ว แต่ยังไม่ใช้ mass production เพราะต้องรอความคุ้มค่าด้านต้นทุน",
+          "Advanced packaging และ CoPoS ยังต้องใช้เวลา 2-3 ปีถึงจะขยายเป็นกำลังผลิตเชิงพาณิชย์มากขึ้น"
+        ],
+        relevance: "High",
+        thought: "This is thesis support, not an action signal. The important part is not that TSM moved today; it is that the demand and capacity story still matches the Core reason for owning TSM/ASML exposure.",
+        themes: ["Semiconductor", "AI infrastructure"],
+        tickers: ["TSM", "ASML", "NVDA", "MU", "SMH"]
+      },
+      {
+        id: "2026-06-05-0700-002",
+        batch: "2026-06-05 07:00",
+        source: "นักลงพุง",
+        title: "เข้าถึงตลาดง่าย ไม่ได้แปลว่ามี edge",
+        bullets: [
+          "รายย่อยเข้าถึงหุ้นสหรัฐ เช่น NVDA และ TSLA ได้ง่ายขึ้น",
+          "ข้อมูลที่มากเกินไปกลายเป็น noise และทำให้มั่นใจผิด",
+          "crowded trade จาก social media ไม่ใช่ alpha",
+          "edge จริงยังอยู่ที่ process, position sizing, independent thinking และ risk control"
+        ],
+        relevance: "Medium",
+        thought: "This is not news, but it protects the portfolio from feed addiction. More access and more opinions do not create edge unless Nixon can connect them back to thesis, sizing, and invalidation.",
+        themes: ["Process"],
+        tickers: ["NVDA", "TSLA"]
+      },
+      {
+        id: "2026-06-05-0700-003",
+        batch: "2026-06-05 07:00",
+        source: "RunwithFund",
+        title: "Momentum จาก Trump mention: Intel, Dell, Micron, Apple",
+        bullets: [
+          "โพสต์ยกตัวอย่างหุ้นที่วิ่งหลัง Donald Trump พูดถึงหรือชื่นชม",
+          "มีชื่อ Intel, Dell, Micron และ Apple",
+          "เกี่ยวกับ sentiment/event flow มากกว่า thesis ระยะยาว",
+          "ต้องตรวจสอบตัวเลขจากแหล่งหลักก่อนใช้เป็นข้อมูลจริง"
+        ],
+        relevance: "Medium",
+        thought: "This belongs in awareness, not conviction. Political attention can move prices, but Nixon should not treat it as evidence that the business thesis improved.",
+        themes: ["Macro", "Semiconductor"],
+        tickers: ["INTC", "DELL", "MU"]
+      },
+      {
+        id: "2026-06-05-1900-001",
+        batch: "2026-06-05 19:00",
+        source: "ลงทุนแมน",
+        title: "สรุปภาษีซื้อขายทองคำ",
+        bullets: [
+          "เนื้อหาเกี่ยวกับภาษีจากการซื้อขายทองคำ",
+          "เป็นความรู้การเงินทั่วไป",
+          "ไม่เกี่ยวโดยตรงกับ US equity portfolio ใน PulseFeeds"
+        ],
+        relevance: "Low",
+        thought: "This is financially useful but outside PulseFeeds' current job. It does not touch the US portfolio or doctrine enough to earn more attention here.",
+        themes: ["Macro"],
+        tickers: []
+      }
+    ];
+
+    const feedList = document.getElementById("feedList");
+    const search = document.getElementById("search");
+    const newCount = document.getElementById("newCount");
+    const usefulCount = document.getElementById("usefulCount");
+    const highCount = document.getElementById("highCount");
+    const garbageCount = document.getElementById("garbageCount");
+    const updatedAt = document.getElementById("updatedAt");
+
+    function classNameForRelevance(value) {
+      if (value === "High") return "high";
+      if (value === "Medium") return "medium";
+      return "";
+    }
+
+    function relevanceLabel(value) {
+      if (value === "High") return "High";
+      if (value === "Medium") return "Medium";
+      return "Low";
+    }
+
+    function themeLabel(value) {
+      return {
+        "AI infrastructure": "AI infrastructure",
+        "Semiconductor": "Semiconductor",
+        "Process": "Process",
+        "Macro": "Macro"
+      }[value] || value;
+    }
+
+    function relevanceFor(entry) {
+      return entry.relevance;
+    }
+
+    function entryText(entry) {
+      return [
+        entry.source,
+        entry.title,
+        entry.bullets.join(" "),
+        relevanceFor(entry),
+        entry.themes.join(" "),
+        entry.tickers.join(" ")
+      ].join(" ").toLowerCase();
+    }
+
+    function filteredEntries() {
+      const query = search.value.trim().toLowerCase();
+      return feedEntries.filter(entry => {
+        const queryOk = !query || entryText(entry).includes(query);
+        return queryOk;
+      }).sort((left, right) => savedTimestamp(right) - savedTimestamp(left));
+    }
+
+    function savedTimestamp(entry) {
+      const explicit = entry.savedAt || entry.recordedAt;
+      if (explicit) return Date.parse(explicit) || 0;
+      const dateMatch = String(entry.batch || entry.id || "").match(/\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2})?/);
+      return dateMatch ? Date.parse(dateMatch[0].replace(" ", "T")) || 0 : 0;
+    }
+
+    function formatSavedAt(entry) {
+      const timestamp = savedTimestamp(entry);
+      if (!timestamp) return "Saved time unavailable";
+      return `Saved ${new Intl.DateTimeFormat("en-GB", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "Asia/Bangkok"
+      }).format(timestamp)}`;
+    }
+
+    function renderStats() {
+      const usefulEntries = feedEntries.filter(entry => relevanceFor(entry) !== "Low");
+      const highEntries = feedEntries.filter(entry => relevanceFor(entry) === "High");
+      const lowEntries = feedEntries.filter(entry => relevanceFor(entry) === "Low");
+      newCount.textContent = Number.isFinite(window.linksCheckedCount) ? window.linksCheckedCount : feedEntries.length;
+      usefulCount.textContent = usefulEntries.length;
+      highCount.textContent = highEntries.length;
+      garbageCount.textContent = skippedGarbageCount + lowEntries.length;
+    }
+
+    function normalizePulseLanguage(text) {
+      return String(text || "");
+    }
+
+    const CURATED_PULSE_READS = {
+      "2026-06-05-1900-001": {
+        summary: [
+          "AI demand is running ahead of earlier industry expectations.",
+          "Advanced-chip supply remains constrained by capacity expansion, advanced packaging, and equipment timing.",
+          "High-NA EUV is already part of TSMC's roadmap, but mass production still depends on cost efficiency.",
+          "Advanced packaging and CoPoS capacity may need another 2-3 years before commercial scale catches up."
+        ],
+        take: "Pulse keeps this because it strengthens the AI-infrastructure shortage narrative. The signal is not one ticker; it is that AI demand may stay ahead of the physical supply chain."
+      },
+      "2026-06-05-1900-002": {
+        summary: [
+          "Easier access to US stocks does not automatically create investment edge.",
+          "Information abundance can become noise when it creates false confidence.",
+          "Social-media crowded trades are not alpha by themselves.",
+          "Durable edge comes from process discipline, independent thinking, position sizing, and risk control."
+        ],
+        take: "Pulse keeps this as a behavior signal. It protects Jay from confusing access, content volume, or popularity with actual insight."
+      },
+      "2026-06-05-1900-003": {
+        summary: [
+          "Trump-related mentions are being linked with short-term moves in selected US tech names.",
+          "Intel, Dell, Micron, and Apple appear as examples of event-driven attention.",
+          "The movement is sentiment-led rather than evidence of improved business quality.",
+          "Political attention can create price motion before the underlying story changes."
+        ],
+        take: "Pulse keeps this as political/event noise with possible market impact. It is useful only if the pattern repeats or starts shaping sector narrative."
+      },
+      "2026-06-05-1900-004": {
+        summary: [
+          "Gold-trading tax treatment is the main topic.",
+          "The content is general financial knowledge rather than a current market-field signal.",
+          "No clear shift appears in technology, macro, capital flow, or Jay's current narrative map."
+        ],
+        take: "Pulse marks this as low relevance. It may be useful elsewhere, but it should not consume signal space here."
+      },
+      "2026-06-06-manual-001": {
+        summary: [
+          "Nasdaq sold off hard, led by chips and growth stocks.",
+          "Broadcom reported well, yet the market punished the stock for not raising the AI-chip outlook enough.",
+          "Strong jobs data pushed yields higher and weakened the rate-cut hope.",
+          "The author frames the move as rotation out of overheated tech, not collapse."
+        ],
+        take: "Pulse keeps this because it connects macro pressure, valuation expectation, and AI crowding in one feed. The signal is market temperature, not a buy list."
+      },
+      "2026-06-06-manual-002": {
+        summary: [
+          "Paradis Labs is buying selected AI-related names during a market pullback.",
+          "SNDK, AAOI, and NBIS are the highlighted examples.",
+          "The post points to investor behavior during weakness rather than confirmed business quality.",
+          "AI pullbacks are attracting selective dip-buying attention instead of broad risk-off avoidance."
+        ],
+        take: "Pulse keeps this as crowd-behavior evidence. It shows where attention flows during weakness, not what Jay should own."
+      },
+      "2026-06-06-auto-5939e201": {
+        summary: [
+          "Fauna Robotics introduced Sprout, a small humanoid robot.",
+          "The robot is designed to communicate emotion through antenna-like eyebrows.",
+          "The product direction moves humanoid robotics closer to friendly, user-facing design.",
+          "Humanoid presentation is shifting from industrial spectacle toward emotional interaction."
+        ],
+        take: "Pulse keeps this as early frontier-tech texture. It is not investable evidence yet, but it says robotics narratives are becoming more consumer-readable."
+      },
+      "2026-06-06-auto-7a1e2820": {
+        summary: [
+          "AI and data centers are increasing water demand alongside electricity demand.",
+          "Water infrastructure is positioned as a possible indirect beneficiary of AI growth.",
+          "The AI infrastructure map expands beyond chips, power, and data centers.",
+          "AI scale is creating second-order pressure on physical resource systems."
+        ],
+        take: "Pulse keeps this because it expands Jay's worldview: AI infrastructure may stress hidden systems, not only semiconductor supply."
+      },
+      "2026-06-06-auto-fe87e71d": {
+        summary: [
+          "Broadcom posted strong results, but the stock still fell.",
+          "The market reaction suggests expectations around AI winners may already be very high.",
+          "Good business performance may not be enough when the narrative is priced for perfection.",
+          "This is a clean example of expectation risk inside the AI story."
+        ],
+        take: "Pulse keeps this because it sharpens the narrative: AI winners can disappoint without failing. That matters for how Jay reads hype cycles."
+      },
+      "2026-06-08-auto-c53ee94c": {
+        summary: [
+          "Paradis Labs ranks selected AI names after a market pullback.",
+          "GOOGL appears as a strong-buy style example despite dilution concerns.",
+          "The visible extract points to ROI as the counterweight to dilution risk.",
+          "AI-stock damage is being sorted into relative survivors and weaker candidates."
+        ],
+        take: "Pulse keeps this as external conviction mapping. It shows how another lens sorts AI damage, but Pulse should not pretend the extract is complete."
+      },
+      "2026-06-08-auto-42298ae7": {
+        summary: [
+          "SpaceX is linked to a cloud service agreement with Google.",
+          "The stated figure is 920 million dollars per month beginning in October.",
+          "The story connects space infrastructure, cloud services, and large-scale compute demand.",
+          "The claim is large enough that source verification becomes part of the signal."
+        ],
+        take: "Pulse keeps this as a high-curiosity signal, not a fact to trust blindly. The value is the possible convergence of space, cloud, and compute."
+      },
+      "2026-06-08-auto-0bfea9db": {
+        summary: [
+          "Elon Musk is framed as building something that could challenge the chip industry.",
+          "The visible extract suggests a shift from customer/user of compute toward infrastructure challenger.",
+          "The core angle is vertical integration pressure around AI infrastructure.",
+          "The story is still thin, but the narrative direction is clear enough to track."
+        ],
+        take: "Pulse keeps this as a frontier-narrative clue. It may matter if more links show Musk moving from customer to infrastructure challenger."
+      },
+      "2026-06-08-auto-efb494d0": {
+        summary: [
+          "Jensen Huang closed partnership discussions with SK Hynix, NAVER, LG, and Doosan Group.",
+          "The partnerships span memory, platforms, electronics, and industrial infrastructure.",
+          "Nvidia's AI position is being built through national and corporate ecosystem alliances.",
+          "AI infrastructure is becoming diplomacy across companies, supply chains, and countries."
+        ],
+        take: "Pulse keeps this because it shows AI power forming through partnerships across memory, platforms, electronics, and industry."
+      },
+      "2026-06-08-auto-6cde0977": {
+        summary: [
+          "Growth stocks are framed as a planning market, not a chase-price market.",
+          "Fibonacci support levels are used as preparation zones rather than prediction tools.",
+          "The practical message is to know where planning starts before volatility arrives.",
+          "Market behavior is shifting from momentum chasing toward pre-planned execution."
+        ],
+        take: "Pulse keeps this as tactical mood context. It tells Jay how traders are framing pullbacks, but it is not a deep signal by itself."
+      },
+      "2026-06-08-auto-cdfedb7a": {
+        summary: [
+          "Semiconductors are framed as a global economic race.",
+          "The top 25 chip companies are described as moving toward trillions in annual sales.",
+          "US dominance is emphasized: 14 of the 25 named companies are American.",
+          "The industry map shows geopolitical concentration as well as commercial growth."
+        ],
+        take: "Pulse keeps this because it reinforces the chip-war worldview: semiconductors are not only technology, they are industrial power."
+      }
+    };
+
+    function curatedRead(entry) {
+      return CURATED_PULSE_READS[entry.id] || null;
+    }
+
+    function feedSummary(entry) {
+      const curated = curatedRead(entry);
+      if (curated) return curated.summary;
+      return (entry.bullets || []).map(normalizePulseLanguage).filter(Boolean).slice(0, 5);
+    }
+
+    function pulseTake(entry) {
+      const curated = curatedRead(entry);
+      if (curated) return curated.take;
+      return "Pulse keeps this only as raw field context until the feed provides enough substance to change a narrative.";
+    }
+
+    function renderEntries() {
+      const entries = filteredEntries();
+      feedList.innerHTML = "";
+
+      if (!entries.length) {
+        feedList.innerHTML = '<div class="empty">No matching useful feeds.</div>';
+        return;
+      }
+
+      for (const entry of entries) {
+        const card = document.createElement("article");
+        card.className = "feed-card";
+        const bulletList = feedSummary(entry).map(item => `<li>${item}</li>`).join("");
+        const currentRelevance = relevanceFor(entry);
+        card.innerHTML = `
+          <div class="feed-head">
+            <div>
+              <div class="source"><strong>${entry.source}</strong><span>${relevanceLabel(currentRelevance)} relevance</span></div>
+              <div class="saved-at">${formatSavedAt(entry)}</div>
+              <h3><span class="topic-icon" aria-hidden="true">📡</span><span>${normalizePulseLanguage(entry.title)}</span></h3>
+            </div>
+          </div>
+          <strong>Feed summary</strong>
+          <ul class="bullets">${bulletList}</ul>
+          <div class="decision">
+            <strong><span class="thought-icon" aria-hidden="true">🧠</span><span>Pulse take</span></strong>
+            <p class="pulse-take">${pulseTake(entry)}</p>
+          </div>
+        `;
+        feedList.appendChild(card);
+      }
+    }
+
+    search.addEventListener("input", renderEntries);
+
+    const EMBEDDED_FEED_LOG = {
+  "title": "PulseFeeds",
+  "batchLabel": "PulseFeeds batch",
+  "batchAt": "2026-06-08",
+  "nextBatch": "7:00 PM",
+  "linksChecked": 2,
+  "garbageSkipped": 0,
+  "feeds": [
+    {
+      "id": "2026-06-05-1900-001",
+      "batch": "2026-06-05 19:00",
+      "source": "ลงทุนอะไรดี",
+      "title": "ประชุมผู้ถือหุ้น TSMC: ดีมานด์ AI, กำลังผลิต, High-NA EUV",
+      "bullets": [
+        "TSMC ระบุว่าดีมานด์ AI โตเร็วกว่าที่อุตสาหกรรมคาด",
+        "บริษัทยังเร่งขยายกำลังผลิตเพราะอุปสงค์ชิปขั้นสูงแข็งแรง",
+        "สั่งซื้อเครื่อง ASML High-NA EUV แล้ว แต่ยังไม่ใช้ mass production เพราะต้องรอความคุ้มค่าด้านต้นทุน",
+        "Advanced packaging และ CoPoS ยังต้องใช้เวลา 2-3 ปีถึงจะขยายเป็นกำลังผลิตเชิงพาณิชย์มากขึ้น"
+      ],
+      "relevance": "High",
+      "themes": [
+        "Semiconductor",
+        "AI infrastructure"
+      ],
+      "tickers": [
+        "TSM",
+        "ASML",
+        "NVDA",
+        "MU",
+        "SMH"
+      ],
+      "savedAt": "2026-06-05T12:00:00+07:00"
+    },
+    {
+      "id": "2026-06-05-1900-002",
+      "batch": "2026-06-05 19:00",
+      "source": "นักลงพุง",
+      "title": "เข้าถึงตลาดง่าย ไม่ได้แปลว่ามี edge",
+      "bullets": [
+        "รายย่อยเข้าถึงหุ้นสหรัฐ เช่น NVDA และ TSLA ได้ง่ายขึ้น",
+        "ข้อมูลที่มากเกินไปกลายเป็น noise และทำให้มั่นใจผิด",
+        "crowded trade จาก social media ไม่ใช่ alpha",
+        "edge จริงยังอยู่ที่ process, position sizing, independent thinking และ risk control"
+      ],
+      "relevance": "Medium",
+      "themes": [
+        "Process"
+      ],
+      "tickers": [
+        "NVDA",
+        "TSLA"
+      ],
+      "savedAt": "2026-06-05T12:00:00+07:00"
+    },
+    {
+      "id": "2026-06-05-1900-003",
+      "batch": "2026-06-05 19:00",
+      "source": "RunwithFund",
+      "title": "Momentum จาก Trump mention: Intel, Dell, Micron, Apple",
+      "bullets": [
+        "โพสต์ยกตัวอย่างหุ้นที่วิ่งหลัง Donald Trump พูดถึงหรือชื่นชม",
+        "มีชื่อ Intel, Dell, Micron และ Apple",
+        "เกี่ยวกับ sentiment/event flow มากกว่า thesis ระยะยาว",
+        "ต้องตรวจสอบตัวเลขจากแหล่งหลักก่อนใช้เป็นข้อมูลจริง"
+      ],
+      "relevance": "Medium",
+      "themes": [
+        "Macro",
+        "Semiconductor"
+      ],
+      "tickers": [
+        "INTC",
+        "DELL",
+        "MU"
+      ],
+      "savedAt": "2026-06-05T12:00:00+07:00"
+    },
+    {
+      "id": "2026-06-05-1900-004",
+      "batch": "2026-06-05 19:00",
+      "source": "ลงทุนแมน",
+      "title": "สรุปภาษีซื้อขายทองคำ",
+      "bullets": [
+        "เนื้อหาเกี่ยวกับภาษีจากการซื้อขายทองคำ",
+        "เป็นความรู้การเงินทั่วไป",
+        "ไม่เกี่ยวโดยตรงกับ US equity portfolio ใน PulseFeeds"
+      ],
+      "relevance": "Low",
+      "themes": [
+        "Macro"
+      ],
+      "tickers": [],
+      "savedAt": "2026-06-05T12:00:00+07:00"
+    },
+    {
+      "id": "2026-06-06-manual-001",
+      "batch": "2026-06-06 manual run",
+      "source": "หุ้นพอร์ทระเบิด",
+      "title": "ตลาดปิดสัปดาห์ด้วยแรงขายหนัก นำโดยหุ้นชิปและหุ้นเติบโต",
+      "bullets": [
+        "Nasdaq ร่วง 4.18% ขณะที่ Nvidia, Micron และ AMD ถูกขายหนัก",
+        "Broadcom งบดีกว่าคาด แต่ตลาดผิดหวังที่ไม่เพิ่มเป้ารายได้ชิป AI",
+        "ตัวเลขจ้างงานเดือนพฤษภาคมแข็งแกร่งกว่าคาด กดความหวังลดดอกเบี้ยและดันบอนด์ยีลด์ขึ้น",
+        "ผู้เขียนมองว่าเป็นการปรับฐานและหมุนเงินออกจากเทคที่ร้อนแรง พร้อมแนะนำทยอยซื้อหุ้นคุณภาพและรักษาเงินสด"
+      ],
+      "relevance": "High",
+      "themes": [
+        "Macro",
+        "Semiconductor",
+        "AI infrastructure",
+        "Risk management"
+      ],
+      "tickers": [
+        "NVDA",
+        "MU",
+        "AMD",
+        "AVGO",
+        "CRWD"
+      ],
+      "savedAt": "2026-06-06T04:58:46.000Z"
+    },
+    {
+      "id": "2026-06-06-manual-002",
+      "batch": "2026-06-06 manual run",
+      "source": "นักลงพุง",
+      "title": "Paradis Labs ซื้อหุ้น AI ช่วงตลาดย่อ",
+      "bullets": [
+        "ผู้เขียนระบุว่าไล่ทยอยซื้อหุ้น AI ระหว่างตลาดย่อตัว",
+        "หุ้นที่ระบุชัดคือ SNDK, AAOI และ NBIS",
+        "เหตุผลที่เปิดเผยใน OG metadata อ้างอิงปัจจัยพื้นฐาน แต่รายละเอียดโพสต์เต็มไม่สามารถดึงได้ทั้งหมด",
+        "นี่เป็นมุมมองและการลงมือของนักลงทุนรายอื่น ไม่ใช่หลักฐานยืนยัน thesis ของ Nixon"
+      ],
+      "relevance": "Medium",
+      "themes": [
+        "AI infrastructure",
+        "Tactical execution",
+        "Wave candidates"
+      ],
+      "tickers": [
+        "SNDK",
+        "AAOI",
+        "NBIS"
+      ],
+      "savedAt": "2026-06-06T04:34:17.000Z"
+    },
+    {
+      "id": "2026-06-06-auto-5939e201",
+      "batch": "2026-06-06 automatic inbox",
+      "source": "TNN Tech",
+      "title": "Sprout: หุ่นยนต์ฮิวแมนนอยด์ขนาดเล็กจาก Fauna Robotics",
+      "bullets": [
+        "Fauna Robotics เปิดตัว Sprout หุ่นยนต์ฮิวแมนนอยด์ขนาดเล็กที่สื่ออารมณ์ผ่านคิ้วเสาอากาศ",
+        "เป็นสัญญาณว่าหุ่นยนต์ฮิวแมนนอยด์กำลังขยายจากงานอุตสาหกรรมไปสู่ผลิตภัณฑ์ที่เป็นมิตรกับผู้ใช้"
+      ],
+      "relevance": "Medium",
+      "themes": [],
+      "tickers": [],
+      "sourceUrl": "https://www.facebook.com/share/p/1EiYEdEdcF/?mibextid=wwXIfr",
+      "canonicalUrl": "https://www.facebook.com/tnntechreports/posts/%E0%B9%80%E0%B8%9B%E0%B8%B4%E0%B8%94%E0%B8%95%E0%B8%B1%E0%B8%A7-sprout-%E0%B8%AB%E0%B8%B8%E0%B9%88%E0%B8%99%E0%B8%A2%E0%B8%99%E0%B8%95%E0%B9%8C%E0%B8%AE%E0%B8%B4%E0%B8%A7%E0%B9%81%E0%B8%A1%E0%B8%99%E0%B8%99%E0%B8%AD%E0%B8%A2%E0%B8%94%E0%B9%8C%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%88%E0%B8%B4%E0%B9%8B%E0%B8%A7%E0%B8%AA%E0%B8%B8%E0%B8%94%E0%B8%84%E0%B8%B4%E0%B8%A7%E0%B8%95%E0%B9%8C-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B9%81%E0%B8%AA%E0%B8%94%E0%B8%87%E0%B8%AD%E0%B8%B2%E0%B8%A3%E0%B8%A1%E0%B8%93%E0%B9%8C%E0%B8%9C%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%B4%E0%B9%89%E0%B8%A7%E0%B9%80%E0%B8%AA%E0%B8%B2%E0%B8%AD%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B9%84/1330314069225402/",
+      "originMessageId": 42,
+      "sourceFingerprint": "5939e2010892c0a0",
+      "savedAt": "2026-06-06T05:14:33.015Z"
+    },
+    {
+      "id": "2026-06-06-auto-7a1e2820",
+      "batch": "2026-06-06 automatic inbox",
+      "source": "ถามอีก กับอิก - EIG - Earn Invest Grow",
+      "title": "AI โตแรงและใช้น้ำมากขึ้น: โอกาสของอุตสาหกรรมน้ำ",
+      "bullets": [
+        "การขยายตัวของ AI และดาต้าเซ็นเตอร์เพิ่มความต้องการใช้น้ำควบคู่กับไฟฟ้า",
+        "ผู้เขียนมองว่าโครงสร้างพื้นฐานด้านน้ำอาจเป็นผู้ชนะทางอ้อมของยุค AI"
+      ],
+      "relevance": "High",
+      "themes": [
+        "AI infrastructure",
+        "Semiconductor"
+      ],
+      "tickers": [],
+      "sourceUrl": "https://www.facebook.com/share/p/1bugXZGFsS/?mibextid=wwXIfr",
+      "canonicalUrl": "https://www.facebook.com/Tam.eig/posts/-breakout-%E0%B8%AB%E0%B8%A5%E0%B8%AD%E0%B8%81%E0%B8%84%E0%B8%B7%E0%B8%AD%E0%B8%AD%E0%B8%B0%E0%B9%84%E0%B8%A3-ai-%E0%B9%82%E0%B8%95%E0%B9%81%E0%B8%A3%E0%B8%87-%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%81%E0%B8%B3%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%AB%E0%B8%B2%E0%B8%A2%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%97%E0%B8%B3%E0%B9%84%E0%B8%A1-%E0%B8%AD%E0%B8%B8%E0%B8%95%E0%B8%AA%E0%B8%B2%E0%B8%AB%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%99%E0%B9%89%E0%B8%B3-%E0%B8%AD%E0%B8%B2%E0%B8%88%E0%B9%80%E0%B8%9B%E0%B9%87%E0%B8%99%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%8A%E0%B8%99%E0%B8%B0/1538053674371220/",
+      "originMessageId": 50,
+      "sourceFingerprint": "7a1e2820c237bc85",
+      "savedAt": "2026-06-06T05:14:54.668Z"
+    },
+    {
+      "id": "2026-06-06-auto-fe87e71d",
+      "batch": "2026-06-06 automatic inbox",
+      "source": "หุ้นพอร์ทระเบิด",
+      "title": "Broadcom งบดีแต่หุ้นร่วง: ความคาดหวังสูงกว่าผลงาน",
+      "bullets": [
+        "Broadcom รายงานผลประกอบการแข็งแรง แต่ราคาหุ้นยังร่วงเพราะตลาดคาดหวังสูงมาก",
+        "เคสนี้สะท้อนว่าหุ้น AI อาจถูกขายได้แม้พื้นฐานดี หากผลลัพธ์ไม่เหนือความคาดหวังมากพอ"
+      ],
+      "relevance": "High",
+      "themes": [
+        "AI infrastructure"
+      ],
+      "tickers": [
+        "AVGO"
+      ],
+      "sourceUrl": "https://www.facebook.com/share/p/1GgVLZTerP/?mibextid=wwXIfr",
+      "canonicalUrl": "https://www.facebook.com/prberd/posts/-broadcom-%E0%B8%87%E0%B8%9A%E0%B8%94%E0%B8%B5%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%AB%E0%B8%B8%E0%B9%89%E0%B8%99%E0%B8%A3%E0%B9%88%E0%B8%A7%E0%B8%87%E0%B9%81%E0%B8%A3%E0%B8%87-%E0%B8%9A%E0%B8%97%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%AA%E0%B8%B3%E0%B8%84%E0%B8%B1%E0%B8%8D%E0%B8%82%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%B8%E0%B9%89%E0%B8%99-ai-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%94%E0%B8%B5%E0%B8%A1%E0%B8%B2%E0%B8%81-%E0%B8%AD%E0%B8%B2%E0%B8%88%E0%B8%A2%E0%B8%B1%E0%B8%87%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%9E%E0%B8%AD-%E0%B8%96%E0%B9%89%E0%B8%B2%E0%B8%95%E0%B8%A5%E0%B8%B2/1560144178800502/",
+      "originMessageId": 51,
+      "sourceFingerprint": "fe87e71d968cbf31",
+      "savedAt": "2026-06-06T05:14:55.549Z"
+    },
+    {
+      "id": "2026-06-08-auto-c53ee94c",
+      "batch": "2026-06-08 automatic inbox",
+      "source": "นักลงพุง",
+      "title": "เจาะลึกเรตติ้งหุ้น AI รอบปรับฐาน จาก Paradis Labs ตัวไหนรอด-ตัวไหนร่วง",
+      "bullets": [
+        "Strong Buy (ซื้ออย่างยิ่ง)",
+        "GOOGL: การระดมทุน 85,000 ล้านดอลลาร์ทำให้เกิดการ Dilution ก็จริง แต่พวกเขามี ROI..."
+      ],
+      "relevance": "High",
+      "themes": [
+        "AI infrastructure",
+        "Risk management"
+      ],
+      "tickers": [
+        "GOOGL",
+        "ROI"
+      ],
+      "sourceUrl": "https://www.facebook.com/share/p/17YjyBU1rC/?mibextid=wwXIfr",
+      "canonicalUrl": "https://www.facebook.com/naklongpoong/posts/%E0%B9%80%E0%B8%88%E0%B8%B2%E0%B8%B0%E0%B8%A5%E0%B8%B6%E0%B8%81%E0%B9%80%E0%B8%A3%E0%B8%95%E0%B8%95%E0%B8%B4%E0%B9%89%E0%B8%87%E0%B8%AB%E0%B8%B8%E0%B9%89%E0%B8%99-ai-%E0%B8%A3%E0%B8%AD%E0%B8%9A%E0%B8%9B%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%90%E0%B8%B2%E0%B8%99-%E0%B8%88%E0%B8%B2%E0%B8%81-paradis-labs-%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B9%84%E0%B8%AB%E0%B8%99%E0%B8%A3%E0%B8%AD%E0%B8%94-%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B9%84%E0%B8%AB%E0%B8%99%E0%B8%A3%E0%B9%88%E0%B8%A7%E0%B8%87-strong-bu/122200787714788275/",
+      "originMessageId": 106,
+      "sourceFingerprint": "c53ee94c64657d3a"
+    },
+    {
+      "id": "2026-06-08-auto-42298ae7",
+      "batch": "2026-06-08 automatic inbox",
+      "source": "ลงทุนกับ DIME: หุ้นสหรัฐ หุ้นไทย กองทุน ETF ทองคำ | ของจริง นะครับ | Facebook",
+      "title": "สิ่งที่ยืนยันได้จากเอกสาร:",
+      "bullets": [
+        "SpaceX ทำสัญญา Cloud Service Agreement กับ Google เมื่อ 5 มิ.ย.",
+        "Google จะจ่าย 920 ล้านดอลลาร์ต่อเดือน ตั้งแต่ ต.ค."
+      ],
+      "relevance": "Medium",
+      "themes": [
+        "Space"
+      ],
+      "tickers": [],
+      "sourceUrl": "https://www.facebook.com/share/p/1d5Rd99rCd/?mibextid=wwXIfr",
+      "canonicalUrl": "https://www.facebook.com/groups/taanmastertrader/posts/1663604368206931/?mibextid=wwXIfr",
+      "originMessageId": 107,
+      "sourceFingerprint": "42298ae7d81a8563"
+    },
+    {
+      "id": "2026-06-08-auto-0bfea9db",
+      "batch": "2026-06-08 automatic inbox",
+      "source": "investor’s EDGE",
+      "title": "“Elon Musk อาจกำลังสร้างสิ่งที่อันตรายที่สุดต่ออุตสาหกรรมชิปโลก”",
+      "bullets": [
+        "แต่ดูเหมือนว่า Elon Musk กำลังพยายามเปลี่ยนตัวเอง"
+      ],
+      "relevance": "High",
+      "themes": [
+        "Semiconductor",
+        "Space"
+      ],
+      "tickers": [
+        "TSLA"
+      ],
+      "sourceUrl": "https://www.facebook.com/share/p/1EGpwKxRrg/?mibextid=wwXIfr",
+      "canonicalUrl": "https://www.facebook.com/61578724965707/posts/-elon-musk-%E0%B8%AD%E0%B8%B2%E0%B8%88%E0%B8%81%E0%B8%B3%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B8%AA%E0%B8%B4%E0%B9%88%E0%B8%87%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AD%E0%B8%B1%E0%B8%99%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%A2%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AA%E0%B8%B8%E0%B8%94%E0%B8%95%E0%B9%88%E0%B8%AD%E0%B8%AD%E0%B8%B8%E0%B8%95%E0%B8%AA%E0%B8%B2%E0%B8%AB%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%8A%E0%B8%B4%E0%B8%9B%E0%B9%82%E0%B8%A5%E0%B8%81%E0%B8%AB%E0%B8%A5%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%99%E0%B8%84%E0%B8%B4%E0%B8%94%E0%B8%A7%E0%B9%88%E0%B8%B2tesla/122169050336957498/",
+      "originMessageId": 108,
+      "sourceFingerprint": "0bfea9db47bc0059"
+    },
+    {
+      "id": "2026-06-08-auto-efb494d0",
+      "batch": "2026-06-08 automatic inbox",
+      "source": "ลงทุนอะไรดี",
+      "title": "หลังจากไปปาตี้เบียร์และไก่ทอดแล้ว!",
+      "bullets": [
+        "Jensen Huang ก็ปิดดีลความร่วมมือกับบริษัทยักษ์เกาหลี SK Hynix , NAVER , LG , Doosan Group สรุปแต่ละความร่วมมือ👇",
+        "ประกาศความร่วมมือด้าน..."
+      ],
+      "relevance": "High",
+      "themes": [],
+      "tickers": [
+        "SK",
+        "NAVER",
+        "LG",
+        "NVDA"
+      ],
+      "sourceUrl": "https://www.facebook.com/share/p/17emkS8FsN/?mibextid=wwXIfr",
+      "canonicalUrl": "https://www.facebook.com/investmentguidance.th/posts/%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B8%88%E0%B8%B2%E0%B8%81%E0%B9%84%E0%B8%9B%E0%B8%9B%E0%B8%B2%E0%B8%95%E0%B8%B5%E0%B9%89%E0%B9%80%E0%B8%9A%E0%B8%B5%E0%B8%A2%E0%B8%A3%E0%B9%8C%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B9%84%E0%B8%81%E0%B9%88%E0%B8%97%E0%B8%AD%E0%B8%94%E0%B9%81%E0%B8%A5%E0%B9%89%E0%B8%A7-jensen-huang-%E0%B8%81%E0%B9%87%E0%B8%9B%E0%B8%B4%E0%B8%94%E0%B8%94%E0%B8%B5%E0%B8%A5%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%A3%E0%B9%88%E0%B8%A7%E0%B8%A1%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B8%9A%E0%B8%A3%E0%B8%B4%E0%B8%A9%E0%B8%B1%E0%B8%97%E0%B8%A2%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B9%8C/122254014470142004/",
+      "originMessageId": 111,
+      "sourceFingerprint": "efb494d0d7d6dff1"
+    },
+    {
+      "id": "2026-06-08-auto-6cde0977",
+      "batch": "2026-06-08 automatic inbox",
+      "source": "หุ้นพอร์ทระเบิด",
+      "title": "แนวรับ Fibo หุ้นเติบโต: โพยนี้ไม่ได้มีไว้ให้ “เดาราคา” แต่มีไว้ให้รู้ว่าควรเริ่มวางแผนตรงไหน",
+      "bullets": [
+        "หุ้นเติบโตช่วงนี้ไม่ใช่ตลาดของคนไล่ราคา แต่เป็นตลาดของคนที่มีแผนล่วงหน้า..."
+      ],
+      "relevance": "Medium",
+      "themes": [],
+      "tickers": [],
+      "sourceUrl": "https://www.facebook.com/share/p/18ewiUYWqu/?mibextid=wwXIfr",
+      "canonicalUrl": "https://www.facebook.com/prberd/posts/%E0%B9%81%E0%B8%99%E0%B8%A7%E0%B8%A3%E0%B8%B1%E0%B8%9A-fibo-%E0%B8%AB%E0%B8%B8%E0%B9%89%E0%B8%99%E0%B9%80%E0%B8%95%E0%B8%B4%E0%B8%9A%E0%B9%82%E0%B8%95-%E0%B9%82%E0%B8%9E%E0%B8%A2%E0%B8%99%E0%B8%B5%E0%B9%89%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B9%84%E0%B8%94%E0%B9%89%E0%B8%A1%E0%B8%B5%E0%B9%84%E0%B8%A7%E0%B9%89%E0%B9%83%E0%B8%AB%E0%B9%89-%E0%B9%80%E0%B8%94%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2-%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B9%84%E0%B8%A7%E0%B9%89%E0%B9%83%E0%B8%AB%E0%B9%89%E0%B8%A3%E0%B8%B9%E0%B9%89%E0%B8%A7%E0%B9%88%E0%B8%B2%E0%B8%84%E0%B8%A7%E0%B8%A3%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B8%A7%E0%B8%B2%E0%B8%87/1563978738417046/",
+      "originMessageId": 112,
+      "sourceFingerprint": "6cde0977f79dd7bc"
+    },
+    {
+      "id": "2026-06-08-auto-cdfedb7a",
+      "batch": "2026-06-08 automatic inbox",
+      "source": "LinkedIn",
+      "title": "semiconductors #ai #techinvesting #chipwar #supplychain #innovation | Elias Aaraj.",
+      "bullets": [
+        "The semiconductor race is reshaping the global economy.",
+        "The top 25 chip companies combined represent an industry sprinting toward trillions in annual sales this year.",
+        "dominance is real — 14 of 25 companies are American."
+      ],
+      "relevance": "High",
+      "themes": [
+        "AI infrastructure",
+        "Semiconductor"
+      ],
+      "tickers": [
+        "TSMC",
+        "SK",
+        "TSM"
+      ],
+      "sourceUrl": "https://www.linkedin.com/posts/elias-aaraj-bb63165b_semiconductors-ai-techinvesting-share-7465670649777356800-Ri3n/?utm_source=social_share_send&utm_medium=ios_app&rcm=ACoAABLmJAkBpNIRBQlRM0I3RXwcCu1-c2bYWEA&utm_campaign=share_via",
+      "canonicalUrl": "https://www.linkedin.com/posts/elias-aaraj-bb63165b_semiconductors-ai-techinvesting-activity-7465670650964160512-I7BB",
+      "originMessageId": 109,
+      "sourceFingerprint": "cdfedb7a24250dab"
+    }
+  ]
+};
+
+    function loadFeedLog() {
+      const log = EMBEDDED_FEED_LOG;
+      if (Array.isArray(log.feeds)) feedEntries = log.feeds;
+      if (Number.isFinite(log.garbageSkipped)) skippedGarbageCount = log.garbageSkipped;
+      window.linksCheckedCount = Number.isFinite(log.linksChecked) ? log.linksChecked : feedEntries.length;
+      if (log.batchAt) updatedAt.textContent = `Last updated: ${log.batchAt}`;
+      renderStats();
+      renderEntries();
+    }
+
+    loadFeedLog();
+  </script>
+</body>
+</html>
