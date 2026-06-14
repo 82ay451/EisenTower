@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNPS — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --snps-purple:     #6B1FAE;
+      --snps-dark:       #1A0A2E;
+      --snps-violet:     #9C27B0;
+      --snps-blue:       #3949AB;
+      --snps-purple-soft: #f0e6ff;
+      --snps-blue-soft:   #e8ecff;
+      --accent:      var(--snps-purple);
+      --accent-soft: var(--snps-purple-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--snps-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--snps-purple) 35%, var(--snps-violet) 35% 65%, var(--snps-blue) 65% 85%, var(--snps-dark) 85%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-snps { color: #CE93D8; }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--snps-dark); border-bottom: 1px solid #2a0a4a; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(107,31,174,0.3); color: #CE93D8; }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--snps-purple); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--snps-purple-soft); color: var(--snps-purple); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.purple { border-left: 3px solid var(--snps-purple); }
+    .stat-card.violet { border-left: 3px solid var(--snps-violet); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.blue   { border-left: 3px solid var(--snps-blue); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-eda  { background: var(--snps-purple); }
+    .bar-ip   { background: var(--snps-blue); }
+    .bar-ans  { background: #5c6bc0; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.purple { background: var(--snps-purple-soft); border-color: var(--snps-purple); }
+    .callout.blue   { background: var(--snps-blue-soft);   border-color: var(--snps-blue); }
+    .callout.green  { background: var(--green-soft);       border-color: var(--green); }
+    .callout.dark   { background: #ece8f5;                 border-color: var(--snps-dark); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--snps-purple), var(--snps-blue)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--snps-purple); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--snps-purple); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--snps-purple-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #155c38; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--snps-purple-soft); color: var(--snps-purple); }
+    .comp-pos.contender  { background: var(--yellow-soft); color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--snps-purple); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.purple { background: var(--snps-purple-soft); border-color: var(--snps-purple); color: #45097a; }
+    .comp-verdict.green  { background: var(--green-soft);       border-color: var(--green);       color: #155c38; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--snps-dark) 0%, #2d0a5a 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--snps-purple-soft); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: var(--snps-purple); margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .fit-box { background: var(--green-soft); border: 1px solid #a8d8bc; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #155c38; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--snps-purple); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(107,31,174,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--snps-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .snps-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .snps-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-snps">SNPS</span> — Synopsys, Inc.</h1>
+    <div class="doc-subtitle">Understanding Synopsys as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NASDAQ: SNPS</span>
+      <span>🏛 Founded 1986 · Sunnyvale, CA</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Synopsys คือ <strong>ผู้นำด้าน Electronic Design Automation (EDA)</strong> — software ที่ engineer ใช้เพื่อ <em>ออกแบบ</em> chip ก่อนที่จะส่งไปให้ TSMC ผลิต ถ้า TSMC คือ "โรงพิมพ์" Synopsys คือ "Adobe Photoshop ของ chip design" — ออกแบบบนนี้ก่อน แล้วถึงพิมพ์ได้ ปัจจุบัน Synopsys ยังเพิ่งซื้อ Ansys (engineering simulation software) มาเป็น $35B ทำให้ขยายจาก chip design มาสู่ physical simulation ด้วย</p>
+      <p>FY2025 (fiscal year ending October 2025) Synopsys รายได้ <strong>$7.054B (+15% YoY)</strong> backlog record $11.4B GAAP Net Income $1.336B — ลดลง YoY เพราะ Ansys acquisition costs แต่ underlying business แข็งแกร่ง</p>
+      <div class="stat-grid">
+        <div class="stat-card purple">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$7.05B</div>
+          <div class="stat-sub">+15% YoY (incl. Ansys ~6 mo)</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">GAAP Net Income</div>
+          <div class="stat-value">$1.34B</div>
+          <div class="stat-sub">$8.07 EPS diluted · FY2025</div>
+        </div>
+        <div class="stat-card violet">
+          <div class="stat-label">Backlog</div>
+          <div class="stat-value">$11.4B</div>
+          <div class="stat-sub">Record — forward revenue visibility</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ansys Contribution</div>
+          <div class="stat-value">$756M</div>
+          <div class="stat-sub">FY2025 partial year (post-April 2025)</div>
+        </div>
+      </div>
+      <p>ใน 1 ประโยค: <strong>Synopsys คือ company ที่ทำ "tools ที่ใช้ออกแบบ chip และ simulate engineering" — ขาดไม่ได้ในทุก chip design flow ของทุกบริษัทใน semiconductor industry</strong></p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1986</div>
+          <div class="tl-text"><strong>Synopsys ก่อตั้งโดย Aart de Geus</strong> ใน North Carolina จาก Nolan Bushnell's General Electric team — ผลิตภัณฑ์แรก: Design Compiler (logic synthesis tool) ซึ่ง automate การแปลง HDL code เป็น gate-level netlist ปฏิวัติกระบวนการ chip design ทั้งหมด ก่อนหน้านี้ engineer ต้องวาด gates ด้วยมือ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1992</div>
+          <div class="tl-text"><strong>IPO บน NASDAQ:</strong> Synopsys เข้าตลาดหุ้นด้วยผลิตภัณฑ์ EDA ที่ยืนยันตัวเองในตลาด ช่วง 1990s EDA กลายเป็น must-have สำหรับทุก chip design team เพราะ complexity เพิ่มขึ้นตาม Moore's Law</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2000s</div>
+          <div class="tl-text"><strong>Serial acquisitions สร้าง EDA platform ที่สมบูรณ์:</strong> Synopsys ซื้อ Avant! (placement and routing), Arcadia Design Systems, Sequence Design — แต่ละ acquisition เพิ่ม tool ใหม่ใน chip design flow ทำให้ลูกค้าต้องพึ่ง Synopsys มากขึ้นทุกปี</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2010s</div>
+          <div class="tl-text"><strong>Verification explosion จาก IC complexity:</strong> ยิ่ง chip ซับซ้อนขึ้น ยิ่งต้องการ verification tools มากขึ้น VCS (Synopsys simulation tool) กลายเป็น industry standard ZeBu (emulation) เติบโต Synopsys กลายเป็น full-stack EDA vendor ตั้งแต่ RTL จนถึง signoff</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2020</div>
+          <div class="tl-text"><strong>Synopsys ซื้อ Chip.works และเพิ่ม Silicon IP:</strong> Design IP กลายเป็น business ใหญ่ — ขาย pre-designed blocks (PCIe, USB, DDR controllers) ที่ลูกค้า integrate เข้า chip ตัวเองแทนที่จะ design ใหม่ ทำให้ recurring revenue เพิ่ม</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022</div>
+          <div class="tl-text"><strong>ประกาศซื้อ Ansys — $35B deal:</strong> Ansys คือ leader ใน engineering simulation software (finite element analysis, computational fluid dynamics, electromagnetic simulation) ใช้ใน aerospace, automotive, semiconductors deal นี้ขยาย Synopsys จาก "chip EDA" เป็น "engineering simulation platform"</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024 Jan</div>
+          <div class="tl-text"><strong>Sassine Ghazi กลายเป็น CEO:</strong> อดีต COO ที่อยู่ Synopsys มา 25 ปี ขึ้นเป็น CEO แทน Aart de Geus ผู้ก่อตั้ง de Geus อยู่ในฐานะ Executive Chairman</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025 Apr</div>
+          <div class="tl-text"><strong>Ansys acquisition close — $35B:</strong> หลังจาก regulatory review นาน 2 ปี deal ปิดสำเร็จ เมษายน 2025 Synopsys กลายเป็น "electronic design and simulation platform" ที่ครอบคลุมทั้ง chip design (EDA) และ physical simulation (Ansys) FY2025 revenue $7.054B รวม Ansys ~6 เดือน</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Synopsys โต consistently — EDA เป็น non-cyclical business เพราะ chip design ไม่หยุด แม้ chip market จะ down ลูกค้าก็ยังต้องออกแบบ chip สำหรับ cycle ถัดไป</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี (Oct FY)</th>
+            <th>Revenue</th>
+            <th>GAAP Net Income</th>
+            <th>EPS (diluted)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>FY2021</td><td>$4.20B</td><td>$~700M</td><td>~$4.59</td></tr>
+          <tr><td>FY2022</td><td>$5.08B</td><td>$838M</td><td>~$5.46</td></tr>
+          <tr><td>FY2023</td><td>$5.84B</td><td>$1.23B</td><td>~$7.88</td></tr>
+          <tr><td>FY2024</td><td>$6.13B</td><td>$1.44B</td><td>$9.25</td></tr>
+          <tr class="highlight"><td>FY2025 ✦</td><td>$7.05B</td><td>$1.34B</td><td>$8.07</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: Synopsys FY2025 Earnings Release, Form 8-K (November 2025) · FY2025 net income down YoY due to Ansys acquisition costs (amortization, deal expenses) · Historical figures approximate</p>
+      <div class="stat-grid">
+        <div class="stat-card purple">
+          <div class="stat-label">Revenue 4-yr CAGR</div>
+          <div class="stat-value">~14%</div>
+          <div class="stat-sub">FY2021 → FY2025</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Backlog FY2025</div>
+          <div class="stat-value">$11.4B</div>
+          <div class="stat-sub">Record — 1.6x annual revenue</div>
+        </div>
+        <div class="stat-card violet">
+          <div class="stat-label">Organic EDA growth</div>
+          <div class="stat-value">~10%</div>
+          <div class="stat-sub">Core EDA biz (excl. Ansys)</div>
+        </div>
+      </div>
+      <p>FY2025 GAAP net income ลดลง YoY เนื่องจาก Ansys acquisition charges (goodwill amortization, deal costs) — <strong>ไม่ใช่สัญญาณว่า core business อ่อนแอ</strong> underlying business ยังโตดี และ management คาด FY2026 จะ set new revenue record</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Sassine Ghazi</div>
+          <div class="boss-title">President &amp; CEO, Synopsys, Inc.</div>
+          <div>
+            <div class="boss-fact"><span class="label">เชื้อชาติ</span><span>Lebanese-American</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>BS EE, Georgia Institute of Technology · MS ECE, University of Tennessee · BS Business, Lebanese American University</span></div>
+            <div class="boss-fact"><span class="label">เข้า Synopsys</span><span>1998</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>January 1, 2024</span></div>
+            <div class="boss-fact"><span class="label">ก่อน CEO</span><span>COO / President Synopsys</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Sassine Ghazi เป็น <strong>insider ที่ทำงาน Synopsys มา 25+ ปี ก่อนขึ้นเป็น CEO</strong> — ผ่านทุก role ตั้งแต่ chip design application engineering, customer support, sales, business management จนถึง COO Ghazi เป็นคนที่ drive Synopsys สู่ record revenue growth ในช่วง 2020-2023 ก่อนจะเป็น CEO</p>
+          <p style="margin-top:12px">ความท้าทายที่ใหญ่ที่สุดของ Ghazi ตอนนี้คือ <strong>integrate Ansys ($35B acquisition) อย่างสำเร็จ</strong> — ทั้งด้าน product (ทำให้ chip simulation + physical simulation ทำงานร่วมกัน), organization (ควบรวมทีม 7,000+ คน), และ financial (integration costs ส่งผล GAAP P&L ระยะสั้น) ถ้า Ansys integration succeed รายได้ Synopsys จะ re-rate ขึ้น</p>
+        </div>
+      </div>
+      <div class="callout dark">
+        <p><strong>Aart de Geus — Founder &amp; Executive Chairman:</strong> ผู้ก่อตั้ง Synopsys ในปี 1986 CEO มานาน 37 ปี ก่อนจะส่งมอบให้ Ghazi ปี 2024 de Geus เป็น visionary ที่เห็นว่า logic synthesis automation จะ change chip design ตั้งแต่ก่อนใครจะเชื่อ ปัจจุบันเป็น Executive Chairman ยังมีส่วนใน strategy</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Synopsys ทำ software ที่ chip engineer ใช้ทุกวัน</strong> — ตั้งแต่เขียน HDL code, สร้าง circuit, simulate ว่า chip ทำงานถูกต้องไหม, verify ว่า timing OK, จน signoff ก่อนส่ง design ไปที่ foundry</p>
+      <div class="callout purple">
+        <p><strong>EDA Tools — Design Automation Core:</strong> Fusion Compiler (place &amp; route), Design Compiler (logic synthesis), VCS (functional verification simulator), PrimeTime (static timing analysis), IC Validator (DRC/LVS) — เครื่องมือเหล่านี้เป็น "daily driver" ของ engineer ทุกคนที่ออกแบบ chip ตั้งแต่ ARM, Apple, NVIDIA, Qualcomm ไปจนถึง startup chip design ทุกราย</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>Design IP — Pre-built Blocks:</strong> Synopsys ขาย "building blocks" สำเร็จรูปที่ลูกค้าสามารถ plug เข้า design ตัวเองได้ทันที เช่น PCIe 6.0 controller, HBM3 interface, USB 4.0, ARC processors สิ่งนี้ประหยัด time-to-market สำหรับลูกค้าอย่างมาก แทนที่จะ design interface ใหม่ทุกครั้ง ซื้อ IP จาก Synopsys ใช้ได้เลย</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Ansys — Engineering Simulation (ใหม่ปี 2025):</strong> Ansys ทำ simulation software สำหรับ structural analysis (ชิ้นส่วนรถจะแตกไหมถ้าชน?), fluid dynamics (อากาศไหลผ่าน wing อย่างไร?), electromagnetic (circuit ส่ง interference ไหม?) — ใช้ใน aerospace (Boeing), automotive (Tesla), semiconductor (Intel, TSMC) การรวม Ansys เข้า Synopsys ทำให้ simulate ทั้ง "chip electronic behavior" และ "physical product behavior" ในที่เดียว</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Subscription software</strong> — EDA และ IP ส่วนใหญ่ขายเป็น time-based license (3-5 ปี) หรือ subscription annual ทำให้ revenue predictable และ renewal rate สูงมาก (engineer ไม่สามารถ switch EDA tools ง่ายๆ เพราะต้อง retrain ทีมทั้งหมด)</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $7.054B (approximate segment breakdown)</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">⚙️ Design Automation (EDA)</div>
+            <div class="rev-numbers"><strong>~$4.5B</strong> · ~64%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-eda" style="width:64%"></div></div>
+          <div class="rev-note">Core EDA tools: Fusion Compiler, VCS, PrimeTime, IC Validator — subscription + time-based license สูงสุด renewal rate</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔌 Design IP</div>
+            <div class="rev-numbers"><strong>~$1.8B</strong> · ~25%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-ip" style="width:25%"></div></div>
+          <div class="rev-note">Pre-built IP blocks (PCIe, USB, DDR interfaces, ARC processors) ขายตาม usage หรือ license fee growing segment เพราะ chip complexity เพิ่ม</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔬 Ansys (Simulation)</div>
+            <div class="rev-numbers"><strong>$757M</strong> · ~11%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-ans" style="width:11%"></div></div>
+          <div class="rev-note">6 เดือนหลัง close (Apr-Oct 2025) — full year contribution ~$1.5-1.8B ในปี FY2026</div>
+        </div>
+      </div>
+      <p>Key: <strong>EDA tools มี stickiness สูงมาก</strong> — เมื่อ design team train บน Synopsys tools, switch ไป Cadence หรืออื่นๆ ต้องใช้เวลา 6-18 เดือน retrain ทั้งทีม ทำใน middle of project แทบเป็นไปไม่ได้ ทำให้ renewal rate ของ Synopsys อยู่ที่ 90%+ สม่ำเสมอ</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="callout purple">
+        <p><strong>Technology Lock-in at the Deepest Level:</strong> Chip design tool ไม่ใช่แค่ software — engineer เรียนรู้วิธีใช้ Synopsys VCS หรือ Design Compiler หลายปี และทักษะนั้น portable ไปที่อื่นได้ยาก ทีม design ที่ใช้ Synopsys มา 10 ปี มี library of scripts, methodologies, ที่ทำงานบน Synopsys ทั้งหมด การ switch คือ throw it all away</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>Complexity Flywheel — ยิ่ง chip ซับซ้อน ยิ่งต้องการ tools มากขึ้น:</strong> Moore's Law ทำให้ chip มี transistors มากขึ้นทุกปี → complexity verification ยิ่งสูง → ต้องการ EDA tools ขั้นสูงขึ้น → Synopsys ขายได้เพิ่ม AI chip design (เช่น NVIDIA Blackwell มี 208B transistors) ต้องการ Synopsys verification tools เป็นระดับ months ต่อ design cycle</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Ansys Cross-sell Opportunity — "Design-to-Simulate" Platform:</strong> หลัง Ansys integration Synopsys สามารถ offer workflow ที่ chip engineer กับ product engineer ใช้ร่วมกันได้ต่อเนื่อง simulate chip performance ใน silicon context และ simulate ผลกระทบในระดับ product (thermal, mechanical) ใน platform เดียว — นี่คือ cross-sell TAM ที่ Synopsys และ Ansys แยกกันไม่สามารถ offer ได้</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card purple">
+          <div class="stat-label">Backlog FY2025</div>
+          <div class="stat-value">$11.4B</div>
+          <div class="stat-sub">Record — visibility สูงมาก</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Free Cash Flow (est.)</div>
+          <div class="stat-value">~$2B+</div>
+          <div class="stat-sub">Organic FCF แข็งแกร่ง</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Ansys integration สำเร็จ — revenue record คาดในปี FY2026</h4>
+        <p>Ansys deal ปิดเมษายน 2025 management คาด FY2026 จะ set revenue record ใหม่ด้วย full-year Ansys contribution (~$1.5-1.8B เพิ่มจาก $757M ใน FY2025) integration opportunity ใหญ่มาก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>AI chip design boom ทำให้ EDA demand พุ่ง</h4>
+        <p>NVIDIA, AMD, Google, Microsoft, Meta ล้วนลงทุน custom AI chip design มากขึ้น — ทุก chip ที่ออกแบบต้องผ่าน Synopsys EDA tools AI chip มี complexity สูงกว่า CPU/GPU ทั่วไปมาก ทำให้ Synopsys ขาย simulation, verification tools ได้มากขึ้น</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Record backlog $11.4B — 1.6x annual revenue</h4>
+        <p>Backlog $11.4B คือ contracted revenue ที่ยังไม่ recognize ด้วย subscription business model ทำให้ visibility สูงมาก — management สามารถ forecast revenue ได้ล่วงหน้า 12-18 เดือน ลด uncertainty</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Ansys integration execution risk ระยะสั้น</h4>
+        <p>$35B acquisition ต้องการ careful integration ทั้ง product (ต้อง develop "chip-to-system simulation" workflows ใหม่) และ organizational (ควบรวม culture สองบริษัท) ถ้า integration ล่าช้าหรือ lose key Ansys talent จะกระทบ cross-sell thesis</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>AI-assisted EDA — อาจ disrupt หรือ accelerate?</h4>
+        <p>EDA vendors รวมถึง Synopsys กำลัง introduce AI ใน design flow (Synopsys.ai) ซึ่งอาจ reduce engineering hours แต่ increase tool dependency ต้องดูว่า AI-assisted EDA จะ expand market หรือ reduce per-project EDA spend</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">⚙️</div>
+          <div>
+            <div class="comp-segment">EDA Software</div>
+            <div class="comp-pos dominant">Dominant — #1 or #2 ใน every segment</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Synopsys — EDA leader</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:48%;background:var(--snps-purple)"></div></div>
+            <div class="comp-detail">~48% EDA market share (estimated) — leader ใน synthesis, simulation/verification, signoff Fusion Compiler และ VCS เป็น industry standard</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Cadence Design Systems (CDNS)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:40%;background:#e87722"></div></div>
+            <div class="comp-detail">~40% EDA market share — leader ใน place &amp; route (Innovus), PCB design Synopsys/Cadence duopoly ควบ 85%+ ของ EDA market</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Siemens EDA (formerly Mentor)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:10%;background:#009999"></div></div>
+            <div class="comp-detail">~10-12% — ส่วนใหญ่ PCB design, IC packaging simulation, automotive EDA ไม่ใช่ leading-edge IC focus</div>
+          </div>
+        </div>
+        <div class="comp-verdict purple">EDA เป็น cozy duopoly ระหว่าง Synopsys และ Cadence — ทั้งคู่โต 10-15%/year ด้วยกัน ไม่มีใคร seriously disrupt ทั้งสอง</div>
+      </div>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🔬</div>
+          <div>
+            <div class="comp-segment">Engineering Simulation (Ansys business)</div>
+            <div class="comp-pos dominant">Dominant — Ansys เป็น clear leader</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Synopsys/Ansys — simulation platform</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:40%;background:var(--snps-purple)"></div></div>
+            <div class="comp-detail">Ansys เป็น leader ใน multiphysics simulation — structural, fluid, electromagnetic โตช้ากว่า EDA (high single digit) แต่ stickier และ expands TAM ของ Synopsys</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Dassault Systèmes (SIMULIA)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:#005386"></div></div>
+            <div class="comp-detail">French company — simulation + PLM (Product Lifecycle Management) ครบ แต่ chip-focused simulation ไม่ใช่ strength หลัก</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Siemens Simcenter</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:#009999"></div></div>
+            <div class="comp-detail">NX simulation ใน Siemens industry ทำงานร่วมกับ PLM แต่ fragmented กว่า Ansys ในหลาย physics domains</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">Ansys เป็น leader ที่ชัดเจนใน engineering simulation — Synopsys ได้ชิ้นนี้มาด้วยราคาสูง ($35B) แต่ถ้า chip-to-system simulation play ทำงานได้ มันคือ game-changer</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding. Own durable businesses inside major global money-flow layers. Patient. Accepts volatility. Focuses on business quality. Target: ~15% annualized return over multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Synopsys เป็น Core ที่ชัดเจน — <strong>mission-critical software ที่ทุกคนที่ออกแบบ chip ต้องใช้, switching cost สูงมาก, backlog $11.4B ที่ visible, และ 90%+ renewal rate</strong> Ansys acquisition ขยาย TAM อย่างมีนัยสำคัญและสร้าง "design-to-simulation" platform ที่ไม่มีใครทำได้</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🔒</div>
+              <div class="trait-name">Switching Cost สูงสุด</div>
+              <div class="trait-desc">Engineer retrain บน EDA tools ใหม่ = 6-18 เดือน ทำใน mid-project ไม่ได้ 90%+ renewal rate ทุกปี</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">📈</div>
+              <div class="trait-name">Complexity Compounding</div>
+              <div class="trait-desc">ยิ่ง chip ซับซ้อน ยิ่งต้องการ EDA tools มากขึ้น → Synopsys ขายได้เพิ่มโดยอัตโนมัติ Moore's Law = EDA tailwind</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">Predictable Subscription Revenue</div>
+              <div class="trait-desc">Backlog $11.4B = visibility 1.6x annual revenue ล่วงหน้า ไม่ cyclical ตาม semiconductor market</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🚀</div>
+              <div class="trait-name">Ansys Expands TAM</div>
+              <div class="trait-desc">Ansys เพิ่ม $1.5B+ revenue/yr และ cross-sell "design-to-simulate" workflow ที่เป็น new growth vector</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>SNPS ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่ Wave — mature dominant position ไม่ใช่ re-rating play</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB — subscription business ไม่ใช่ tactical rotation</span>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: SNPS → Core</h4>
+            <p>Synopsys เป็น Core ที่มี moat สูงมาก — EDA duopoly กับ Cadence ทำให้ market power แน่น, switching cost ทำให้ retention rate สูง, Moore's Law complexity tailwind, และ Ansys acquisition เพิ่ม TAM อย่างมีนัย Near-term watch: Ansys integration execution และ GAAP EPS ที่กด YoY จาก acquisition costs แต่ underlying business แข็งแกร่งและ FY2026 คาด revenue record ใหม่</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — SNPS / Synopsys, Inc. · Source: Synopsys FY2025 Earnings Release, Form 8-K (November 2025)</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="snps-dot">
+      <span style="background:var(--snps-dark)"></span>
+      <span style="background:var(--snps-purple)"></span>
+      <span style="background:var(--snps-violet)"></span>
+      <span style="background:var(--snps-blue)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

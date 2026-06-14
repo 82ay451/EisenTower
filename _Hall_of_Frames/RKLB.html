@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RKLB — Company File</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --border: #e0e0e0;
+      --text-primary: #111111;
+      --text-secondary: #555555;
+      --text-muted: #999999;
+      --tag-bg: #f0f0f0;
+      --rl-red:   #E12726;
+      --rl-black: #111111;
+      --rl-dark:  #1a1a1a;
+      --rl-red-soft:  #fdeaea;
+      --rl-dark-soft: #e8e8e8;
+      --rl-gray:  #4a4a4a;
+      --accent:      var(--rl-red);
+      --accent-soft: var(--rl-red-soft);
+      --green:       #2e7d32;
+      --green-soft:  #e8f5e9;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    .doc-header {
+      background: var(--rl-dark);
+      border-bottom: 4px solid transparent;
+      border-image: linear-gradient(90deg,
+        var(--rl-red) 50%, #888 50% 75%, #555 75%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #aaa; background: rgba(255,255,255,0.1);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-rklb { color: var(--rl-red); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #ccc; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #888; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc {
+      background: var(--rl-dark);
+      border-bottom: 1px solid #333;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%; font-size: 13px; font-weight: 600;
+      color: #888; text-decoration: none; transition: all 0.15s; margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: rgba(225,39,38,0.2); color: var(--rl-red); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; user-select: none; padding: 12px 0;
+      border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--rl-red); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--rl-red-soft); color: var(--rl-red); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.red    { border-left: 3px solid var(--rl-red); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .stat-card.dark   { border-left: 3px solid var(--rl-black); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-space  { background: var(--rl-red); }
+    .bar-launch { background: var(--rl-gray); }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.red    { background: var(--rl-red-soft);  border-color: var(--rl-red); }
+    .callout.dark   { background: var(--rl-dark-soft); border-color: var(--rl-black); }
+    .callout.green  { background: var(--green-soft);   border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);  border-color: var(--yellow); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--rl-red), var(--rl-gray)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--rl-red); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rl-red); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--rl-red-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);   color: #1b5e20; }
+    .tag-watch { background: var(--yellow-soft);  color: #8a6000; }
+    .tag-risk  { background: var(--rl-red-soft);  color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--rl-red-soft); color: var(--rl-red); }
+    .comp-pos.contender  { background: var(--yellow-soft); color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--rl-red); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.red   { background: var(--rl-red-soft);  border-color: var(--rl-red);  color: #8b0000; }
+    .comp-verdict.green { background: var(--green-soft);   border-color: var(--green);   color: #1b5e20; }
+    .comp-verdict.dark  { background: var(--rl-dark-soft); border-color: var(--rl-black);color: #222; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: #f0eeff; border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #5c2d91; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--rl-red-soft); color: var(--rl-red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .fit-box { background: #f0eeff; border: 1px solid #c9b8f0; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #5c2d91; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--rl-red); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(225,39,38,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: #b31e1e; }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .rl-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .rl-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-rklb">RKLB</span> — Rocket Lab USA, Inc.</h1>
+    <div class="doc-subtitle">Understanding Rocket Lab as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NASDAQ: RKLB</span>
+      <span>🏛 Founded 2006 · NZ &amp; USA</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Rocket Lab คือบริษัท space ที่ทำสิ่งที่คนส่วนใหญ่คิดว่าต้องเป็น SpaceX — แต่เริ่มจากมุมที่ต่างออกไปโดยสิ้นเชิง <strong>Rocket Lab ไม่ใช่แค่บริษัทจรวด</strong> มันคือ end-to-end space company ที่ design, build, และ operate ทั้งจรวด, ดาวเทียม, และ spacecraft สำหรับรัฐบาลและลูกค้าเชิงพาณิชย์ทั่วโลก</p>
+      <p>สำนักงานใหญ่ที่ Long Beach, California (บริษัทจดทะเบียนใน USA แต่ก่อตั้งในนิวซีแลนด์) Rocket Lab ปี 2025 รายได้ <strong>$602M</strong> โตขึ้น 38% YoY ยังขาดทุนอยู่แต่ backlog $1.85B บอกว่า path ไปถึง profitability กำลังชัดขึ้นเรื่อยๆ</p>
+      <div class="stat-grid">
+        <div class="stat-card red">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$602M</div>
+          <div class="stat-sub">+38% YoY · record</div>
+        </div>
+        <div class="stat-card dark">
+          <div class="stat-label">Net Loss FY2025</div>
+          <div class="stat-value">-$198M</div>
+          <div class="stat-sub">GAAP · improving YoY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Backlog</div>
+          <div class="stat-value">$1.85B</div>
+          <div class="stat-sub">+73% YoY · Q4 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">2025 Launches</div>
+          <div class="stat-value">21</div>
+          <div class="stat-sub">100% success rate · record</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Space Systems Rev.</div>
+          <div class="stat-value">$403M</div>
+          <div class="stat-sub">67% ของ total · growing</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Neutron Status</div>
+          <div class="stat-value">2026</div>
+          <div class="stat-sub">First launch target Q4 2026</div>
+        </div>
+      </div>
+      <p>ถ้าอธิบายสั้นๆ Rocket Lab คือ <strong>บริษัทที่ทำเงินจากการส่งดาวเทียมขึ้นอวกาศ (Launch) และจาก design+build spacecraft ให้รัฐบาล/ลูกค้าเชิงพาณิชย์ (Space Systems)</strong> โดยมีจรวด Neutron เป็น bet ใหญ่ที่จะ re-rate ทั้งบริษัท</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Rocket Lab เริ่มต้นจากโรงจอดรถในนิวซีแลนด์ — ไม่ใช่ Silicon Valley, ไม่มีทุน VC มหาศาลในวันแรก แต่ด้วยความ obsessive ของ Peter Beck มันกลายเป็น space company ที่สำคัญที่สุดแห่งหนึ่งในโลก</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2006</div>
+          <div class="tl-text"><strong>Peter Beck ก่อตั้ง Rocket Lab ในนิวซีแลนด์</strong> — ด้วยทุนส่วนตัวและความรู้ที่ self-taught ทั้งหมด Beck ไม่มี degree แต่มีความสามารถด้าน propulsion ที่ไม่มีใครสอนได้</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2009</div>
+          <div class="tl-text"><strong>Atea-1 ขึ้นสู่อวกาศ</strong> — จรวดลำแรกที่ develop โดยบริษัทเอกชนจาก Southern Hemisphere ที่ถึง space เหตุการณ์นี้ทำให้นักลงทุนและรัฐบาล NZ เริ่มสนใจ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2017</div>
+          <div class="tl-text"><strong>Electron ทดสอบครั้งแรก</strong> — จรวดที่ออกแบบมาสำหรับ small payload (300 kg to LEO) เที่ยวบินแรกไม่สำเร็จแต่ทีมเรียนรู้เร็ว Electron เป็น rocket ตัวแรกที่ใช้ electric turbo-pump และ carbon composite body แบบ 3D printed อย่างจริงจัง</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2018–2020</div>
+          <div class="tl-text"><strong>กลายเป็น small launch leader:</strong> Electron เข้า operational cadence — Rocket Lab เป็น launch provider ที่ reliable สำหรับ small satellites ได้รับสัญญาจาก NASA, DARPA, และลูกค้าเชิงพาณิชย์ ขยาย Mahia launch site ใน NZ และเพิ่ม LC-2 ใน Virginia, USA</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2021</div>
+          <div class="tl-text"><strong>SPAC listing บน NASDAQ</strong> — ระดมทุน $777M กลายเป็นบริษัท public เริ่ม M&amp;A อย่างจริงจัง: ซื้อ Advanced Solutions Inc. (space software), SolAero Technologies (solar cells สำหรับ spacecraft), และ Sinclair Interplanetary (attitude control) เพื่อ build Space Systems segment</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022–2023</div>
+          <div class="tl-text"><strong>Space Systems ใหญ่กว่า Launch:</strong> รายได้จาก Space Systems แซง Launch — ทีมได้รับสัญญา Prime Contractor ครั้งแรกจากรัฐบาล US สำหรับ satellite constellation Rocket Lab ไม่ใช่แค่ launch company อีกต่อไป</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>$816M SDA contract</strong> — Space Development Agency มอบสัญญา design+build 18 satellites ให้ Rocket Lab มูลค่า $816M ซึ่งเป็น single contract ใหญ่ที่สุดในประวัติศาสตร์บริษัท Backlog พุ่งสูงขึ้นอย่างมาก</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025–2026</div>
+          <div class="tl-text"><strong>Neutron ใกล้ความจริง:</strong> Neutron medium-lift rocket กำลัง assemble ที่ Launch Complex 3 เป้าหมาย first launch Q4 2026 ถ้าสำเร็จ Rocket Lab เข้า addressable market ขนาดใหญ่กว่าเดิม 100x</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>รายได้โต 10x ใน 4 ปี</strong> — จาก $62M (2021) เป็น $602M (2025) แต่ยังขาดทุนอยู่เพราะ invest หนักมากใน Neutron และ Space Systems infrastructure เรื่องที่สำคัญไม่ใช่ profitability วันนี้ แต่คือ revenue trajectory และ backlog ที่กำลังชี้ไปข้างหน้า</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>Gross Profit</th>
+            <th>Op. Loss</th>
+            <th>Net Loss</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2021</td><td>$62M</td><td>~$8M</td><td>~-$145M</td><td>~-$152M</td></tr>
+          <tr><td>2022</td><td>$211M</td><td>~$35M</td><td>~-$188M</td><td>~-$204M</td></tr>
+          <tr><td>2023</td><td>$245M</td><td>~$55M</td><td>-$178M</td><td>~-$185M</td></tr>
+          <tr><td>2024</td><td>$436M</td><td>~$110M</td><td>-$190M</td><td>~-$195M</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$602M</td><td>~$168M</td><td>-$229M</td><td>-$198M</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: Rocket Lab Q4 &amp; FY2025 Earnings Release (February 26, 2026) | ตัวเลขปี 2021-2023 เป็น approximate จาก SEC filings และ public disclosures</p>
+      <div class="stat-grid">
+        <div class="stat-card red">
+          <div class="stat-label">Revenue 4-yr CAGR</div>
+          <div class="stat-value">~76%</div>
+          <div class="stat-sub">2021 → 2025</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Gross Margin Trend</div>
+          <div class="stat-value">~13% → 28%</div>
+          <div class="stat-sub">Scale กำลัง work</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Backlog Growth</div>
+          <div class="stat-value">+73%</div>
+          <div class="stat-sub">YoY to $1.85B</div>
+        </div>
+      </div>
+      <p><strong>Op. Loss ที่ไม่ลดลงเร็วนัก</strong> ไม่ใช่สัญญาณแย่ในบริบทนี้ — Rocket Lab invest หนักมากใน Neutron development ($150M+ ต่อปี) ซึ่งเป็น long-duration investment ถ้าตัดค่าใช้จ่าย Neutron ออก core business กำลังเข้าสู่ profitability แล้ว</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Sir Peter Beck</div>
+          <div class="boss-title">Founder, CEO &amp; Chairman, Rocket Lab USA</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>1976/77, Invercargill, NZ</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>ไม่มี degree — apprenticeship ที่ tool manufacturer</span></div>
+            <div class="boss-fact"><span class="label">ก่อตั้ง</span><span>Rocket Lab, 2006</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>2006 — ปัจจุบัน (founder-led)</span></div>
+            <div class="boss-fact"><span class="label">เกียรติยศ</span><span>Knighted — Sir Peter Beck (2024)</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Peter Beck คือ <strong>rocket engineer ที่ไม่ควรมีอยู่ในโลกของ credentialism</strong> — ไม่มี engineering degree ไม่มี aerospace background แต่เรียนรู้ด้วยตัวเองจากหนังสือ, experimentation, และการทำจรวดตั้งแต่วัยรุ่น เขาเคยพูดว่า "ผมสาบานว่าจะไม่สร้าง rocket" แต่ก็ทำเพราะมันคือ only path ที่ vision ของเขาไปถึงได้</p>
+          <p style="margin-top:12px">Beck เป็น CEO ที่ <strong>technical deeply และ stubborn อย่างเป็น productive</strong> — เขา control ทุก major technical decision ด้วยตัวเอง style นี้เป็นทั้งข้อดีใหญ่ (quality control สูงมาก) และ risk (ถ้าเขาออก บริษัทจะ disrupted มาก) ความท้าทายใหญ่ที่สุดของ Beck ตอนนี้คือ deliver Neutron ตาม timeline และ scale Space Systems ไปพร้อมกัน — สองงานที่แต่ละอย่างก็ยากมากแล้ว</p>
+        </div>
+      </div>
+      <p>ข้อสังเกตสำคัญ: Beck เป็น <strong>founder-CEO ที่ยังอยู่</strong> — ไม่ใช่คนที่ investors hire มา เขา align กับ long-term ของบริษัทโดย structure ทุก decision เขาสร้าง Rocket Lab เพื่อ change humanity's relationship with space ไม่ใช่เพื่อ quarterly profit</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Rocket Lab เป็น end-to-end space company</strong> — ต่างจากบริษัท space ส่วนใหญ่ที่ทำแค่อย่างเดียว (launch หรือ satellite) Rocket Lab ทำทั้งหมด: สร้างจรวด, ส่งขึ้นอวกาศ, design spacecraft, และ operate ดาวเทียมให้ลูกค้า</p>
+      <div class="callout red">
+        <p><strong>Segment 1 — Launch Services ($199M · 33% of revenue):</strong> จรวด Electron ส่ง small satellites (300 kg to LEO) จาก New Zealand และ Virginia ปี 2025 บิน 21 ครั้งด้วย success rate 100% Electron เป็น dedicated small launch vehicle ที่ reliable ที่สุดในโลก — ลูกค้าจ่ายแพงกว่า rideshare เพราะได้ launch window ที่แน่นอนและ orbit ที่ต้องการ</p>
+      </div>
+      <div class="callout dark">
+        <p><strong>Segment 2 — Space Systems ($403M · 67% of revenue):</strong> ทำ spacecraft ให้ลูกค้า (ทั้ง bus design และ components) รวมถึง solar cells (SolAero), reaction wheels (Sinclair), propulsion systems, space software (ASI) ลูกค้าหลักคือ US government agencies (SDA, NASA, Air Force) และบริษัท commercial</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Coming — Neutron (medium-lift, reusable):</strong> จรวด 2-stage ขนาด payload 8,000 kg to LEO แบบ reusable target first launch Q4 2026 นี่คือ game changer — ถ้าสำเร็จ Rocket Lab เข้าสู่ medium launch market ที่ใหญ่กว่า small launch 50x และ compete ตรงกับ SpaceX Falcon 9</p>
+      </div>
+      <p><strong>ใน 1 ประโยค: Rocket Lab คือ space company ที่ทำทุกอย่างตั้งแต่ propulsion จนถึง orbit</strong> — ถ้า Neutron ประสบความสำเร็จ นี่จะเป็นบริษัท space ที่ครบวงจรที่สุดในโลกรองจาก SpaceX</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Rocket Lab มีรายได้สองสาย ที่ balance กันดี</strong> — Launch ให้รายได้ recurring แต่ margin ต่ำกว่า, Space Systems ให้รายได้จาก contract ใหญ่ระยะยาวที่ margin ดีกว่า</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $602M แบ่งตามสาย</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🛸 Space Systems (spacecraft + components)</div>
+            <div class="rev-numbers"><strong>$403M</strong> · 67%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-space" style="width:67%"></div></div>
+          <div class="rev-note">Spacecraft design, solar cells, propulsion, space software — large contracts กับ US government และ commercial customers รายได้ไม่ recurring แต่ contract ใหญ่มากและยาว</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🚀 Launch Services (Electron + HASTE)</div>
+            <div class="rev-numbers"><strong>$199M</strong> · 33%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-launch" style="width:33%"></div></div>
+          <div class="rev-note">Launch-per-mission pricing — dedicated slots จาก NZ และ VA ราคาต่อ mission ประมาณ $7-8M per Electron flight</div>
+        </div>
+      </div>
+      <p><strong>Key economics:</strong> Electron launch cost ~$7-8M ต่อ flight แต่ cost ของ Rocket Lab ต่อ launch ยังสูงอยู่เพราะ volume ยังไม่มาก Neutron ถ้า reusable จะ change เศรษฐศาสตร์นี้อย่างสมบูรณ์ — rocket ที่ fly ซ้ำได้ 10-20 ครั้งมี cost per launch ต่ำกว่า expendable rocket มาก</p>
+      <p><strong>Backlog $1.85B (+73% YoY)</strong> บอกว่า revenue ในอนาคต มีความชัดเจนสูงมาก — SDA contract $816M คือ single item ที่ใหญ่ที่สุดใน backlog และจะ recognize revenue ต่อเนื่องอีกหลายปี</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Rocket Lab ยังไม่ compound ในแบบ traditional — แต่กำลัง build infrastructure ที่จะทำให้ compounding เกิดขึ้นในอนาคต</p>
+      <div class="callout red">
+        <p><strong>The Vertical Integration Advantage:</strong> Rocket Lab ทำ solar cells, propulsion, reaction wheels, space software และ launch ทั้งหมดเอง เมื่อลูกค้าจ้าง Rocket Lab เป็น Prime Contractor บริษัทสามารถ supply ทุก component จาก internal business units ซึ่งทำให้ margin สูงกว่าคู่แข่งที่ต้อง outsource</p>
+      </div>
+      <div class="callout dark">
+        <p><strong>Government Trust Moat:</strong> US government agencies (SDA, NASA, Air Force) ไม่ work กับ vendor ที่ไม่ proven Rocket Lab ได้ Prime Contractor status แล้ว ซึ่งหมายความว่าสามารถ bid งาน multi-billion dollar ได้โดยตรง — barrier to entry สำหรับ new competitor สูงมาก</p>
+      </div>
+      <p><strong>Neutron คือ Compounding Engine ที่กำลัง build:</strong> ถ้า Neutron สำเร็จและ reusable ได้จริง cost per launch จะลดลง 70-80% เมื่อเทียบกับ expendable rocket เดียวกัน นั่นหมายความว่า gross margin ของ Launch Services จะ jump ขึ้นอย่างมีนัย และ TAM จะขยายจาก $5B (small launch) ไปเป็น $50B+ (medium/heavy launch)</p>
+      <div class="stat-grid">
+        <div class="stat-card red">
+          <div class="stat-label">Revenue CAGR (4yr)</div>
+          <div class="stat-value">~76%</div>
+          <div class="stat-sub">Fastest growing space co</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Backlog Coverage</div>
+          <div class="stat-value">3x</div>
+          <div class="stat-sub">ของ annual revenue ปี 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Neutron TAM (potential)</div>
+          <div class="stat-value">$50B+</div>
+          <div class="stat-sub">Medium launch + rideshare</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ปี 2026 Rocket Lab อยู่ใน <strong>inflection point ที่ชัดเจนที่สุด</strong> ในประวัติศาสตร์ — operational business กำลังดีขึ้นทุกไตรมาส ขณะที่ Neutron กำลังจะถูก test</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>2025 เป็นปีที่ดีที่สุดในประวัติศาสตร์ — ทุก metric</h4>
+        <p>Revenue record $602M (+38%), backlog record $1.85B (+73%), Q4 revenue record $180M, 21 launches ด้วย 100% success rate ทั้งปี core business กำลัง prove ตัวเองในทุกมิติ</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>SDA Contract $816M — เปลี่ยน scale ของ Space Systems</h4>
+        <p>สัญญาจาก Space Development Agency สำหรับ 18 satellites ทำให้ Rocket Lab ไม่ใช่แค่ component supplier อีกต่อไป แต่เป็น Prime Contractor ระดับ national security ซึ่งเปิด door ใหม่ที่ใหญ่มากสำหรับ future bids</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Neutron ล่าช้า — แต่ยังใน controlled slip</h4>
+        <p>Neutron เจอ technical issues กับ propellant tank ทำให้ timeline slip จาก Q1 2026 ไปเป็น Q4 2026 Beck ยืนยันว่านี่คือ engineering challenge ที่ fix ได้ ไม่ใช่ fundamental problem — แต่ทุก delay เพิ่ม burn rate และกดดัน balance sheet</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>SpaceX rideshare ทำให้ small launch competitive มากขึ้น</h4>
+        <p>SpaceX Transporter missions ให้ราคา rideshare ที่ถูกมาก กดดัน Electron ใน price-sensitive customers อย่างไรก็ตาม Electron ยังมี dedicated slot advantage ที่ rideshare ให้ไม่ได้</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Cash burn — ต้องการทุนถ้า Neutron slip นานกว่าที่วางแผน</h4>
+        <p>Neutron ใช้เงินหนักมาก ถ้า timeline slip ต่อไปอีก 12-18 เดือน Rocket Lab อาจต้อง raise capital เพิ่ม dilution เป็น risk ที่ต้องติดตาม</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Single point of failure: Peter Beck</h4>
+        <p>Beck เป็น technical soul ของบริษัท ถ้าเขาออกหรือเกิดอะไรขึ้น บริษัทจะ disrupted มาก ไม่มี second-in-command ที่ชัดเจนที่สามารถ take over technical leadership ได้ทันที</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ในฐานะ space company สนามแข่งของ Rocket Lab ซับซ้อนกว่าที่เห็น — แต่ละ segment มีผู้เล่นที่ต่างกัน</p>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🚀</div>
+          <div>
+            <div class="comp-segment">Small Launch Vehicle Market</div>
+            <div class="comp-pos dominant">Dominant — อันดับ 1 ที่ไม่มีใคร close ตาม</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Rocket Lab Electron</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:75%;background:var(--rl-red)"></div></div>
+            <div class="comp-detail">21 launches ปี 2025 · reliability สูงสุดใน small launch · 2 launch sites (NZ + VA) · dedicated orbit slot = ไม่มีใครเทียบได้ในตอนนี้</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Firefly Alpha</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:10%;background:#333"></div></div>
+            <div class="comp-detail">Operational แต่ launch cadence ยังต่ำมาก ยังพิสูจน์ reliability ไม่ได้</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Virgin Orbit / ABL Space</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:0%;background:#ccc)"></div></div>
+            <div class="comp-detail">ทั้งคู่ล้มละลายแล้ว — ยืนยัน how hard นี้ market มัน ข้อได้เปรียบของ RKLB ยิ่งชัดขึ้น</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">Small launch เป็น market ที่ RKLB ครองแบบ unchallenged — competitors หลักพังไปแล้วหรือ far behind ในด้าน reliability</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🛸</div>
+          <div>
+            <div class="comp-segment">Medium Launch (Neutron target market)</div>
+            <div class="comp-pos challenger">Challenger — ยังไม่ได้เริ่ม แต่ market ใหญ่มาก</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">SpaceX Falcon 9</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:85%;background:#005288"></div></div>
+            <div class="comp-detail">ครอง medium/heavy launch อย่างสมบูรณ์ ราคา reusable ต่ำมาก — Neutron ต้องหาข้อได้เปรียบ (national security, constellation deployment speed)</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Rocket Lab Neutron (ยังไม่ launch)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:0%;background:var(--rl-red)"></div></div>
+            <div class="comp-detail">0% market share ตอนนี้ — แต่ถ้า first launch Q4 2026 สำเร็จ หนทางสู่ market share ใน US national security launch เปิดกว้าง</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">ULA Vulcan / Blue Origin New Glenn</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:5%;background:#0066cc"></div></div>
+            <div class="comp-detail">เพิ่งเริ่ม operational — ทั้งคู่เน้น heavy lift มากกว่า dedicated medium market ที่ Neutron target</div>
+          </div>
+        </div>
+        <div class="comp-verdict red">Medium launch เป็นสนามที่ SpaceX dominant อย่างสมบูรณ์ Neutron ต้องพิสูจน์ reliability และหา niche ที่ Falcon 9 ทำไม่ได้หรือไม่ focus (เช่น dedicated constellation deployment สำหรับ national security)</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🛰</div>
+          <div>
+            <div class="comp-segment">Space Systems / Spacecraft Manufacturing</div>
+            <div class="comp-pos challenger">Growing Challenger — prime contractor status now</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">Northrop Grumman / L3Harris</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:40%;background:#00205b"></div></div>
+            <div class="comp-detail">Legacy defense prime contractors — experience ลึก แต่ cost structure สูงกว่าและ agility น้อยกว่า</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Rocket Lab Space Systems</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:var(--rl-red)"></div></div>
+            <div class="comp-detail">กำลัง ramp เร็วมาก — vertical integration ทำให้ cost ต่ำกว่า legacy primes ได้ $816M SDA contract ยืนยัน trust ระดับ national security</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">SpaceX Starlink Bus / Surrey Satellite</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#333"></div></div>
+            <div class="comp-detail">SpaceX ส่วนใหญ่ build เพื่อตัวเอง Surrey focus ใน small sat — overlap กับ RKLB ในบาง commercial work</div>
+          </div>
+        </div>
+        <div class="comp-verdict dark">Rocket Lab กำลัง carve niche ที่ชัดใน Space Systems — faster, cheaper กว่า legacy primes และ proven quality สำหรับ national security ที่ SpaceX ไม่ได้ focus</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Mission: Capture future re-rating before consensus recognizes it. Find tomorrow's leaders before they're obvious. Wave is opportunistic, imaginative, and accepts uncertainty. Target: 50–100% upside within 2–3 years. Enter early, add on confirmation, exit on thesis failure.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Wave ถือหุ้นที่ <strong>consensus ยังไม่ fully price in</strong> — ต้องมี re-rating thesis ชัดเจน มี upside ใหญ่ถ้า execute ได้ และยอมรับ uncertainty ที่สูงกว่า Core ได้ Wave ไม่ใช่ gamble แต่คือ calculated bet ที่ thesis ชัดและ validation path มีอยู่</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">📡</div>
+              <div class="trait-name">Re-rating Thesis ชัดมาก</div>
+              <div class="trait-desc">Neutron success → TAM jump 10x → market re-rate จาก "small launch company" เป็น "medium launch + space platform" ใน 2-3 ปี</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🏗</div>
+              <div class="trait-name">Consensus ยังไม่ fully price in</div>
+              <div class="trait-desc">ตลาดมอง RKLB เป็น small launch company ส่วนใหญ่ Space Systems growth และ Prime Contractor status ยังไม่ถูก price อย่างเต็มที่</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🎯</div>
+              <div class="trait-name">Validation Path มีอยู่ชัด</div>
+              <div class="trait-desc">Neutron first launch Q4 2026 คือ binary event สำคัญ ถ้าสำเร็จ upside ใหญ่ ถ้าไม่สำเร็จ thesis ต้อง re-evaluate</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">📈</div>
+              <div class="trait-name">Operational Momentum แน่น</div>
+              <div class="trait-desc">Core business โต 38% YoY, backlog +73%, SDA contract ยืนยัน quality — เป็น Wave ที่มี solid operational base ไม่ใช่ pure speculation</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่ Core — earnings ยังไม่ stable พอ</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB — นี่คือ thesis hold ไม่ใช่ rotation trade</span>
+            <span class="not-tag">✗ ไม่ใช่ pure speculation — มี real revenue, real backlog</span>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: RKLB → Wave</h4>
+            <p>RKLB เป็น Wave ที่ thesis ชัดมาก: บริษัทกำลัง transition จาก "small launch provider" เป็น "end-to-end space platform" ที่มี Prime Contractor status, Neutron medium-lift capability, และ vertical integration ใน Space Systems backlog $1.85B (+73% YoY) และ $816M SDA contract ยืนยัน operational execution แล้ว ส่วนที่ consensus ยังไม่ price คือ value ที่ Neutron จะ unlock ถ้าสำเร็จ — TAM jump จาก $5B ไปเป็น $50B+ Entry คือ enter ตอนนี้, add ถ้า Neutron launch สำเร็จ, exit ถ้า Neutron ล่าช้าออกไปอีกเกิน 12 เดือนหลัง Q4 2026</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — RKLB / Rocket Lab USA, Inc. · Source: Rocket Lab Q4 &amp; FY2025 Earnings Release (February 26, 2026) · SEC Filings · Public Sources</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="rl-dot">
+      <span style="background:var(--rl-red)"></span>
+      <span style="background:var(--rl-black)"></span>
+      <span style="background:#888"></span>
+      <span style="background:#555"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

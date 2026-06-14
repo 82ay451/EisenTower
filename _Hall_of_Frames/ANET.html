@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANET — Arista Networks | EisenTower Hall of Frames</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --a-blue: #006FBA;
+      --a-sky: #0099D9;
+      --a-navy: #1B3A5C;
+      --a-green: #00A651;
+      --text: #1a1a2e;
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --border: #dde6f0;
+      --muted: #6b7a8d;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.7; }
+
+    /* Header */
+    .doc-header { background: var(--surface); padding: 48px 0 36px; border-bottom: 1px solid var(--border); }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+    .label-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; }
+    .doc-header h1 { font-size: 48px; font-weight: 900; line-height: 1.1; margin-bottom: 12px; color: var(--text); }
+    .ticker-a1 { color: var(--a-blue); }
+    .ticker-n  { color: var(--a-sky); }
+    .ticker-e  { color: var(--a-navy); }
+    .ticker-t  { color: var(--a-green); }
+    .doc-subtitle { font-size: 17px; color: var(--muted); margin-bottom: 20px; font-weight: 400; }
+    .doc-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; color: var(--muted); font-weight: 500; }
+    .gradient-bar { height: 4px; display: flex; margin-top: 28px; }
+    .gradient-bar span { flex: 1; }
+
+    /* Nav */
+    .toc { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; display: flex; gap: 4px; overflow-x: auto; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; margin: 6px 0; border-radius: 50%; font-size: 12px; font-weight: 700; text-decoration: none; color: var(--muted); background: var(--bg); border: 1.5px solid var(--border); transition: all .2s; }
+    .toc-inner a:hover { background: var(--a-blue); color: white; border-color: var(--a-blue); }
+
+    /* Body */
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+    .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-top: 24px; overflow: hidden; }
+    .section-divider { height: 0; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; cursor: pointer; user-select: none; transition: background .15s; }
+    .section-header:hover { background: #f0f6ff; }
+    .section-header-left { display: flex; align-items: center; gap: 16px; }
+    .section-num { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: var(--a-blue); background: #e8f3fc; padding: 3px 8px; border-radius: 6px; }
+    .section-h2 { font-size: 16px; font-weight: 700; color: var(--text); }
+    .toggle-icon { font-size: 22px; color: var(--muted); transition: transform .25s; font-weight: 300; }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { padding: 0 24px 28px; }
+    .section-content.collapsed { max-height: 0; overflow: hidden; padding: 0 24px; opacity: 0; transition: max-height .3s ease, opacity .2s ease, padding .3s ease; }
+    .section-content p { margin-bottom: 14px; color: #2d3748; }
+
+    /* Stat Grid */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin: 20px 0; }
+    .stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .stat-card.blue { background: #e8f3fc; border-color: #b3d4f0; }
+    .stat-card.green { background: #e6f7ee; border-color: #a3d9b8; }
+    .stat-card.red { background: #fdecea; border-color: #f5b8b1; }
+    .stat-card.yellow { background: #fef8e8; border-color: #f5d98a; }
+    .stat-card.navy { background: #e8edf5; border-color: #b0bdd4; }
+    .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 6px; }
+    .stat-value { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1.1; }
+    .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* Timeline */
+    .timeline { border-left: 2px solid var(--border); margin: 20px 0 8px 8px; }
+    .tl-item { position: relative; padding: 0 0 24px 28px; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--a-blue); border: 2px solid var(--surface); }
+    .tl-year { font-size: 11px; font-weight: 700; color: var(--a-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .tl-text { font-size: 14px; color: #2d3748; line-height: 1.6; }
+
+    /* Callout */
+    .callout { border-radius: 8px; padding: 14px 18px; margin: 14px 0; border-left: 4px solid; }
+    .callout.blue { background: #e8f3fc; border-color: var(--a-blue); }
+    .callout.green { background: #e6f7ee; border-color: var(--a-green); }
+    .callout.sky { background: #e0f4fd; border-color: var(--a-sky); }
+    .callout.navy { background: #e8edf5; border-color: var(--a-navy); }
+    .callout p { margin: 0; font-size: 14px; }
+
+    /* Revenue Breakdown */
+    .revenue-breakdown { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; }
+    .revenue-breakdown h3 { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 16px; }
+    .rev-item { margin-bottom: 16px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--muted); }
+    .rev-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; transition: width .6s ease; }
+    .bar-product { background: var(--a-blue); }
+    .bar-service { background: var(--a-green); }
+    .rev-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* Boss Card */
+    .boss-card { display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; }
+    @media(max-width:600px){ .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .boss-title { font-size: 12px; font-weight: 600; color: var(--a-blue); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; font-size: 13px; margin-bottom: 6px; }
+    .boss-fact .label { font-weight: 600; color: var(--muted); min-width: 90px; }
+    .boss-right p { font-size: 14px; color: #2d3748; line-height: 1.65; }
+
+    /* Track Table */
+    .track-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
+    .track-table th { background: var(--bg); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); padding: 10px 12px; text-align: right; border-bottom: 2px solid var(--border); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); color: #2d3748; }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr.highlight { background: #e8f3fc; font-weight: 700; }
+    .track-table tr.highlight td { color: var(--a-blue); }
+
+    /* Situation Items */
+    .sit-item { border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 12px; }
+    .sit-tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 8px; }
+    .tag-up { background: #e6f7ee; color: #1a7a40; }
+    .tag-watch { background: #fef8e8; color: #8a6000; }
+    .tag-risk { background: #fdecea; color: #b91c1c; }
+    .sit-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .sit-item p { font-size: 14px; margin: 0; color: #2d3748; }
+
+    /* Competitors */
+    .comp-block { border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+    .comp-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .comp-icon { font-size: 24px; }
+    .comp-segment { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--text); }
+    .comp-pos { font-size: 12px; font-weight: 600; margin-top: 2px; }
+    .comp-pos.dominant { color: var(--a-blue); }
+    .comp-pos.challenger { color: #d97706; }
+    .comp-pos.leader { color: var(--a-green); }
+    .comp-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+    .comp-player { background: var(--bg); border-radius: 8px; padding: 12px 14px; border: 1px solid var(--border); }
+    .comp-player.self { border-color: var(--a-blue); background: #e8f3fc; }
+    .comp-name { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .comp-share-bar { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 6px; overflow: hidden; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 10px 14px; border-radius: 6px; line-height: 1.5; }
+    .comp-verdict.blue { background: #e8f3fc; color: #1a4f8a; }
+    .comp-verdict.green { background: #e6f7ee; color: #1a7a40; }
+    .comp-verdict.yellow { background: #fef8e8; color: #8a6000; }
+
+    /* Portfolio Card */
+    .portfolio-card { border: 1.5px solid var(--a-blue); border-radius: 12px; overflow: hidden; margin-top: 8px; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--a-navy) 0%, var(--a-blue) 100%); color: white; padding: 24px; }
+    .port-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .7; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .portfolio-card-header p { font-size: 14px; opacity: .85; line-height: 1.6; }
+    .portfolio-card-body { padding: 24px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
+    .core-trait { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+    .trait-icon { font-size: 20px; margin-bottom: 6px; }
+    .trait-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .trait-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .not-tag { font-size: 12px; font-weight: 600; background: #fdecea; color: #b91c1c; padding: 4px 10px; border-radius: 20px; }
+    .bucket-fit { background: #e8f3fc; border-radius: 8px; padding: 16px; }
+    .bucket-fit h4 { font-size: 14px; font-weight: 700; color: var(--a-navy); margin-bottom: 8px; }
+    .bucket-fit p { font-size: 14px; color: #1a3a5c; margin: 0; line-height: 1.65; }
+
+    /* Footer */
+    .doc-footer { background: var(--a-navy); color: rgba(255,255,255,.6); padding: 28px 0; margin-top: 40px; font-size: 12px; text-align: center; }
+    .doc-footer p { line-height: 1.8; }
+    .a-dot { display: inline-flex; gap: 4px; margin-top: 12px; }
+    .a-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+    /* Back to top */
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--a-blue); color: white; border: none; font-size: 18px; cursor: pointer; opacity: 0; transition: opacity .3s; box-shadow: 0 4px 12px rgba(0,111,186,.4); display: flex; align-items: center; justify-content: center; }
+    #back-to-top.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<!-- Header -->
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1>
+      <span class="ticker-a1">A</span><span class="ticker-n">N</span><span class="ticker-e">E</span><span class="ticker-t">T</span>
+      — Arista Networks
+    </h1>
+    <div class="doc-subtitle">Understanding Arista Networks as a Business — The Pipes Inside the AI Factory</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NYSE: ANET</span>
+      <span>🏛 Founded 2004 / IPO 2014</span>
+    </div>
+    <div class="gradient-bar">
+      <span style="background:var(--a-blue)"></span>
+      <span style="background:var(--a-sky)"></span>
+      <span style="background:var(--a-navy)"></span>
+      <span style="background:var(--a-green)"></span>
+    </div>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a>
+    <a href="#s2">2</a>
+    <a href="#s3">3</a>
+    <a href="#s4">4</a>
+    <a href="#s5">5</a>
+    <a href="#s6">6</a>
+    <a href="#s7">7</a>
+    <a href="#s8">8</a>
+    <a href="#s9">9</a>
+    <a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ถ้าพูดว่า ANET คนส่วนใหญ่ไม่รู้จัก แต่ถ้าพูดว่า "บริษัทที่ทำ switch ให้ Microsoft, Meta, Apple, และ Google ใช้เชื่อมต่อ server หมื่นเครื่องในดาต้าเซ็นเตอร์ของพวกเขา" — นั่นคือ Arista Networks</p>
+      <p><strong>Arista Networks คือผู้นำตลาดด้าน high-speed Ethernet networking</strong> สำหรับ data center, AI clusters, และ campus networks บริษัทขาย hardware switch พร้อม software ชื่อ EOS ที่กลายเป็น de facto standard ในโลก cloud networking รายได้ปี 2025 อยู่ที่ <strong>$9.006 พันล้านดอลลาร์</strong> กำไรสุทธิ $3.511 พันล้านดอลลาร์ — บริษัท networking ที่ทำ margin ได้สูงกว่าบริษัท tech ส่วนใหญ่ในโลก</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$9.0B</div>
+          <div class="stat-sub">+28.6% YoY</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Income FY2025</div>
+          <div class="stat-value">$3.51B</div>
+          <div class="stat-sub">GAAP · +23.1% YoY</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">GAAP Operating Margin</div>
+          <div class="stat-value">42.8%</div>
+          <div class="stat-sub">Non-GAAP: 48.2%</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">64.1%</div>
+          <div class="stat-sub">GAAP · คงเสถียร 3 ปีต่อเนื่อง</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">Free Cash Flow</div>
+          <div class="stat-value">$4.25B</div>
+          <div class="stat-sub">47% FCF margin — asset-light</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">Cash + Securities</div>
+          <div class="stat-value">$10.7B</div>
+          <div class="stat-sub">ณ สิ้นปี 2025 · ไม่มีหนี้</div>
+        </div>
+      </div>
+      <p>ถ้าอธิบายสั้นๆ Arista คือ <strong>บริษัทที่ขาย "plumbing" คุณภาพสูงที่สุดให้กับ hyperscaler ที่ใหญ่ที่สุดในโลก</strong> — ทุก AI cluster ที่กำลัง train model อยู่ตอนนี้ต้องการ network ที่เร็ว เสถียร และเชื่อถือได้ Arista คือตัวเลือกอันดับต้นๆ สำหรับงานนั้น</p>
+    </div>
+  </section>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>จาก startup เล็กๆ ที่ท้าชน Cisco สู่บริษัท networking ที่โตเร็วที่สุดในโลก — เส้นทางของ Arista เต็มไปด้วยการพิสูจน์ตัวเองในทุกรอบ</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2004</div>
+          <div class="tl-text"><strong>ก่อตั้งในชื่อ Arastra</strong> โดย Andy Bechtolsheim (co-founder ของ Sun Microsystems — เป็นคนเช็คให้ Google $100K ก้อนแรก), David Cheriton (Stanford professor), และ Ken Duda (CTO ตั้งแต่วันแรก) Mission คือสร้าง switch ที่ดีกว่า Cisco ด้วย software-driven architecture</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2008</div>
+          <div class="tl-text"><strong>เปลี่ยนชื่อเป็น Arista Networks และ hire CEO ใหม่</strong> — Jayshree Ullal ออกจาก Cisco หลังทำงาน 25 ปี มารับตำแหน่ง CEO Bechtolsheim ขยับเป็น Chairman และ Chief Development Officer ปีเดียวกันออก product ตัวแรกสู่ตลาด</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2008–2013</div>
+          <div class="tl-text"><strong>สร้าง beachhead ใน hyperscaler</strong> — Microsoft เป็น cloud customer รายแรกรายใหญ่ที่เลือก Arista แทน Cisco ตามด้วย Meta และ Apple แนวคิด "ซื้อ switch จาก Arista ใช้ EOS software ทำทุกอย่าง" เริ่มพิสูจน์ตัวเอง</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2014</div>
+          <div class="tl-text"><strong>IPO บน NYSE ที่ราคา $43/หุ้น</strong> ระดมทุน $226M ปีเดียวกัน Cisco ยื่นฟ้องคดี patent infringement ซึ่งถูกมองว่าเป็นการโจมตีคู่แข่งที่กำลังโต — Arista ต้องสู้คดีนี้ยาวหลายปี</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2014–2018</div>
+          <div class="tl-text"><strong>Cisco Lawsuit — บทพิสูจน์ความอดทน</strong> Arista สู้คดีกับ Cisco ตลอด 4 ปี ในที่สุด settle แบบที่ Arista ยังดำเนินธุรกิจต่อได้ และไม่ต้องเปลี่ยนแปลง EOS อย่างมีนัยสำคัญ ผ่านคดีมาได้ทำให้นักลงทุนและลูกค้ามั่นใจมากขึ้น</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2017–2022</div>
+          <div class="tl-text"><strong>คลื่น 100GbE/400GbE</strong> — ดาต้าเซ็นเตอร์ทั่วโลก upgrade network speed ทุก 4-5 ปี Arista อยู่ในตำแหน่งที่ดีที่สุดในทุก upgrade cycle รายได้โตจาก $1.1B (2017) เป็น $4.4B (2022) CAGR ~26%</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2023</div>
+          <div class="tl-text"><strong>AI Wave เริ่ม</strong> — ChatGPT ปลาย 2022 จุดกระแส AI buildout หมื่นล้านดอลลาร์ Arista คือ network infrastructure ที่ AI cluster ต้องใช้ รายได้กระโดดจาก $4.4B เป็น $5.86B (+34%) และเพิ่งเริ่ม</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>Arista 2.0 + Stock Split</strong> — ประกาศยุทธศาสตร์ใหม่: ขยายจาก cloud data center เข้าสู่ campus networking (กลุ่มองค์กรทั่วไป) และ AI networking โดยเฉพาะ พร้อม stock split 4-for-1 ในเดือนพฤศจิกายน รายได้ $7.0B</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>ปีแห่งการพิสูจน์ Arista 2.0</strong> — รายได้ $9B, ส่ง port สะสมครบ 150 ล้าน port, ทั้ง AI networking และ campus เกินเป้า Q4 2025 ครั้งแรกที่ net income ต่อไตรมาสทะลุ $1B Acquire VeloCloud SD-WAN จาก Broadcom เพื่อเสริม campus play แต่งตั้ง Todd Nightingale เป็น President &amp; COO</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>6 ปีที่ผ่านมา รายได้โตจาก $2.3B เป็น $9.0B</strong> — CAGR ประมาณ 25% ต่อปี และ operating margin กระโดดจาก 22-23% เป็น 42-43% ในรอบ 3 ปีล่าสุด</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>Op Income (GAAP)</th>
+            <th>Net Income</th>
+            <th>EPS (Diluted)*</th>
+            <th>Op. Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2020</td><td>$2.32B</td><td>~$0.54B</td><td>~$0.46B</td><td>~$0.36</td><td>~23%</td></tr>
+          <tr><td>2021</td><td>$2.95B</td><td>~$0.64B</td><td>~$0.84B</td><td>~$0.65</td><td>~22%</td></tr>
+          <tr><td>2022</td><td>$4.38B</td><td>~$1.05B</td><td>~$1.35B</td><td>~$1.05</td><td>~24%</td></tr>
+          <tr><td>2023</td><td>$5.86B</td><td>~$1.76B</td><td>~$2.09B</td><td>~$1.59</td><td>~30%</td></tr>
+          <tr><td>2024</td><td>$7.00B</td><td>$2.94B</td><td>$2.85B</td><td>$2.23</td><td>42.0%</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$9.01B</td><td>$3.86B</td><td>$3.51B</td><td>$2.75</td><td>42.8%</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:16px">* EPS adjusted post-split (4-for-1, Nov 2024) สำหรับปีก่อนหน้า · 2025-2024 confirmed from SEC 8-K (Feb 12, 2026) · 2020-2023 estimated from reported margins</p>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Revenue 5-yr CAGR</div>
+          <div class="stat-value">~25%</div>
+          <div class="stat-sub">2020→2025 ต่อเนื่อง</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Op Margin Expansion</div>
+          <div class="stat-value">+20pp</div>
+          <div class="stat-sub">จาก ~22% (2021) → 42.8% (2025)</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">FCF FY2025</div>
+          <div class="stat-value">$4.25B</div>
+          <div class="stat-sub">47% FCF margin — exceptional</div>
+        </div>
+      </div>
+      <p>จุดที่น่าสังเกตที่สุดคือ <strong>operating margin กระโดดจาก ~30% ในปี 2023 เป็น 42% ในปี 2024</strong> — นี่คือ operating leverage จริงๆ รายได้โต 19% แต่ operating income โต 67% เพราะ fixed cost ไม่ได้โตตาม</p>
+      <p><strong>Net Income มักสูงกว่า Operating Income</strong> เพราะ Arista ถือ cash + securities $10.7B ซึ่งสร้าง interest income ปีละ ~$394M ทำให้ net income ได้ boost เพิ่มบน top of operating income</p>
+    </div>
+  </section>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Jayshree Ullal</div>
+          <div class="boss-title">Chairperson &amp; CEO, Arista Networks</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>London, UK — เติบโตใน New Delhi, India</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>BS EE · San Francisco State / MS Engineering Management · Santa Clara University</span></div>
+            <div class="boss-fact"><span class="label">ก่อน Arista</span><span>Cisco Systems — 25 ปี, SVP คุม $10B datacenter switching group</span></div>
+            <div class="boss-fact"><span class="label">เข้า Arista</span><span>October 2008</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>October 2008 (วันเดียวกับที่เข้ามา)</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Jayshree Ullal ไม่ใช่คนสร้างบริษัท แต่เป็นคนที่เอาบริษัทจาก startup เล็กๆ มาสู่ $9B revenue ใน 17 ปี เธอมาจาก Cisco ซึ่งถือเป็น "enemy territory" ในอุตสาหกรรม — แต่นั่นคือสิ่งที่ทำให้เธอรู้จักทุก weakness ของ Cisco และรู้ว่าลูกค้าต้องการอะไรที่ Cisco ให้ไม่ได้</p>
+          <p style="margin-top:12px">สไตล์ผู้นำ: <strong>engineering-first, customer-obsessed, ประหยัด</strong> — Arista ไม่ได้โตด้วยการ acquire หรือ sales force ใหญ่ แต่โตด้วย product ที่ดีกว่า Ullal เป็นที่รู้จักในอุตสาหกรรมว่าพูดตรง ไม่ hype และมั่นใจในเทคโนโลยีของตัวเองอย่างมาก ความท้าทายใหญ่ที่สุดตอนนี้คือ defend position เมื่อ NVIDIA กำลังเข้ามาในสนาม AI networking</p>
+        </div>
+      </div>
+      <p>น่าสังเกตว่า <strong>Ken Duda</strong> หนึ่งในสาม co-founders ยังคงอยู่ที่ Arista ในตำแหน่ง President &amp; CTO (เพิ่งได้รับการ promote ปี 2025) เขาคือสถาปนิกหลักของ EOS ซึ่งเป็น product ที่สำคัญที่สุดของบริษัท และ Andy Bechtolsheim ยังคงเป็น Chairman บอร์ด ทำให้ Arista มีความต่อเนื่องของ founding team ที่หายากมาก</p>
+    </div>
+  </section>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Arista ขาย networking hardware และ software ที่เชื่อมต่อ server นับหมื่นเครื่องภายใน data center และ AI cluster</strong> ง่ายๆ คือถ้า server คือ "สมอง" ของ data center — network switch ของ Arista คือ "เส้นประสาท" ที่เชื่อมสมองทุกอันเข้าหากัน</p>
+      <div class="callout blue">
+        <p><strong>โซนที่ 1 — Cloud &amp; AI Networking:</strong> สำหรับ hyperscaler (Microsoft, Meta, Apple, Google) และ AI companies ที่ต้องการ switch ความเร็วสูง (400G/800G) สำหรับ data center และ AI training cluster ที่มี GPU นับหมื่นตัว — โซนนี้คือที่มาของรายได้ส่วนใหญ่</p>
+      </div>
+      <div class="callout green">
+        <p><strong>โซนที่ 2 — Campus Networking (Arista 2.0):</strong> ตลาดใหม่สำหรับองค์กรทั่วไปที่ต้องการ network ภายในอาคารสำนักงาน รวมถึง Wi-Fi และ IoT Arista เพิ่งเข้าตลาดนี้ 2-3 ปีที่แล้วผ่าน CloudVision และการ acquire VeloCloud SD-WAN จาก Broadcom (2025)</p>
+      </div>
+      <div class="callout sky">
+        <p><strong>Product ที่สำคัญที่สุด — EOS (Extensible Operating System):</strong> software ที่รันบน hardware ทุกตัวของ Arista ด้วย single binary image ทำให้ manage ทุก switch ได้จากที่เดียว programmatic ได้ทั้งหมด และ upgrade ง่าย EOS คือสาเหตุหลักที่ลูกค้าเลือก Arista และเปลี่ยนออกยาก</p>
+      </div>
+      <div class="callout navy">
+        <p><strong>CloudVision — Network Management Platform:</strong> cloud-based platform สำหรับ monitor, automate, และ troubleshoot network ทั้งหมด รวม AIOps assistant "AVA" (Autonomous Virtual Assist) ซึ่งใช้ AI ช่วย diagnose ปัญหา network โดยอัตโนมัติ ลูกค้าที่ใช้ CloudVision ยิ่งติดอยู่กับ ecosystem ของ Arista มากขึ้น</p>
+      </div>
+      <p><strong>จริงๆ Arista คืออะไร?</strong> — Arista คือบริษัทที่ขาย "operating system for the network" โดยมี hardware เป็น delivery vehicle EOS คือ product จริง hardware คือสิ่งที่ EOS รันบน ลักษณะนี้คล้ายกับ Apple ที่ขาย software experience ผ่าน hardware ทำให้ moat ลึกกว่า hardware vendor ทั่วไปมาก</p>
+    </div>
+  </section>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>รายได้มาจากสองส่วน</strong> — ขาย hardware switch แล้วขาย software + support ต่อยอดบน top ของ hardware นั้น โมเดลคล้ายกับ "printer and ink" แต่ margin ดีกว่ามาก</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $9.006 พันล้าน แบ่งตามประเภท</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🖥️ Product Revenue</div>
+            <div class="rev-numbers"><strong>$7,576.9M</strong> · 84.1%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-product" style="width:84.1%"></div></div>
+          <div class="rev-note">Hardware switches และ routers (400G/800G) ขายให้ hyperscaler, AI companies, enterprise — ยิ่ง AI buildout เร่ง ตัวเลขนี้ยิ่งโต</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">⚙️ Service Revenue</div>
+            <div class="rev-numbers"><strong>$1,428.8M</strong> · 15.9%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-service" style="width:15.9%"></div></div>
+          <div class="rev-note">Software subscriptions (CloudVision, ACARE support contracts, advanced security) — recurring และโตเร็วขึ้นทุกปี ในอนาคตส่วนนี้จะเป็นตัว smooth revenue ให้ Arista</div>
+        </div>
+      </div>
+      <p><strong>ลูกค้าหลัก:</strong> "Cloud Titans" — Microsoft, Meta, Apple, Google คิดเป็นสัดส่วนรายได้ขนาดใหญ่ ตามด้วย financial services, healthcare, manufacturing ที่ต้องการ network เสถียรและเร็ว</p>
+      <p><strong>Deferred Revenue — Hidden Strength:</strong> ณ สิ้นปี 2025 Arista มี deferred revenue รวม <strong>$5,372.4M</strong> ($4.0B current + $1.37B non-current) เพิ่มขึ้นจาก $2.79B ในปี 2024 — นี่คือรายได้ที่ลูกค้า pre-paid ไว้แล้วแต่ยังไม่ recognize เป็น revenue signal บอกว่า pipeline ของ Arista สำหรับปีหน้าแข็งมาก</p>
+      <p><strong>Asset-Light Model:</strong> CapEx ปี 2025 อยู่ที่ <strong>เพียง $119.5M</strong> บน revenue $9B (1.3% ของ revenue) Arista ไม่ได้ผลิต hardware เอง แต่ใช้ contract manufacturer — ทำให้ capital efficiency สูงมาก FCF/Revenue อยู่ที่ ~47%</p>
+    </div>
+  </section>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Arista มี compounding engine ที่ลึกกว่าที่เห็นในราคา hardware</p>
+      <div class="callout blue">
+        <p><strong>EOS Switching Cost Flywheel:</strong> ลูกค้าซื้อ Arista switch → ฝึก engineer ให้รู้จัก EOS → integrate EOS เข้ากับ automation tools → ยิ่งใช้นาน ยิ่งผูก workflow กับ EOS → เปลี่ยน vendor ครั้งต่อไปต้อง retrain คน, rewrite automation, และ re-certify ทุกอย่าง → switching cost ขึ้นทุกปีโดยไม่ต้องทำอะไรพิเศษ</p>
+      </div>
+      <div class="callout green">
+        <p><strong>CloudVision Deepens the Moat:</strong> ยิ่งลูกค้า adopt CloudVision มากขึ้น → network data ทั้งหมดอยู่ใน Arista platform → insights, AI-driven troubleshooting, automation ทั้งหมดผ่าน CloudVision → การเปลี่ยนออกต้องสูญเสีย institutional memory ทั้งหมด → ลูกค้า renew ทุกปี</p>
+      </div>
+      <p><strong>Upgrade Cycle Tailwind:</strong> ทุก 4-5 ปี data center ต้อง upgrade network speed (10G → 100G → 400G → 800G) แต่ละรอบ Arista ขาย hardware ใหม่ให้ลูกค้าเดิม ลูกค้าไม่ต้องเรียนรู้ใหม่เพราะ EOS ยังเหมือนเดิม รอบ 800G/1.6T กำลังจะมา</p>
+
+      <p style="margin-top:24px"><strong>Capital Allocation — เงินไปไหน?</strong></p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">R&amp;D FY2025</div>
+          <div class="stat-value">$1.24B</div>
+          <div class="stat-sub">13.7% ของ revenue · EOS, CloudVision, AI features</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Share Buyback FY2025</div>
+          <div class="stat-value">$1.60B</div>
+          <div class="stat-sub">ซื้อหุ้นกลับ — เพิ่งเร่งขึ้นมากในปี 2025</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">CapEx FY2025</div>
+          <div class="stat-value">$119.5M</div>
+          <div class="stat-sub">1.3% ของ revenue — asset-light สุดๆ</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">Cash + Securities</div>
+          <div class="stat-value">$10.7B</div>
+          <div class="stat-sub">ไม่มีหนี้ · interest income ~$394M/ปี</div>
+        </div>
+      </div>
+      <p><strong>R&amp;D ($1.24B, 13.7%):</strong> ลงทุนต่อเนื่องใน EOS features, CloudVision AI capabilities, และ next-gen silicon รวมถึง AI-specific networking features เช่น Cluster Load Balancing (CLB) สำหรับ AI workloads</p>
+      <p><strong>Buyback ($1.6B ปี 2025 vs $424M ปี 2024):</strong> เพิ่มขึ้น 4 เท่า ในหนึ่งปี — signal ว่า management มั่นใจใน FCF generation มากพอที่จะ return เงินให้ผู้ถือหุ้นในสเกลใหม่</p>
+      <p><strong>Zero Debt + $10.7B Cash:</strong> Arista ไม่มีหนี้ระยะยาวเลย บวกกับ cash pile ที่ generate interest income ปีละ ~$394M สถานะนี้ทำให้ Arista ทนต่อ downturn ได้ดีและมีอิสระในการ invest หรือ acquire ได้ตลอดเวลา</p>
+    </div>
+  </section>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ปี 2025-2026 Arista อยู่ใน <strong>phase ที่ดีที่สุดในประวัติศาสตร์บริษัท</strong> — แต่ก็กำลังเผชิญกับคู่แข่งใหม่ที่แข็งที่สุดเท่าที่เคยมีมา</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>AI CapEx Supercycle — Arista อยู่ตรงกลาง</h4>
+        <p>Hyperscaler ทุกรายกำลัง spend หลายหมื่นล้าน build AI infrastructure ในปี 2026 ทุก AI factory ต้องการ network ที่รันเร็วพอให้ GPU สื่อสารกันโดยไม่ bottleneck Arista คือ default choice สำหรับ Ethernet-based AI networking</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Deferred Revenue $5.4B — Pipeline ล็อคไว้แล้ว</h4>
+        <p>Deferred revenue เพิ่มขึ้น $2.58B ในปีเดียว จาก $2.79B เป็น $5.37B นี่คือรายได้ที่ลูกค้า commit แล้วแต่ยังไม่ recognize สัญญาณบอกว่า FY2026 มีฐานที่แข็งแกร่งรองรับอยู่</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Campus Networking — Market ใหม่ที่เพิ่งเริ่ม</h4>
+        <p>Arista 2.0 campus strategy เกินเป้าปี 2025 VeloCloud SD-WAN acquisition เสริม portfolio สำหรับองค์กรที่ต้องการ network เชื่อม branch offices กับ cloud นี่คือ TAM expansion ที่ยังอยู่ในช่วงต้น</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>2026 Guidance — Q1 Revenue $2.6B</h4>
+        <p>Guidance Q1 2026 ที่ $2.6B บ่งชี้ full year 2026 น่าจะเกิน $10B รายได้ บริษัทเองพูดถึง growth rate ~20% สำหรับปี 2026 บน base $9B ที่แล้ว</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>NVIDIA Spectrum-X — คู่แข่งใหม่ที่ไม่ธรรมดา</h4>
+        <p>NVIDIA แซง Cisco และ Arista ในตลาด data center Ethernet revenue ปี 2025 โดยการ bundle Spectrum-X switch เข้ากับ H100/H200 GPU ลูกค้าที่ซื้อ GPU cluster ของ NVIDIA ได้ network switch แถมมา — นี่คือ competitive dynamic ที่ Arista ไม่เคยเจอมาก่อน</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Customer Concentration Risk</h4>
+        <p>รายได้ส่วนใหญ่มาจากลูกค้าไม่กี่ราย (hyperscaler) ถ้า Microsoft หรือ Meta ตัดสินใจ pause CapEx หรือเปลี่ยน vendor — impact จะรู้สึกทันที ความเสี่ยงนี้จะลดลงเมื่อ campus segment ใหญ่ขึ้น</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Gross Margin Pressure — Q4 2025 GM 62.9%</h4>
+        <p>GAAP gross margin ใน Q4 2025 ลงมาที่ 62.9% จาก 64.6% ใน Q3 mix ของ product เปลี่ยน + pricing pressure ในบางส่วน management ให้ guidance Q1 2026 non-GAAP gross margin 62-63% ซึ่งต่ำกว่าระดับ 64-65% ที่เคยทำได้ — ต้องติดตามว่าเป็นชั่วคราวหรือ structural</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Arista ไม่ได้แข่งในสนามเดียว — แต่ละตลาดที่บริษัทอยู่มีคู่แข่งต่างกัน และ position ก็ต่างกันไป</p>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🏢</div>
+          <div>
+            <div class="comp-segment">Data Center Switching</div>
+            <div class="comp-pos leader">Leader — Highest Ability to Execute (Gartner 2025)</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Arista Networks (ANET)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:19%;background:var(--a-blue)"></div></div>
+            <div class="comp-detail">~19% market share (Q2 2025) · Leaders Quadrant, Highest Ability to Execute · EOS moat ทำให้ตัดสินใจซื้อง่าย retain ยาก · ชนะ Microsoft, Meta, Apple, Google</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Cisco Systems</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:40%;background:#049fd9"></div></div>
+            <div class="comp-detail">ยังใหญ่ที่สุดในตลาด overall แต่ share ใน data center กำลังลดลง Cisco มี NX-OS ที่ซับซ้อนกว่า EOS และ legacy architecture ที่ปรับตัวช้า Cisco กำลัง invest หนักเพื่อ fight back</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Juniper Networks (HPE)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:8%;background:#0f70b3"></div></div>
+            <div class="comp-detail">HPE ซื้อ Juniper ด้วยเงิน $14B ในปี 2024 — เสริม portfolio ในด้าน cloud-native switching Juniper Mist AI แข่งกับ CloudVision ใน campus/enterprise</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">Arista คือ choice แรกของ hyperscaler ใน data center networking เมื่อ EOS ติดตั้งแล้วเปลี่ยนออกยากมาก — ผลักดัน retention rate สูง</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🤖</div>
+          <div>
+            <div class="comp-segment">AI Cluster Networking</div>
+            <div class="comp-pos challenger">Contender — Ethernet vs InfiniBand debate</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">NVIDIA InfiniBand + Spectrum-X</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:55%;background:#76b900"></div></div>
+            <div class="comp-detail">NVIDIA dominant ใน AI cluster networking ผ่าน InfiniBand (สำหรับ scale-up) และ Spectrum-X Ethernet (สำหรับ scale-out) การ bundle กับ GPU ทำให้ NVIDIA เป็น default choice สำหรับลูกค้าที่ซื้อ H100/H200</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Arista Ethernet for AI</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:var(--a-blue)"></div></div>
+            <div class="comp-detail">Arista push Ethernet as alternative to InfiniBand — เปิดตัว Cluster Load Balancing (CLB) และ ESUN standard ใน 2025 argument คือ Ethernet cheaper, more flexible, ops team รู้จักดีกว่า</div>
+          </div>
+        </div>
+        <div class="comp-verdict yellow">AI networking เป็นสนามที่ยังไม่มีคำตอบตายตัว Ethernet vs InfiniBand ยังถกเถียงกันอยู่ Arista มีโอกาสถ้า Ethernet standard สำหรับ AI cluster เป็นที่ยอมรับกว้างขึ้น แต่ NVIDIA มี structural advantage จากการ bundle กับ GPU</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🏫</div>
+          <div>
+            <div class="comp-segment">Campus &amp; Enterprise Networking</div>
+            <div class="comp-pos challenger">Challenger — New entrant, Arista 2.0 กำลังขยาย</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">Cisco (Meraki + Catalyst)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:45%;background:#049fd9"></div></div>
+            <div class="comp-detail">ยังครอง enterprise campus อย่างเด็ดขาด ลูกค้า corporate ส่วนใหญ่ใช้ Cisco มาหลายสิบปี switching cost สูงมาก</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Juniper Mist AI (HPE)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:#0f70b3"></div></div>
+            <div class="comp-detail">แข่งโดยตรงกับ Arista ใน AI-driven campus networking — Mist AI ใช้ ML สำหรับ Wi-Fi optimization และ network troubleshooting</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Arista (CloudVision + VeloCloud)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:5%;background:var(--a-blue)"></div></div>
+            <div class="comp-detail">เพิ่งเริ่ม แต่ leverage EOS + CloudVision ที่ลูกค้า data center รู้จักแล้ว ยุทธศาสตร์คือ "ลูกค้าที่ใช้ Arista ใน data center แล้ว expand มาใช้ใน campus ด้วย"</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">Campus คือ long-term growth story สำหรับ Arista Cisco ยังครองอยู่ แต่ Arista มี beachhead จากลูกค้า data center ที่อาจต้องการ single vendor ให้จบ</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding — own durable businesses positioned inside major global money-flow layers. Core is patient. Core does not chase. Core accepts volatility and focuses on business quality over short-term price movement. Target: ~15% annualized return over a multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Core ถือธุรกิจที่ <strong>พิสูจน์ตัวเองด้วยตัวเลขจริง ไม่ใช่ด้วย narrative</strong> — low turnover, thesis-driven, real earnings matter, market leadership matters ถ้าธุรกิจยังแข็ง ราคาผันผวนคือ noise ไม่ใช่ signal ให้ขาย</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">Real Earnings — พิสูจน์แล้ว</div>
+              <div class="trait-desc">GAAP Op Income $3.86B · Net Income $3.51B · Gross Margin 64.1% · FCF $4.25B — ตัวเลขจริงจากธุรกิจจริง ไม่ใช่ promise</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">👑</div>
+              <div class="trait-name">Market Leadership ที่ Defensible</div>
+              <div class="trait-desc">Gartner Leaders Quadrant, Highest Ability to Execute · EOS moat ทำให้ลูกค้าเปลี่ยนออกยาก · hyperscaler ทุกรายเป็นลูกค้า</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">⚙️</div>
+              <div class="trait-name">Compounding Mechanics ชัด</div>
+              <div class="trait-desc">EOS switching cost ขึ้นทุกปี · Deferred Revenue $5.4B growing fast · Buyback $1.6B/ปี · Zero debt · Interest income $394M/ปี</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🌊</div>
+              <div class="trait-name">Major Money-Flow Layer</div>
+              <div class="trait-desc">AI infrastructure networking คือ critical layer ที่ทุก dollar ของ AI CapEx ต้องผ่าน — ทุก GPU cluster ต้องมี network · ไม่ใช่ theme ชั่วคราว</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Core ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่ Wave — consensus รู้จัก Arista แล้ว ไม่ใช่ undiscovered</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB — ไม่ใช่ tactical rotation play</span>
+            <span class="not-tag">✗ ไม่ใช่หุ้นที่ sell เมื่อ AI narrative เปลี่ยน</span>
+            <span class="not-tag">✗ ไม่ใช่ momentum chase ตาม AI hype</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: ANET → Core</h4>
+            <p>ANET ผ่าน Core criteria ครบตาม doctrine — real earnings จาก business model ที่พิสูจน์แล้ว (64% gross margin บน $9B revenue ไม่ใช่ luck), market leadership ที่ defend ได้ด้วย EOS moat และ switching cost, compounding ผ่าน deferred revenue growing $2.58B ในปีเดียว + buyback + zero debt, และ positioned ตรงกลางของ AI infrastructure networking ซึ่งคือ money-flow layer ที่แน่นที่สุดในโลก tech ตอนนี้ Wave ไม่ใช่เพราะ Arista เป็นที่รู้จักดีแล้วในตลาด ไม่มี re-rating story ที่ consensus ยังไม่เห็น FWB ไม่ใช่เพราะ Arista ไม่ใช่ trade ที่ต้อง rotate ออก ANET ถือไว้ ปล่อยให้ EOS moat กับ AI tailwind compound ต่อ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — ANET / Arista Networks Inc. · Source: Arista Networks Q4 &amp; FY2025 Earnings Release (Feb 12, 2026) · SEC Form 8-K · Public Sources</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="a-dot">
+      <span style="background:var(--a-blue)"></span>
+      <span style="background:var(--a-sky)"></span>
+      <span style="background:var(--a-navy)"></span>
+      <span style="background:var(--a-green)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

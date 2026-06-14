@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TSM — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --tsm-blue: #005BAC;
+      --tsm-red:  #EB1C23;
+      --tsm-dark: #0A1628;
+      --tsm-teal: #00A3E0;
+      --tsm-blue-soft: #e6f0fa;
+      --tsm-teal-soft: #e0f6ff;
+      --tsm-red-soft:  #fde8e8;
+      --accent:      var(--tsm-blue);
+      --accent-soft: var(--tsm-blue-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--tsm-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--tsm-blue) 30%, var(--tsm-red) 30% 55%, var(--tsm-teal) 55% 80%, var(--tsm-dark) 80%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-tsm { color: var(--tsm-teal); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--tsm-dark); border-bottom: 1px solid #1a2a40; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(0,91,172,0.3); color: var(--tsm-teal); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--tsm-blue); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--tsm-blue-soft); color: var(--tsm-blue); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue  { border-left: 3px solid var(--tsm-blue); }
+    .stat-card.teal  { border-left: 3px solid var(--tsm-teal); }
+    .stat-card.green { border-left: 3px solid var(--green); }
+    .stat-card.red   { border-left: 3px solid var(--tsm-red); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-hpc   { background: var(--tsm-blue); }
+    .bar-phone { background: var(--tsm-teal); }
+    .bar-auto  { background: #5a9e6f; }
+    .bar-iot   { background: #b0b8d8; }
+    .bar-other { background: #c8d0e8; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue  { background: var(--tsm-blue-soft); border-color: var(--tsm-blue); }
+    .callout.teal  { background: var(--tsm-teal-soft); border-color: var(--tsm-teal); }
+    .callout.red   { background: var(--tsm-red-soft);  border-color: var(--tsm-red); }
+    .callout.green { background: var(--green-soft);    border-color: var(--green); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--tsm-blue), var(--tsm-teal)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--tsm-blue); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--tsm-blue); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--tsm-blue-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #155c38; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--tsm-blue-soft); color: var(--tsm-blue); }
+    .comp-pos.contender  { background: var(--yellow-soft); color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--tsm-blue); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue  { background: var(--tsm-blue-soft); border-color: var(--tsm-blue); color: #003d75; }
+    .comp-verdict.green { background: var(--green-soft);    border-color: var(--green);     color: #155c38; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--tsm-dark) 0%, #0d2244 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--tsm-blue-soft); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: var(--tsm-blue); margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .fit-box { background: var(--green-soft); border: 1px solid #a8d8bc; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #155c38; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--tsm-blue); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,91,172,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--tsm-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .tsm-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .tsm-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-tsm">TSM</span> — Taiwan Semiconductor Manufacturing Company</h1>
+    <div class="doc-subtitle">Understanding TSMC as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NYSE: TSM (ADR)</span>
+      <span>🏛 Founded 1987 · Hsinchu, Taiwan</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TSMC คือ <strong>โรงงานผลิตชิปที่ทรงพลังที่สุดในโลก</strong> — ไม่ออกแบบชิปเอง แต่รับจ้างผลิตชิปที่ออกแบบโดยคนอื่น (NVIDIA, Apple, AMD, Qualcomm, Google) ด้วยเทคโนโลยีที่ไม่มีใครทำได้ดีกว่า ถ้า AI กำลัง eat the world — TSMC คือ plate ที่ AI ทุกอย่างต้องใช้</p>
+      <p>ปี 2025 TSMC มีรายได้ <strong>US$122.42B (+35.9% YoY)</strong> กำไรสุทธิ <strong>US$55.21B (+51.2% YoY)</strong> — กำไรสุทธิใหญ่กว่ารายได้ของบริษัทส่วนใหญ่ใน Fortune 500 Gross margin 59.9%, Operating margin 50.8% — for a manufacturing company, these numbers are extraordinary</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$122.4B</div>
+          <div class="stat-sub">+35.9% YoY (USD)</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Income FY2025</div>
+          <div class="stat-value">$55.2B</div>
+          <div class="stat-sub">+51.2% YoY (USD)</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">59.9%</div>
+          <div class="stat-sub">FY2025 vs 56.1% (2024)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Op. Margin</div>
+          <div class="stat-value">50.8%</div>
+          <div class="stat-sub">FY2025 vs 45.7% (2024)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Net Margin</div>
+          <div class="stat-value">45.1%</div>
+          <div class="stat-sub">FY2025 · elite for mfg</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">HPC Revenue Share</div>
+          <div class="stat-value">58%</div>
+          <div class="stat-sub">FY2025 · AI is the engine</div>
+        </div>
+      </div>
+      <p>ใน 1 ประโยค: <strong>TSMC คือ infrastructure จริงๆ ของยุค AI</strong> — ไม่มี TSMC ไม่มี GPU, ไม่มี Apple Silicon, ไม่มี custom AI chip ไม่ว่าจะเป็น Blackwell, M4, Ryzen หรือ TPU ทุกชิปที่ run โลกผ่านมือ TSMC</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1987</div>
+          <div class="tl-text"><strong>Morris Chang ก่อตั้ง TSMC</strong> ที่ Hsinchu Science Park ไต้หวัน — ด้วยเงิน NT$6.3B จากรัฐบาลไต้หวัน (48%), Philips (27.5%), และนักลงทุนเอกชน Chang อายุ 55 ปีตอนก่อตั้ง เคยทำงานที่ TI (Texas Instruments) 25 ปี ไอเดียหลัก: บริษัท fabless (ออกแบบชิปแต่ไม่ผลิตเอง) จะเกิดขึ้นมาก — และต้องการคนผลิตให้ TSMC คือ "pure-play foundry" รายแรกของโลก</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1990s</div>
+          <div class="tl-text"><strong>Pure-play foundry model prove ตัวเอง:</strong> TSMC ไม่แข่งกับลูกค้า (ไม่ออกแบบชิปเอง) — model นี้สร้าง trust Intel และ IDMs อื่นๆ ยังผลิตชิปเอง แต่ fabless startups เลือก TSMC ลูกค้าแรกๆ ที่สำคัญ: Nvidia (ก่อตั้ง 1993), Qualcomm — ทั้งคู่เป็น fabless เลือก TSMC ตั้งแต่ต้น</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2001</div>
+          <div class="tl-text"><strong>Apple เริ่มออกแบบชิปเอง:</strong> Apple ตัดสินใจ in-house chip ซึ่งต้องหา foundry ในปี 2010 Apple A4 (iPad รุ่นแรก) ผลิตโดย Samsung ก่อน แต่ตั้งแต่ปี 2016 Apple A10 → ทุกชิปมาที่ TSMC ทั้งหมด</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2018</div>
+          <div class="tl-text"><strong>Morris Chang เกษียณ, CC Wei ขึ้นเป็น CEO:</strong> Chang ส่งมอบ leadership ให้ Dr. Che-Chia Wei (CC Wei) ที่ทำงานใน TSMC มาตั้งแต่ 1998 Chang เรียก Wei ว่า "CEO ที่เตรียมตัวพร้อมที่สุด" — Wei มาจาก technical background, เน้น operations และ customer relationships ไม่ใช่ public presence</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2020–2021</div>
+          <div class="tl-text"><strong>US-China chip war เริ่ม, TSMC อยู่กลาง:</strong> US Commerce Department ห้าม TSMC ผลิตให้ Huawei ตั้งแต่ May 2020 (เพราะ EAR rules) TSMC ปฏิบัติตามทันที Huawei เคยเป็น ~15% ของรายได้ — การสูญเสียนี้ถูก offset ด้วย AI demand ทันที และ TSMC เริ่มลงทุนสร้าง fab ใน Arizona (CHIPS Act)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022–2024</div>
+          <div class="tl-text"><strong>AI chip supercycle เริ่ม:</strong> ChatGPT (Nov 2022) ทำให้ demand GPU พุ่ง NVIDIA H100/H200 → Blackwell ทั้งหมดผลิตที่ TSMC 3nm/4nm HPC segment โตจาก ~40% ของรายได้ เป็น 58% ในปี 2025 TSMC Arizona Fab 21 เริ่ม production ปี 2024 (N4 process)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>CC Wei กลายเป็น Chairman &amp; CEO:</strong> Board เลือก Wei เป็นทั้ง Chairman และ CEO ในเดือนมิถุนายน 2024 ยืนยัน succession plan ที่ solid TSMC ประกาศลงทุน US fab เพิ่ม ทั้งใน Arizona (Fab 21 N2), Japan (Kumamoto), และ Germany (Dresden ที่ตัดสินใจสร้าง)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>Record year ทุกด้าน:</strong> Revenue $122.42B, Net income $55.21B — โดย HPC (AI chips) คิดเป็น 58% ของรายได้ TSMC เป็น AI infrastructure company โดยพฤตินัย แม้จะยัง call ตัวเองว่า foundry</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TSMC มี track record ที่น่าประทับใจ — <strong>มีปีเดียวที่ revenue ลง (2023) จากการ inventory correction</strong> ทั่ว semiconductor industry แต่ bounce back ในปี 2024-2025 ด้วย AI demand</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue (USD)</th>
+            <th>Net Income (USD)</th>
+            <th>Gross Margin</th>
+            <th>Op. Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2020</td><td>$45.5B</td><td>$17.6B</td><td>53.1%</td><td>42.8%</td></tr>
+          <tr><td>2021</td><td>$56.8B</td><td>$21.1B</td><td>52.7%</td><td>41.7%</td></tr>
+          <tr><td>2022</td><td>$75.9B</td><td>$34.4B</td><td>59.6%</td><td>49.5%</td></tr>
+          <tr><td>2023</td><td>$69.3B</td><td>$26.9B</td><td>54.4%</td><td>42.6%</td></tr>
+          <tr><td>2024</td><td>$90.1B</td><td>$36.5B</td><td>56.1%</td><td>45.7%</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$122.4B</td><td>$55.2B</td><td>59.9%</td><td>50.8%</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: TSMC FY2025 Earnings Release, SEC Form 6-K (January 2026) · USD figures from official press release · Historical figures approximate</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue 5-yr CAGR</div>
+          <div class="stat-value">~22%</div>
+          <div class="stat-sub">2020 → 2025 (USD)</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Income 5-yr CAGR</div>
+          <div class="stat-value">~26%</div>
+          <div class="stat-sub">Faster than revenue growth</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-label">2025 Margin Expansion</div>
+          <div class="stat-value">+5.1%</div>
+          <div class="stat-sub">Op margin YoY improvement</div>
+        </div>
+      </div>
+      <p>สิ่งสำคัญใน track record: ปี 2023 ที่ revenue ลด 9% คือ <strong>semiconductor inventory correction ทั่วอุตสาหกรรม ไม่ใช่เรื่องของ TSMC เอง</strong> — แล้ว bounce back 30% ปี 2024 และ 36% ปี 2025 แสดงว่า demand จริงๆ ไม่ได้หายไปไหน แค่ขยับ timing</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Dr. C.C. Wei</div>
+          <div class="boss-title">Chairman &amp; Chief Executive Officer, TSMC</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>ไต้หวัน (ปีเกิดไม่เปิดเผย)</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>BS Electrical Engineering, National Chiao Tung University · PhD, Yale University</span></div>
+            <div class="boss-fact"><span class="label">เข้า TSMC</span><span>1998</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>June 2018</span></div>
+            <div class="boss-fact"><span class="label">Chairman ตั้งแต่</span><span>June 2024</span></div>
+            <div class="boss-fact"><span class="label">ผู้ก่อตั้ง</span><span>Morris Chang (เกษียณ 2018)</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>CC Wei เป็น <strong>engineer's engineer</strong> — ก่อน TSMC ทำงานที่ Texas Instruments, ST Microelectronics, และ Chartered Semiconductor ด้าน process technology เมื่อเข้า TSMC ปี 1998 ขึ้นผ่าน VP, EVP, Co-COO จนเป็น CEO ปี 2018 Morris Chang เรียกเขาว่า "CEO ที่เตรียมตัวพร้อมที่สุดที่ฉันเคยเห็น" Wei เป็น technical operator ที่เน้น execution และ customer trust มากกว่า public relations</p>
+          <p style="margin-top:12px">ใต้การนำของ Wei TSMC navigate ผ่าน US-China trade war, COVID supply chain crisis, และ AI supercycle ได้อย่าง exceptional — <strong>ความท้าทายหลักตอนนี้คือ globalization ของ fab</strong> (Arizona, Japan, Germany) โดยไม่สูญเสีย operational excellence ที่ Taiwan ซึ่งเป็น core ของ cost and yield advantage</p>
+        </div>
+      </div>
+      <div class="callout blue">
+        <p><strong>Morris Chang — The Founder's Legacy:</strong> Chang เกิด 1931 ในเซี่ยงไฮ้, เรียน MIT (BS/MS mechanical engineering), PhD Stanford (electrical engineering), ทำงาน TI 25 ปี ก่อนมาก่อตั้ง TSMC อายุ 55 ปี เขาเปลี่ยน semiconductor industry structure ทั้งหมดด้วย pure-play foundry model — concept ที่ทุกคนบอกว่าจะล้มเหลว แต่กลายเป็น model ที่ dominates semiconductor manufacturing ในวันนี้</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>TSMC รับ design files (GDSII) จากลูกค้า แล้วผลิตชิปออกมาตาม spec นั้น</strong> — ไม่ได้ออกแบบเอง ไม่มี TSMC-branded chip ขาย แต่ทุกชิปที่ออกมาจาก fab TSMC คือ physical result ของการออกแบบที่ลูกค้าทำ</p>
+      <div class="callout blue">
+        <p><strong>Pure-Play Foundry — ไม่มี skin in the game ของลูกค้า:</strong> Intel ออกแบบ CPU และผลิตเอง (IDM) — ทำให้ Intel เป็น competitor ของ AMD ทั้งคู่ต้องไม่เลือก Intel เป็น foundry TSMC ไม่ออกแบบชิปเลย → NVIDIA, AMD, Qualcomm, Apple ไว้ใจ TSMC ได้เต็มที่ ไม่ต้องกลัว IP รั่ว ไม่ต้องกลัว TSMC จะเอา design ไปสร้างแข่ง</p>
+      </div>
+      <div class="callout teal">
+        <p><strong>Leading-Edge Process Technology — ความสามารถที่ไม่มีใครทำได้เท่า:</strong> TSMC คือ leader ใน advanced node — 3nm (N3), 2nm (N2, เริ่ม 2025), และกำลังพัฒนา 1.6nm (A16) สิ่งที่ทำให้ TSMC ดีกว่าทุกคนคือ <em>yield rate</em> (% of chips that work) ที่สูงกว่า และ <em>time-to-volume</em> ที่เร็วกว่า ASML EUV machine ที่มีแค่ TSMC, Samsung, Intel — และ TSMC ใช้ได้ดีที่สุด</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Services ที่ครบวงจร:</strong> นอกจาก wafer fabrication TSMC ยังมี Design Support (ช่วย customer optimize design สำหรับ process), Packaging (CoWoS, SoIC — advanced packaging ที่ NVIDIA H100 ใช้), และ Mask Making ทำให้ลูกค้าไม่ต้องไปหาที่อื่น ทุกอย่างครบที่ TSMC</p>
+      </div>
+      <p>ใน 1 ประโยค: <strong>TSMC คือ foundational infrastructure ของยุค semiconductor — ถ้าคุณต้องการผลิต chip ที่ดีที่สุดในโลก ยังไงก็ต้องมาที่ TSMC</strong></p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>TSMC ขาย wafers</strong> — ลูกค้าจ่ายตามจำนวน wafer (แผ่นซิลิกอนที่ผลิตชิปออกมา) ราคาต่อ wafer สำหรับ advanced node อยู่ที่ $10,000-$20,000 ขึ้นอยู่กับ process node และ complexity ยิ่ง advanced node ยิ่งแพง — แต่ yield ก็ดีขึ้น ทำให้ cost per chip สมเหตุสมผล</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $122.4B แบ่งตาม end-market platform</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🖥 HPC (High Performance Computing)</div>
+            <div class="rev-numbers"><strong>58%</strong> · ~$71B</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-hpc" style="width:58%"></div></div>
+          <div class="rev-note">AI GPUs (NVIDIA), AI accelerators (Google TPU, AWS Trainium), AMD GPUs — โต 48% YoY ในปี 2025 คือ primary growth driver</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">📱 Smartphone</div>
+            <div class="rev-numbers"><strong>29%</strong> · ~$35.5B</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-phone" style="width:29%"></div></div>
+          <div class="rev-note">Apple A-series (iPhone/iPad/Mac), Qualcomm Snapdragon — โต 11% YoY ปี 2025 — mature แต่ยังใหญ่</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🚗 Automotive</div>
+            <div class="rev-numbers"><strong>5%</strong> · ~$6.1B</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-auto" style="width:5%"></div></div>
+          <div class="rev-note">EV chips, ADAS (Advanced Driver-Assistance Systems) — โต 34% YoY ปี 2025 growing fast</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🌐 IoT</div>
+            <div class="rev-numbers"><strong>5%</strong> · ~$6.1B</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-iot" style="width:5%"></div></div>
+          <div class="rev-note">Edge devices, industrial — stable growth segment</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">📦 DCE &amp; Others</div>
+            <div class="rev-numbers"><strong>3%</strong> · ~$3.7B</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-other" style="width:3%"></div></div>
+          <div class="rev-note">Digital Consumer Electronics, etc.</div>
+        </div>
+      </div>
+      <p>Key insight: <strong>HPC ที่ 58% ของรายได้ในปี 2025 (จาก ~40% ในปี 2022-2023) แสดงให้เห็นว่า AI adoption ทำให้ mix shift อย่างชัดเจน</strong> — และ HPC มี ASP (average selling price) สูงกว่า smartphone เพราะ process node ที่ cutting-edge กว่า ทำให้ margin ดีขึ้นต่อเนื่อง</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TSMC มี compounding mechanics ที่ built เข้าไปใน physics ของ semiconductor manufacturing — <strong>ยิ่ง build ยิ่งเก่ง ยิ่งเก่งยิ่ง win</strong></p>
+      <div class="callout blue">
+        <p><strong>Process Learning Curve — ไม่สามารถซื้อได้ด้วยเงิน:</strong> ทุกครั้งที่ TSMC ผลิต wafer ในกระบวนการใหม่ พวกเขาเรียนรู้ว่าจะปรับ recipe อย่างไรเพื่อให้ yield ดีขึ้น Samsung และ Intel มี EUV เหมือนกัน แต่ yield rate ต่ำกว่า TSMC อย่างมีนัยสำคัญ — เพราะ years of learning ที่ TSMC สะสมมา ไม่มีทางซื้อ learning curve ได้ ต้องผลิตให้ได้ปริมาณมากก่อน</p>
+      </div>
+      <div class="callout teal">
+        <p><strong>Ecosystem Lock-in — ทุกคนออกแบบสำหรับ TSMC Process:</strong> EDA tool (Synopsys, Cadence), IP library (ARM cores, interface IP), packaging partners — ทั้งหมด optimized สำหรับ TSMC process nodes เมื่อ design team ออกแบบใน TSMC PDK (Process Design Kit) การย้ายไป foundry อื่นต้องเริ่มต้น design ใหม่เกือบทั้งหมด — ทำให้ switching cost สูงมาก</p>
+      </div>
+      <div class="callout green">
+        <p><strong>CapEx Flywheel — ยิ่ง reinvest ยิ่งนำ:</strong> TSMC ลงทุน CapEx ~30-35% ของรายได้ทุกปี ($38-42B ใน FY2025 estimate) เพื่อสร้าง fab ใหม่และพัฒนา process ใหม่ บริษัทที่มีรายได้น้อยกว่าไม่สามารถ sustain ระดับ investment นี้ได้ — ทำให้ technology gap ขยายขึ้นทุกปี ไม่ใช่แคบลง</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card teal">
+          <div class="stat-label">Annual CapEx (FY2025 est.)</div>
+          <div class="stat-value">~$38B</div>
+          <div class="stat-sub">~31% of revenue</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Cash Position</div>
+          <div class="stat-value">Strong</div>
+          <div class="stat-sub">Self-funds all expansion</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Dividend Yield</div>
+          <div class="stat-value">~1.5%</div>
+          <div class="stat-sub">Regular quarterly dividend (USD ADR)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>2nm (N2) เริ่ม production ในปี 2025 — TSMC ยังล้ำหน้า</h4>
+        <p>N2 process node เริ่ม production ปี 2025 ด้วย Apple A-series และ Intel 20A-like chips เป็นลูกค้าแรกๆ N2 ให้ performance +15% หรือ power -25% เทียบ N3 Samsung 2nm ยังไม่ถึง volume production</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>CoWoS packaging bottleneck คลาย → NVIDIA ได้ volume มากขึ้น</h4>
+        <p>CoWoS (Chip-on-Wafer-on-Substrate) คือ advanced packaging ที่ NVIDIA Blackwell ใช้ ปี 2024 เป็น bottleneck ทำให้ NVIDIA ส่ง GPU ได้ไม่เต็มที่ TSMC ขยาย CoWoS capacity ต่อเนื่อง ทำให้ HPC revenue เร่งขึ้นใน 2025</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Geographic diversification เริ่ม — Arizona, Japan, Germany fab</h4>
+        <p>Arizona Fab 21 (N4 process, เริ่ม Q1 2024) เดินเครื่อง → Apple เป็นลูกค้าแรก N2 Arizona planned ปี 2026 Japan Kumamoto Fab เปิดปี 2024 (mature node) เพิ่ม geopolitical resilience ให้ลูกค้า</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>US-Taiwan Tariff deal — ผลกระทบต่อ pricing</h4>
+        <p>US tariff pressure บน Taiwan ทำให้ TSMC ต้องเจรจา local content requirements และ pricing ใหม่สำหรับ US fab TSMC ยืนยันว่า Arizona wafer ราคาสูงกว่า Taiwan ~10-20% เพราะ cost structure ต่างกัน ต้องดูว่า premium นี้จะกระทบ margin อย่างไรระยะยาว</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Geopolitical concentration — 90%+ capacity ยังอยู่ใน Taiwan</h4>
+        <p>แม้ TSMC ลงทุน Arizona และ Japan แต่ leading-edge capacity (2nm, 3nm) ส่วนใหญ่ยังอยู่ Taiwan Strait scenario ยังเป็น "black swan" ที่ทุกคนพูดถึง แต่ hedge ด้วยการ hold — ไม่ใช่เหตุผลที่จะหลีกเลี่ยง TSMC</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Customer concentration — Apple + NVIDIA ~40%+ ของรายได้</h4>
+        <p>Apple คือลูกค้าที่ใหญ่ที่สุด (~25% ประมาณ) NVIDIA โต rapidly เพราะ AI ถ้า Apple เปลี่ยน design strategy หรือ NVIDIA เจอ demand cliff ใน AI TSMC จะรู้สึกทันที</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TSMC มีคู่แข่งในนาม แต่ไม่มีใครมา close ใน leading-edge process</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">⚙️</div>
+          <div>
+            <div class="comp-segment">Advanced Foundry — 3nm and below</div>
+            <div class="comp-pos dominant">Dominant — market share ~92%</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">TSMC — N3/N2 leader</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:92%;background:var(--tsm-blue)"></div></div>
+            <div class="comp-detail">~92% leading-edge foundry share ในปี 2025 Apple, NVIDIA, AMD, Qualcomm, Broadcom, MediaTek, Google ล้วนใช้ TSMC สำหรับ advanced chips</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Samsung Foundry</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:6%;background:#555"></div></div>
+            <div class="comp-detail">เคย compete ใน 3nm แต่ yield issues ทำให้ลูกค้าหลักอย่าง Qualcomm กลับมาใช้ TSMC Samsung ยังพัฒนา 2nm อยู่แต่ยังไม่ volume</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Intel Foundry Services (IFS)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:2%;background:#333"></div></div>
+            <div class="comp-detail">Intel 18A (≈2nm equivalent) กำลัง come to market แต่ IFS ยังขาดทุนหนัก และลูกค้าหลักคือ Intel เอง ยากที่จะ trust เป็น foundry ให้ AMD, NVIDIA</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">Leading-edge foundry คือ oligopoly ที่ TSMC เป็น near-monopoly — Samsung อยู่ห่างมาก Intel ยังไม่พิสูจน์ตัวเองในฐานะ foundry</div>
+      </div>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🏭</div>
+          <div>
+            <div class="comp-segment">Mature Node Foundry (28nm and above)</div>
+            <div class="comp-pos challenger">Competitive — price-sensitive market</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">TSMC — ยังมี mature node fab</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:40%;background:var(--tsm-blue)"></div></div>
+            <div class="comp-detail">TSMC มี mature node capacity แต่ CapEx focus ที่ advanced — mature ไม่ใช่ growth focus</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">SMIC (China)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#a55"></div></div>
+            <div class="comp-detail">Chinese government-backed foundry สำหรับ China domestic market — ราคาถูกกว่า แต่ technology ห่างกัน 2-3 generation</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">GlobalFoundries / UMC</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:#666"></div></div>
+            <div class="comp-detail">Focus mature node เป็นหลัก ไม่ compete leading-edge — ลูกค้า: automotive, RF chips, secure elements</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">Mature node มีคู่แข่งมากกว่า — แต่นี่ไม่ใช่ focus ของ TSMC value proposition ปัจจุบัน</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding. Own durable businesses inside major global money-flow layers. Patient. Accepts volatility. Focuses on business quality. Target: ~15% annualized return over multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">TSMC เป็น <strong>textbook Core holding</strong> — durable earnings จาก near-monopoly position, market leadership ที่ไม่มีใครแย่งได้ใน years, compounding mechanics ที่ built เข้าไปใน physics ของ manufacturing, และ real earnings ที่ $55B net income ปี 2025</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🏔</div>
+              <div class="trait-name">Irreplaceable Infrastructure</div>
+              <div class="trait-desc">~92% leading-edge foundry share — ถ้า TSMC หยุดผลิต, Apple, NVIDIA, AMD ไม่มีชิปจะขาย แทบไม่มีสถานการณ์ที่ moat นี้หายไป</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">📈</div>
+              <div class="trait-name">Real Earnings ที่ชัดเจน</div>
+              <div class="trait-desc">$55.2B net income ปี 2025 — หนึ่งใน most profitable companies บนโลก gross margin 59.9%, op margin 50.8% สำหรับ manufacturing company</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Compounding ที่ Structural</div>
+              <div class="trait-desc">Process learning curve ขยายไปเรื่อยๆ ecosystem lock-in แน่นขึ้น CapEx flywheel ยิ่ง reinvest ยิ่งนำหน้า — คู่แข่งตามได้ยากขึ้นทุกปี</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">AI Infrastructure = Core</div>
+              <div class="trait-desc">ทุก AI model ที่ train หรือ inference ต้องการ chip ที่ผลิตจาก TSMC — TSMC เป็น "picks and shovels" ของ AI era ที่ชัดที่สุด</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>TSM ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่ Wave — thesis ชัดอยู่แล้ว ไม่ต้องรอ re-rating</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB — นี่คือ multi-year hold ไม่ใช่ tactical rotation</span>
+            <span class="not-tag">✗ ไม่ใช่ speculative — $55B กำไรคือ real money</span>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: TSM → Core</h4>
+            <p>TSMC คือ Core ที่ชัดที่สุดในบรรดาทุกบริษัทใน list นี้ — near-monopoly ใน leading-edge foundry, $55B net income ที่โต 51% ปี 2025, structural compounding จาก learning curve ที่ไม่มีใครซื้อตามได้ และเป็น foundational infrastructure ของยุค AI โดยตรง Geopolitical risk ใน Taiwan ต้อง price-in แต่ไม่ใช่เหตุผลที่จะ avoid — เป็นเหตุผลที่ต้องมีในระดับ position size ที่เหมาะสม hold ระยะยาว accept volatility จาก Taiwan headline risk add เมื่อ correction เกิดจาก geopolitical fear ไม่ใช่ business deterioration</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — TSM / Taiwan Semiconductor Manufacturing Company, Limited · Source: TSMC FY2025 Earnings Release, SEC Form 6-K (January 2026)</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="tsm-dot">
+      <span style="background:var(--tsm-dark)"></span>
+      <span style="background:var(--tsm-blue)"></span>
+      <span style="background:var(--tsm-red)"></span>
+      <span style="background:var(--tsm-teal)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

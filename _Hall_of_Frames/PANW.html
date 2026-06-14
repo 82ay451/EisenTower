@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PANW — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --panw-orange: #FA582E;
+      --panw-dark:   #111D29;
+      --panw-blue:   #00ADEF;
+      --panw-navy:   #1A3A5C;
+      --panw-orange-soft: #fff0eb;
+      --panw-blue-soft:   #e0f6ff;
+      --accent:      var(--panw-orange);
+      --accent-soft: var(--panw-orange-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--panw-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--panw-orange) 35%, var(--panw-blue) 35% 65%, var(--panw-navy) 65% 85%, var(--panw-dark) 85%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-panw { color: var(--panw-orange); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--panw-dark); border-bottom: 1px solid #1a2d3d; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(250,88,46,0.2); color: var(--panw-orange); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--panw-orange); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--panw-orange-soft); color: var(--panw-orange); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.orange { border-left: 3px solid var(--panw-orange); }
+    .stat-card.blue   { border-left: 3px solid var(--panw-blue); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.navy   { border-left: 3px solid var(--panw-navy); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-sub  { background: var(--panw-orange); }
+    .bar-prd  { background: var(--panw-blue); }
+    .bar-svc  { background: var(--panw-navy); }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.orange { background: var(--panw-orange-soft); border-color: var(--panw-orange); }
+    .callout.blue   { background: var(--panw-blue-soft);   border-color: var(--panw-blue); }
+    .callout.green  { background: var(--green-soft);       border-color: var(--green); }
+    .callout.dark   { background: #e8edf5;                 border-color: var(--panw-dark); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--panw-orange), var(--panw-blue)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--panw-orange); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--panw-orange); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--panw-orange-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #155c38; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--panw-orange-soft); color: var(--panw-orange); }
+    .comp-pos.contender  { background: var(--yellow-soft); color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--panw-orange); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.orange { background: var(--panw-orange-soft); border-color: var(--panw-orange); color: #8a2000; }
+    .comp-verdict.green  { background: var(--green-soft);       border-color: var(--green);       color: #155c38; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--panw-dark) 0%, #1a2d3d 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--panw-orange-soft); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: #8a2000; margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .fit-box { background: var(--green-soft); border: 1px solid #a8d8bc; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #155c38; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--panw-orange); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(250,88,46,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--panw-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .panw-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .panw-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-panw">PANW</span> — Palo Alto Networks, Inc.</h1>
+    <div class="doc-subtitle">Understanding Palo Alto Networks as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NASDAQ: PANW</span>
+      <span>🏛 Founded 2005 · Santa Clara, CA</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Palo Alto Networks คือ <strong>บริษัท cybersecurity ที่ใหญ่ที่สุดในโลก</strong> (ด้วย revenue) — ครอบคลุมทุก layer ของ security ตั้งแต่ network firewall, cloud security, ไปจนถึง SOC/XDR (Security Operations Center / Extended Detection and Response) เป้าหมายของ Nikesh Arora คือ consolidate "security vendors จาก 30-40 tools เป็น 1-3 platform" — และ platform ที่ชนะจะเป็น PANW</p>
+      <p>FY2025 (fiscal year ending July 2025) รายได้ <strong>$9.22B (+15% YoY)</strong> GAAP Net Income $1.13B — profitable อย่างชัดเจน Next-Generation Security ARR <strong>$5.6B (+32% YoY)</strong> และ RPO $15.8B (+24%) แสดงให้เห็นว่า platform adoption กำลัง accelerate</p>
+      <div class="stat-grid">
+        <div class="stat-card orange">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$9.22B</div>
+          <div class="stat-sub">+15% YoY</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">GAAP Net Income</div>
+          <div class="stat-value">$1.13B</div>
+          <div class="stat-sub">FY2025 · GAAP profitable</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">NGS ARR</div>
+          <div class="stat-value">$5.6B</div>
+          <div class="stat-sub">+32% YoY · platform adoption</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">RPO</div>
+          <div class="stat-value">$15.8B</div>
+          <div class="stat-sub">+24% YoY · forward revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Q4 FY2025 Revenue</div>
+          <div class="stat-value">$2.5B</div>
+          <div class="stat-sub">+16% YoY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">FY2026 Guidance</div>
+          <div class="stat-value">~$10.5B</div>
+          <div class="stat-sub">+14% YoY (midpoint)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2005</div>
+          <div class="tl-text"><strong>Nir Zuk ก่อตั้ง Palo Alto Networks</strong> ที่ Santa Clara — Zuk เคยทำงานที่ Check Point (เป็นหนึ่งในคนที่ create stateful inspection firewall) เขาเห็นว่า firewall เก่าๆ ไม่สามารถ inspect application-level traffic ได้ → สร้าง "next-generation firewall" (NGFW) ที่ understand applications ไม่ใช่แค่ ports</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2012</div>
+          <div class="tl-text"><strong>IPO บน NASDAQ:</strong> PANW เข้าตลาดหุ้นด้วย Next-Gen Firewall เป็นหัวใจ ช่วง 2012-2018 โตเร็วมาก เพราะ enterprise เริ่ม replace legacy Check Point/Cisco firewall ด้วย PANW NGFW ที่ application-aware กว่า</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2018 Jun</div>
+          <div class="tl-text"><strong>Nikesh Arora เข้ารับตำแหน่ง Chairman &amp; CEO:</strong> Arora มาจาก Google (10 ปี, SVP) และ SoftBank (President/COO) เขา commit ลงทุนเงินส่วนตัวใน PANW มากที่สุดในประวัติศาสตร์ CEO คนไหนก็ตาม เป็น signal ว่าเชื่อมาก strategy shift: จาก "best-of-breed firewall" เป็น "cybersecurity platform"</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019–2022</div>
+          <div class="tl-text"><strong>Platform build through acquisitions:</strong> Arora ซื้อ Demisto (SOAR, $560M), Cortex XDR อินทิเกรต, Prisma Cloud ขยาย PANW เริ่มมีสาม "platform pillars": Strata (network), Prisma (cloud), Cortex (AI SOC) กลยุทธ์ชัด: ลูกค้าซื้อ 1 platform ได้ security ทุกอย่าง</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024 Feb</div>
+          <div class="tl-text"><strong>Platformization strategy เริ่ม — controversy ตามมา:</strong> Arora ประกาศ "platformization" — ให้ลูกค้าบาง trial Prisma/Cortex ฟรีในช่วง transition เพื่อ consolidate security vendors Q2 FY2024 guidance ลด short-term billing → stock ลง 28% ในคืนเดียว แต่ long-term thesis ถูกต้อง — NGS ARR accelerate ขึ้นตั้งแต่นั้น</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>NGS ARR $5.6B — platformization thesis prove:</strong> NGS ARR โต 32% ยืนยันว่า customer เริ่มซื้อ multi-platform มากขึ้น RPO $15.8B (+24%) บอกว่า enterprise commit ระยะยาวแล้ว GAAP profitable แสดงว่า scale economics เริ่มทำงาน FY2025 revenue $9.22B ครบ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี (Jul FY)</th>
+            <th>Revenue</th>
+            <th>GAAP Net Income</th>
+            <th>NGS ARR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>FY2021</td><td>$4.26B</td><td>-$266M</td><td>~$1.4B</td></tr>
+          <tr><td>FY2022</td><td>$5.50B</td><td>-$267M</td><td>~$2.4B</td></tr>
+          <tr><td>FY2023</td><td>$6.90B</td><td>+$439M</td><td>~$3.5B</td></tr>
+          <tr><td>FY2024</td><td>$8.03B</td><td>+$2.58B*</td><td>$4.2B</td></tr>
+          <tr class="highlight"><td>FY2025 ✦</td><td>$9.22B</td><td>+$1.13B</td><td>$5.6B</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: Palo Alto Networks FY2025 Earnings Release (August 2025) · *FY2024 net income สูงผิดปกติเพราะ deferred tax benefits · NGS ARR = Next-Generation Security Annual Recurring Revenue (subscription platform metric)</p>
+      <div class="stat-grid">
+        <div class="stat-card orange">
+          <div class="stat-label">Revenue 4-yr CAGR</div>
+          <div class="stat-value">~21%</div>
+          <div class="stat-sub">FY2021 → FY2025</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">NGS ARR 4-yr CAGR</div>
+          <div class="stat-value">~41%</div>
+          <div class="stat-sub">ตัวชี้วัด platform adoption</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Q4 FY2025 Non-GAAP Op. Margin</div>
+          <div class="stat-value">30.3%</div>
+          <div class="stat-sub">Margin expansion เด่นชัด</div>
+        </div>
+      </div>
+      <p>PANW GAAP profitable ครั้งแรกจริงๆ ใน FY2023 และรักษาระดับ GAAP profit ตั้งแต่นั้น — <strong>transition จาก "hyper-growth, burn-cash" สู่ "profitable platform" สำเร็จแล้ว</strong></p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Nikesh Arora</div>
+          <div class="boss-title">Chairman &amp; CEO, Palo Alto Networks</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>February 9, 1968, Ghaziabad, India</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>BTech Electrical Engineering, IIT (BHU) Varanasi · MS, Boston College · MBA, Northeastern University</span></div>
+            <div class="boss-fact"><span class="label">ก่อน PANW</span><span>Google SVP/Chief Business Officer (10 ปี) · SoftBank President &amp; COO</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>June 2018</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Nikesh Arora เป็น <strong>one of the most charismatic and aggressive CEO ใน tech industry</strong> — เขาสร้าง Google's revenue engine ใน Europe และ globally ก่อนจะย้ายไป SoftBank ที่ Masayoshi Son แล้วก็มา PANW เขา commit เงินส่วนตัว $180M+ ซื้อ PANW shares ตอน join ซึ่งเป็น signal ที่ market ไม่ ignore</p>
+          <p style="margin-top:12px">Strategy ของ Arora คือ <strong>"platformization"</strong> — แทนที่จะให้ enterprise ซื้อ best-of-breed security tool 30-40 vendors, PANW offer ทุกอย่างใน 3 platforms แล้วให้ trial ฟรีเพื่อ accelerate consolidation ความท้าทาย: prove ว่า platform economics จะ kick in ให้เร็วกว่าที่ short-term billing drop ทำให้คนกังวล — ซึ่งข้อมูล FY2025 เริ่ม prove ว่าถูก</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>PANW ทำ cybersecurity software และ hardware ที่ protect ทุก attack surface ขององค์กร</strong> — network, cloud, endpoints, email, identity ทุกอย่าง อธิบายได้ใน 3 platform pillars:</p>
+      <div class="callout orange">
+        <p><strong>Strata — Network Security:</strong> Next-Generation Firewall (NGFW) ที่รู้จัก application ไม่ใช่แค่ port ทั้งแบบ hardware appliance (PA-series) และ software ML-Powered NGFW, SD-WAN, SASE (Secure Access Service Edge) ใครที่มี network ต้องมี Strata นี่คือ legacy core ที่ทำเงินมานาน</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>Prisma — Cloud Security:</strong> CSPM (Cloud Security Posture Management), CWPP (Cloud Workload Protection), CNAPP (Cloud Native Application Protection Platform) — ทุกอย่างที่ protect workloads บน AWS, Azure, GCP Prisma Cloud เป็น leader ใน cloud security ที่ growing fastest</p>
+      </div>
+      <div class="callout dark">
+        <p><strong>Cortex — AI-Powered Security Operations:</strong> XDR (Extended Detection and Response) รวม endpoint, network, cloud telemetry เข้าด้วยกัน XSIAM (Security Information and Event Management + SOAR) ที่ AI-powered ทำให้ SOC team detect and respond faster Cortex คือ platform ที่ Arora bet ว่าจะ win AI SOC market</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Subscription + support เป็นหลัก (80%+)</strong> — hardware firewall (product revenue) ลดสัดส่วนลง subscription (cloud, services) เพิ่มขึ้น ทำให้ revenue predictable และ margin ดีขึ้น</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $9.22B แบ่งตามประเภท</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">📋 Subscription &amp; Support</div>
+            <div class="rev-numbers"><strong>~$7.9B</strong> · ~86%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-sub" style="width:86%"></div></div>
+          <div class="rev-note">Prisma Cloud, Cortex XSIAM/XDR, Strata subscriptions, support contracts — high margin, recurring</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🖥 Product (Hardware)</div>
+            <div class="rev-numbers"><strong>~$1.3B</strong> · ~14%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-prd" style="width:14%"></div></div>
+          <div class="rev-note">PA-series firewall hardware appliances — สัดส่วนลดลงทุกปี เพราะ NGFW ย้ายไป software/cloud</div>
+        </div>
+      </div>
+      <p><strong>NGS ARR $5.6B คือ metric ที่สำคัญที่สุดสำหรับ platform business</strong> — มันวัด "annual recurring revenue จาก next-gen products" (Prisma, Cortex, SASE) ซึ่งคือ future of PANW NGS ARR +32% YoY บอกว่า platform migration กำลังเร่ง</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="callout orange">
+        <p><strong>Platformization Flywheel — More Products = Lower Churn:</strong> ลูกค้าที่ใช้ Strata + Prisma + Cortex ครบทั้ง 3 pillars มี churn rate ต่ำมาก เพราะ switching cost สูงมาก — ต้องหาคนมาทำ 3 functions ใหม่พร้อมกันทั้งหมด PANW วัด "platformized customers" — ยิ่งมีลูกค้าใช้ 3 pillars ยิ่ง NRR (Net Revenue Retention) สูง</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>AI in Security — Cortex XSIAM ตอบรับ AI era:</strong> การโจมตี cyber มีจำนวนและความซับซ้อนเพิ่มขึ้นทุกปี ทำให้ AI-powered SOC เป็น must-have Cortex XSIAM ใช้ AI ในการ correlate alerts, detect threats, และ automate response ยิ่ง threat landscape ซับซ้อนขึ้น ยิ่งต้องการ PANW มากขึ้น</p>
+      </div>
+      <div class="callout green">
+        <p><strong>RPO $15.8B — Multi-Year Contract Visibility:</strong> Remaining Performance Obligation คือ contracted revenue ที่ยังไม่ recognize ส่วนใหญ่มาจาก multi-year subscription contracts ที่ enterprise sign เพื่อ lock in pricing และ capacity RPO +24% YoY บอกว่า enterprise commit ระยะยาวกับ PANW</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>NGS ARR +32% — platformization thesis delivering</h4>
+        <p>NGS ARR ที่ $5.6B (+32% YoY) เป็น validation ว่า platformization strategy ทำงาน ลูกค้าเพิ่ม products ที่ใช้จาก PANW มากขึ้น ไม่ใช่แค่ renew firewall เดิม ซึ่งเป็นสิ่งที่ Arora bet ว่าจะเกิดขึ้น</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>AI security demand — Cortex XSIAM กำลัง land ใน enterprise</h4>
+        <p>SOC (Security Operations Center) เดิมต้องการ analyst จำนวนมากในการ review alerts Cortex XSIAM ที่ AI-powered ลด analyst workload ได้มาก enterprise ที่ shortage security talent กำลัง rush ซื้อ AI SOC solutions ซึ่ง PANW อยู่ในตำแหน่งที่ดีมาก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Revenue growth rate ชะลอจาก 20%+ เป็น 14-16%</h4>
+        <p>Growth rate ลดลงจาก 20%+ สู่ 14-16% เพราะ business ใหญ่ขึ้นและ platformization free trials ยังมีผล กด short-term billing ถ้า NGS ARR decelerate ต่อ จะกระทบ re-rating</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Crowdstrike recovery — competition ใน XDR/endpoint เพิ่มขึ้น</h4>
+        <p>Crowdstrike (CRWD) recover จาก July 2024 outage แล้ว และกลับมา compete ใน endpoint security และ XDR เต็มรูปแบบ Cortex vs Falcon เป็น battle ที่ดุเดือด Microsoft Sentinel ก็กดดันจาก Azure side</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🔥</div>
+          <div>
+            <div class="comp-segment">Network Security / Next-Gen Firewall</div>
+            <div class="comp-pos dominant">Dominant — largest revenue player</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Palo Alto Networks — NGFW leader</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:22%;background:var(--panw-orange)"></div></div>
+            <div class="comp-detail">~20-22% NGFW market share ใน enterprise segment — leader ใน "next-gen" category ML-powered firewall เป็น differentiation จาก legacy vendors</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Fortinet (FTNT)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:18%;background:#c00"></div></div>
+            <div class="comp-detail">Strong ใน mid-market firewall ด้วย ASIC-based hardware ที่ cost-efficient — ราคาถูกกว่า PANW แต่ ecosystem แคบกว่า</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Cisco (CSCO)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:#00bceb"></div></div>
+            <div class="comp-detail">Legacy firewall leader ที่กำลัง transition สู่ software/cloud security Cisco Secure Firewall ยังมี installed base ใหญ่มากแต่ innovation ช้ากว่า PANW</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Check Point (CHKP)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:12%;background:#cc0000"></div></div>
+            <div class="comp-detail">Oldest firewall company — ยังมี loyal enterprise customer base แต่ growth ช้ามาก ไม่ใช่ growth threat</div>
+          </div>
+        </div>
+        <div class="comp-verdict orange">PANW dominant ใน enterprise next-gen firewall แต่ Fortinet คือคู่แข่งที่ดุดันใน mid-market และ Cisco ยังมี massive installed base</div>
+      </div>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🤖</div>
+          <div>
+            <div class="comp-segment">XDR / AI SOC</div>
+            <div class="comp-pos challenger">Competitive — fast-growing, contested market</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Palo Alto Cortex XSIAM</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:var(--panw-orange)"></div></div>
+            <div class="comp-detail">Growing fast — "AI-native SOC" positioning เอา SIEM + SOAR + XDR มารวมกัน ลูกค้าใหญ่เพิ่มขึ้นทุกไตรมาส</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">CrowdStrike Falcon (CRWD)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:#e00"></div></div>
+            <div class="comp-detail">Leader ใน endpoint + XDR, cloud security กำลัง recover จาก July 2024 incident แต่ CRWD ยังมีแรง customer loyalty สูง ใน PANW's biggest competitor</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Microsoft Sentinel (MSFT)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#00a4ef"></div></div>
+            <div class="comp-detail">Azure-native SIEM+XDR ที่ enterprise ที่ all-in Microsoft มักเลือก ราคาถูกกว่า PANW เพราะรวมอยู่ใน Azure bundle แต่ capability แคบกว่า</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">AI SOC เป็นหนึ่งใน hottest market ใน cybersecurity — PANW กับ CRWD กับ MSFT จะ battle กันหนักใน 3-5 ปีข้างหน้า PANW มี breadth ของ platform เป็น advantage</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding. Own durable businesses inside major global money-flow layers. Patient. Accepts volatility. Focuses on business quality. Target: ~15% annualized return over multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">PANW เป็น Core เพราะ <strong>cybersecurity เป็น non-discretionary spend — องค์กรไม่มีทางหยุด security budget ไม่ว่า macro จะเป็นอย่างไร</strong> PANW เป็น leader ที่ใหญ่ที่สุดในอุตสาหกรรมนี้ ด้วย platform strategy ที่สร้าง lock-in และ NGS ARR +32% ที่ยืนยัน execution</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🛡</div>
+              <div class="trait-name">Non-Discretionary Spend</div>
+              <div class="trait-desc">Enterprise ไม่ cut security budget แม้ใน recession — cyber attack เพิ่มขึ้นทุกปี ทำให้ PANW เป็น defensive + growth ในเวลาเดียวกัน</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🔗</div>
+              <div class="trait-name">Platform Lock-in ที่ Deepens</div>
+              <div class="trait-desc">ยิ่งใช้ Strata + Prisma + Cortex ยิ่ง switch ยาก NGS ARR +32% บอกว่า locking-in กำลังเกิดขึ้นจริง</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">GAAP Profitable Scale</div>
+              <div class="trait-desc">$1.13B GAAP net income, RPO $15.8B (+24%) ไม่ใช่ burn-and-grow startup แล้ว เป็น mature platform ที่ยังเติบโต 14-15%</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🤖</div>
+              <div class="trait-name">AI Era = Security Complexity = PANW</div>
+              <div class="trait-desc">AI ทำให้ threat landscape ซับซ้อนขึ้น → ต้องการ AI-powered security → Cortex XSIAM เป็นหนึ่งใน best positioned</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>PANW ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่ Wave — thesis ชัดแล้ว ไม่ต้อง re-rate ใหม่</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB — long-term platform hold ไม่ใช่ rotation</span>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: PANW → Core</h4>
+            <p>PANW เป็น Core เพราะ cybersecurity เป็น structural necessity ไม่ใช่ optional spend, PANW เป็น market leader ที่ใหญ่ที่สุด, platform strategy กำลัง prove ตัวเอง (NGS ARR +32%), และ GAAP profitable แล้ว watch: growth rate deceleration และ competition จาก CrowdStrike/Microsoft ที่ต้องติดตาม add เมื่อ market กังวล macro กด security budget — เป็น opportunity ไม่ใช่ signal ออก</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — PANW / Palo Alto Networks, Inc. · Source: Palo Alto Networks FY2025 Earnings Release (August 2025)</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="panw-dot">
+      <span style="background:var(--panw-dark)"></span>
+      <span style="background:var(--panw-orange)"></span>
+      <span style="background:var(--panw-blue)"></span>
+      <span style="background:var(--panw-navy)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

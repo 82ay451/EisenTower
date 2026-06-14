@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MU — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --mu-blue:   #009FD8;
+      --mu-dark:   #001B42;
+      --mu-navy:   #003070;
+      --mu-purple: #5D3FD3;
+      --mu-blue-soft:   #e0f5ff;
+      --mu-purple-soft: #f0eeff;
+      --accent:      var(--mu-blue);
+      --accent-soft: var(--mu-blue-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--mu-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--mu-blue) 30%, var(--mu-purple) 30% 60%, var(--mu-navy) 60% 80%, var(--mu-dark) 80%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-mu { color: var(--mu-blue); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--mu-dark); border-bottom: 1px solid #00244f; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(0,159,216,0.18); color: var(--mu-blue); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--mu-blue); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--mu-blue-soft); color: var(--mu-blue); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--mu-blue); }
+    .stat-card.purple { border-left: 3px solid var(--mu-purple); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.dark   { border-left: 3px solid var(--mu-dark); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-dram  { background: var(--mu-blue); }
+    .bar-hbm   { background: var(--mu-purple); }
+    .bar-nand  { background: var(--mu-navy); }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--mu-blue-soft);   border-color: var(--mu-blue); }
+    .callout.purple { background: var(--mu-purple-soft); border-color: var(--mu-purple); }
+    .callout.green  { background: var(--green-soft);     border-color: var(--green); }
+    .callout.dark   { background: #e8edf5;               border-color: var(--mu-dark); }
+    .callout p { color: var(--text-primary); }
+    .cycle-warning { background: #fff7e0; border: 1px solid #f0d080; border-radius: 12px; padding: 18px 22px; margin: 20px 0; }
+    .cycle-warning .cw-title { font-size: 13px; font-weight: 700; color: #8a6000; margin-bottom: 6px; }
+    .cycle-warning p { font-size: 14px; color: #6a4500; }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--mu-blue), var(--mu-purple)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--mu-blue); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mu-blue); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--mu-blue-soft); }
+    .track-table tr.loss { background: var(--red-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #155c38; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--mu-blue-soft); color: var(--mu-blue); }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--mu-blue); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--mu-blue-soft); border-color: var(--mu-blue); color: #004d72; }
+    .comp-verdict.purple { background: var(--mu-purple-soft); border-color: var(--mu-purple); color: #3a1a8a; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: var(--mu-purple-soft); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #3a1a8a; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .exit-box { background: var(--red-soft); border: 1px solid #f0c0c0; border-radius: 12px; padding: 16px 20px; margin: 16px 0; }
+    .exit-box h4 { font-size: 14px; font-weight: 700; color: #b71c1c; margin-bottom: 8px; }
+    .exit-box p { font-size: 14px; color: #8a0000; }
+    .fit-box { background: var(--mu-purple-soft); border: 1px solid #c0b0f0; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #3a1a8a; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--mu-blue); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,159,216,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--mu-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .mu-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .mu-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-mu">MU</span> — Micron Technology, Inc.</h1>
+    <div class="doc-subtitle">Understanding Micron Technology as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NASDAQ: MU</span>
+      <span>🏛 Founded 1978 · Boise, Idaho</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Micron Technology คือ <strong>บริษัท semiconductor memory ที่ใหญ่ที่สุดของสหรัฐอเมริกา</strong> — ทำ DRAM (Dynamic Random Access Memory) และ NAND flash ซึ่งเป็น สองประเภทหน่วยความจำที่สำคัญที่สุดของโลกดิจิทัล เมื่อ AI era มาถึง Micron เป็น critical beneficiary เพราะ AI model ต้องการ memory มากกว่า traditional computing ถึง 5-8 เท่า ต่อ chip</p>
+      <p><strong>ตัวเลขที่เปลี่ยน Micron ใน FY2025:</strong> HBM (High Bandwidth Memory) — memory ที่ stack ซ้อนกันหลายชั้นและ attach ตรงบน GPU — Q4 FY2025 HBM revenue อยู่ที่ <strong>เกือบ $2B ในไตรมาสเดียว</strong> annualized run rate เข้าใกล้ $8B และ demand ยังเกินกว่า supply ที่ Micron produce ได้</p>
+      <div class="cycle-warning">
+        <div class="cw-title">⚠️ ต้องรู้ก่อนทุกอย่าง: Memory เป็น cyclical industry</div>
+        <p>FY2023 Micron ขาดทุน <strong>$5.83B</strong> — FY2025 กำไร <strong>$8.54B</strong> นี่คือ swing ของ memory cycle ในสองปี ไม่มีบริษัทใดใน Hall of Frames ที่ volatile เท่า Micron เข้าใจ cycle ก่อน evaluate thesis</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$37.4B</div>
+          <div class="stat-sub">+49% YoY · record</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">GAAP Net Income</div>
+          <div class="stat-value">$8.54B</div>
+          <div class="stat-sub">$7.59 diluted EPS</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">HBM Q4 Revenue</div>
+          <div class="stat-value">~$2B</div>
+          <div class="stat-sub">Annualized ~$8B run rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Operating Cash Flow</div>
+          <div class="stat-value">$17.5B</div>
+          <div class="stat-sub">FY2025 · +106% YoY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Q4 FY2025 Revenue</div>
+          <div class="stat-value">$11.3B</div>
+          <div class="stat-sub">Record quarterly</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">DRAM Q4 Revenue</div>
+          <div class="stat-value">~$9.0B</div>
+          <div class="stat-sub">~80% of Q4 revenue</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1978</div>
+          <div class="tl-text"><strong>ก่อตั้งใน Boise, Idaho:</strong> Ward Parkinson และ engineers กลุ่มหนึ่งก่อตั้ง Micron Technology ในฐานะ DRAM chip designer ที่ American startup — เวลานั้น DRAM market ถูก dominate โดย Japanese companies (Hitachi, Fujitsu, NEC)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1984</div>
+          <div class="tl-text"><strong>IPO และต่อสู้กับ Japan:</strong> Micron เข้าตลาดหุ้น ท่ามกลาง "DRAM war" ที่ Japan dumping ราคา US semiconductor companies เกือบทั้งหมด exit DRAM Micron อยู่รอดโดยสร้าง state-of-the-art fab ใน Boise ที่ cost ต่ำกว่า และต่อสู้ได้</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1994–2010</div>
+          <div class="tl-text"><strong>Decades of cyclicality:</strong> Micron ผ่านหลาย memory cycles — ตอน up cycle ทำกำไรมหาศาล ตอน down cycle ขาดทุน ซื้อ Crucial Technology, Lexar (flash storage ผู้บริโภค) ขยายจาก pure DRAM สู่ NAND flash</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2013</div>
+          <div class="tl-text"><strong>Acquire Elpida Memory (Japan) $2.5B:</strong> Elpida ล้มละลายจาก DRAM cycle ที่ crash Micron ซื้อ fab ใน Hiroshima และ Akita เพิ่ม capacity DRAM อย่างมีนัยสำคัญ Micron กลายเป็น #3 DRAM player ของโลก (ตามหลัง Samsung และ SK Hynix)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2017</div>
+          <div class="tl-text"><strong>Sanjay Mehrotra เข้าเป็น CEO:</strong> Mehrotra (Co-founder SanDisk, ผู้เชี่ยวชาญ flash memory) เข้า re-position Micron ให้เน้น data center memory, mobile, automotive — ออกจาก commodity consumer memory โดยเน้น value-add segments</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022–2023</div>
+          <div class="tl-text"><strong>Memory downcycle ครั้งใหญ่:</strong> Post-COVID demand collapse + oversupply ทำให้ DRAM/NAND prices crash -50-70% FY2023 Micron ขาดทุน $5.83B ต้อง cut capex, ลด headcount Micron ตอบสนองด้วย supply discipline — ลด production แทนที่จะ flood market</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024–2025</div>
+          <div class="tl-text"><strong>HBM supercycle — the thesis:</strong> NVIDIA H100/H200/B200 GPU ใช้ HBM3e แทน standard DRAM — ทำให้ memory revenue per chip เพิ่ม 5-8x จาก GPU แบบเก่า Micron เป็น 1 ใน 3 บริษัทในโลก (ร่วมกับ Samsung และ SK Hynix) ที่ผลิต HBM ได้ และ gain share จาก SK Hynix อย่างต่อเนื่อง FY2025 revenue $37.4B (+49%) กำไร $8.54B</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี (Aug FY)</th>
+            <th>Revenue</th>
+            <th>GAAP Net Income</th>
+            <th>Op Cash Flow</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>FY2021</td><td>$27.71B</td><td>+$5.86B</td><td>$9.15B</td></tr>
+          <tr><td>FY2022</td><td>$30.76B</td><td>+$8.69B</td><td>$14.93B</td></tr>
+          <tr class="loss"><td>FY2023 ↓</td><td>$15.54B</td><td><strong>-$5.83B</strong></td><td>$1.58B</td></tr>
+          <tr><td>FY2024</td><td>$25.11B</td><td>+$778M</td><td>$8.51B</td></tr>
+          <tr class="highlight"><td>FY2025 ✦</td><td>$37.38B</td><td>+$8.54B</td><td>$17.53B</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: Micron Technology FY2025 Q4 Earnings Release (October 2025) · ↓ FY2023 เป็น memory downcycle — DRAM/NAND prices crashed -50-70%</p>
+      <div class="callout dark">
+        <p><strong>Memory cycle คือ lesson ที่สำคัญที่สุดของ Micron:</strong> ดูแถว FY2023 — revenue ลดจาก $30.76B เป็น $15.54B ครึ่งเดียว และขาดทุน $5.83B ทุกคนที่ hold Micron ต้องเข้าใจว่า downcycle จะมาอีก ไม่มีวิธีหลีกเลี่ยง คำถามคือแค่ว่าเมื่อไหร่ ไม่ใช่ว่าจะมาหรือไม่</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Sanjay Mehrotra</div>
+          <div class="boss-title">President, CEO &amp; Director</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>June 27, 1958, Kanpur, India</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>BS + MS Electrical Engineering &amp; Computer Science, UC Berkeley (1976–1980) · Stanford Executive Program (2009)</span></div>
+            <div class="boss-fact"><span class="label">ก่อน Micron</span><span>Co-founder &amp; CEO SanDisk (1988–2016) ที่ WD ซื้อ $19B · Intel · SEEQ Technology</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>May 8, 2017</span></div>
+            <div class="boss-fact"><span class="label">Patents</span><span>70+ patents — หลายชิ้น foundational ใน flash memory</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Sanjay Mehrotra เป็น <strong>one of the most technically credible CEO ใน semiconductor ทั้งหมด</strong> — เขา co-found SanDisk ใน 1988 (ปีที่ flash memory เพิ่งถูกคิดค้น) hold 70+ patents สร้าง SanDisk จาก startup เป็น $19B acquisition target เขาไม่ใช่ MBA-type CEO ที่มาทำ financial engineering แต่เป็น engineer ที่กลายเป็น CEO</p>
+          <p style="margin-top:12px">Micron ภายใต้ Mehrotra เปลี่ยนจาก "commodity DRAM company ที่ cyclical ตาม market" เป็น <strong>"memory technology company ที่ focus on high-value segments"</strong> — HBM, data center DRAM, LPDDR5 for mobile AI, automotive memory เขา navigate FY2023 downcycle ได้โดยไม่ทำลาย balance sheet และ position ให้ HBM ramp ขึ้นเร็วใน FY2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Micron ออกแบบและผลิต semiconductor memory ที่เก็บข้อมูลชั่วคราว (DRAM) และถาวร (NAND flash)</strong> — ทุก smartphone, server, laptop, AI GPU บนโลกต้องใช้ memory ที่ Micron หรือคู่แข่ง 2 รายทำ</p>
+      <div class="callout blue">
+        <p><strong>DRAM (Dynamic RAM) — 77-80% of Revenue:</strong><br>
+        • <strong>HBM (High Bandwidth Memory):</strong> DRAM ที่ stack 8-12 die ซ้อนกัน connected ด้วย Through-Silicon Via (TSV) ติดตั้งตรงบน NVIDIA/AMD GPU ผ่าน Silicon Interposer bandwidth สูงกว่า standard DRAM 10-15x — critical สำหรับ AI training<br>
+        • <strong>DDR5/LPDDR5:</strong> Standard DRAM สำหรับ server, PC, mobile — backbone ของ general computing<br>
+        • <strong>Data Center DRAM:</strong> High-capacity DIMMs สำหรับ enterprise server ที่ run AI inference
+        </p>
+      </div>
+      <div class="callout purple">
+        <p><strong>NAND Flash — 20-23% of Revenue:</strong><br>
+        NAND เก็บข้อมูลแบบถาวร ไม่ต้องมีไฟ แปลว่า SSD, smartphone storage, data center SSD ล้วนใช้ NAND Micron's NAND ขายภายใต้ Crucial brand (consumer) และ enterprise SSD Micron อยู่อันดับ 3-4 ใน NAND market (ตามหลัง Samsung, SK Hynix, Kioxia)
+        </p>
+      </div>
+      <div class="callout dark">
+        <p><strong>End Markets:</strong><br>
+        • <strong>Data Center:</strong> Server DRAM + HBM for AI — fastest growing, highest margin<br>
+        • <strong>Mobile:</strong> LPDDR5 for smartphone, NAND for storage — recovering<br>
+        • <strong>PC (Client):</strong> DDR5 for laptops/desktop — stable<br>
+        • <strong>Embedded/Automotive:</strong> Memory for cars, industrial IoT — high ASP
+        </p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $37.38B แบ่งตาม Product Type</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">💻 DRAM (รวม HBM)</div>
+            <div class="rev-numbers"><strong>~$28.5B</strong> · ~76% · +63% YoY est.</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-dram" style="width:76%"></div></div>
+          <div class="rev-note">
+            ▸ HBM (AI GPU Memory): เข้าใกล้ $8B annualized run rate by Q4 — growing fastest, margin สูงสุด<br>
+            ▸ Standard Server DRAM: data center, enterprise — strong growth<br>
+            ▸ Mobile/PC DRAM: recovering ด้วย AI phone cycle
+          </div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🗄 NAND Flash</div>
+            <div class="rev-numbers"><strong>~$8.2B</strong> · ~22% · modest growth</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-nand" style="width:22%"></div></div>
+          <div class="rev-note">Enterprise SSD + consumer storage — ยังอยู่ใน recovery phase หลัง oversupply FY2023</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔧 Other (services, licensing)</div>
+            <div class="rev-numbers"><strong>~$0.7B</strong> · ~2%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:2%;background:#aaa"></div></div>
+          <div class="rev-note">Cross-licensing IP, services</div>
+        </div>
+      </div>
+      <p>Micron เป็น <strong>IDM (Integrated Device Manufacturer)</strong> — ออกแบบ AND ผลิตเอง (มี fab ตัวเอง ไม่ใช่ fabless) นี่คือ ทั้ง strength (control quality, cost) และ weakness (capex สูงมาก, utilization risk ช่วง downcycle)</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="callout purple">
+        <p><strong>HBM — Structural Upgrade ไม่ใช่ Cyclical Demand:</strong> เวลา NVIDIA release GPU รุ่นใหม่ ไม่มีทางกลับไปใช้ standard DRAM แทน HBM — เหมือน EUV ของ ASML HBM demand เพิ่มขึ้นทุกรุ่น GPU เพราะ bandwidth requirement โต AI model ขนาด 100B+ parameters ต้องการ HBM bandwidth ที่ standard DRAM ไม่สามารถ deliver ได้</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>Oligopoly Structure — 3 Players Only:</strong> Samsung, SK Hynix, Micron เป็นเพียง 3 บริษัทในโลกที่ผลิต DRAM ระดับ leading-edge ได้ ใครก็ตามที่ต้องการ HBM ต้องซื้อจากหนึ่งใน 3 นี้เท่านั้น ไม่มีใครสร้าง fab ใหม่มาแข่งได้ใน 5-7 ปี (ต้นทุน $20-30B+ ต่อ fab และ learning curve ยาวนาน)</p>
+      </div>
+      <div class="callout green">
+        <p><strong>HBM Share Gain ต่อเนื่อง:</strong> เดิม SK Hynix เป็น dominant HBM supplier (70%+ share) Micron ลงทุนใน HBM3e อย่างหนักและ gain share อย่างต่อเนื่อง target ~30%+ HBM market share ถ้า Micron ได้ 30% ของ HBM market ที่ grow เป็น $25-30B+ ใน 2-3 ปี revenue impact จะ enormous</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>HBM demand เกิน supply — sold out ปี 2025 และ 2026</h4>
+        <p>Micron บอกว่า HBM3e ปี 2025 sold out ทั้งหมด และ 2026 ก็ nearly sold out แล้ว NVIDIA ต้องการ HBM มากกว่าที่ Samsung + SK Hynix + Micron รวมกันผลิตได้ demand > supply = pricing power สูงสุดที่ Micron เคยมี</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>CHIPS Act — US Government subsidy สร้าง fab ใหม่ใน Idaho และ New York</h4>
+        <p>Micron ได้รับ $6.1B CHIPS Act grant สร้าง fab ใหม่ใน Boise และ Clay (New York) ทำให้ US manufacturing capacity เพิ่มขึ้นอย่างมาก lowering long-term cost และ securing strategic position สำหรับ DoD/Government contracts</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>China restrictions กระทบ ~10% revenue</h4>
+        <p>China คิดเป็น ~10% ของ Micron revenue ก่อน US Export restrictions Micron ถูก China บล็อก sales สำหรับ "critical infrastructure" ใน 2023 ทำให้ revenue ลดส่วนนั้น impact ยังอยู่ geopolitical risk ยังเป็น overhang</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>NAND oversupply ยังเป็น risk ฝั่ง storage</h4>
+        <p>NAND ซึ่งเป็น ~22% ของ Micron revenue ยัง fragile — มี multiple players (Samsung, Kioxia, WD, SK Hynix, Intel NAND → Solidigm) และ barriers to entry ต่ำกว่า DRAM ถ้า NAND prices crash อีกรอบ จะ drag overall profitability แม้ DRAM ดี</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🧠</div>
+          <div>
+            <div class="comp-segment">HBM (High Bandwidth Memory)</div>
+            <div class="comp-pos challenger">Challenger — rapidly gaining share vs SK Hynix</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">SK Hynix (Korea: 000660)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:50%;background:#e00"></div></div>
+            <div class="comp-detail">HBM pioneer — ~50%+ market share ใน HBM ปัจจุบัน เป็น primary supplier ให้ NVIDIA มาตั้งแต่ H100 SK Hynix HBM3e เป็น gold standard แต่ Micron กำลังตามขึ้น</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Micron Technology — Gaining share</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:var(--mu-blue)"></div></div>
+            <div class="comp-detail">~20-25% HBM market share และ growing rapidly HBM3e qualified สำหรับ NVIDIA H200/B200 Micron targeting 30%+ share และ announced partnerships กับ NVIDIA สำหรับ future GPU platforms</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Samsung Electronics (Korea: 005930)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:#00c8ff"></div></div>
+            <div class="comp-detail">Samsung แม้จะเป็น #1 semiconductor company โลก แต่ HBM certification struggle Samsung HBM3e ยังรอ NVIDIA qualification ทำให้ share ต่ำกว่า expected ใน FY2025</div>
+          </div>
+        </div>
+        <div class="comp-verdict purple">Micron กำลัง gain share จาก SK Hynix อย่างต่อเนื่อง ถ้า Micron ได้ ~30% share ใน market ที่โตเป็น $25B+ จะ transformative สำหรับ revenue และ margin</div>
+      </div>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">💾</div>
+          <div>
+            <div class="comp-segment">Standard DRAM (DDR5)</div>
+            <div class="comp-pos challenger">Competitive — #3 player in duopoly/triopoly</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">Samsung Semiconductor</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:45%;background:#00c8ff"></div></div>
+            <div class="comp-detail">~40-45% global DRAM market share — absolute leader ทั้ง capacity และ technology Micron เป็น good follower ไม่ใช่ leader ใน standard DRAM</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">SK Hynix</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:#e00"></div></div>
+            <div class="comp-detail">~28-32% global DRAM share — #2 ด้วย strong technology ใน DDR5 และ HBM</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Micron — #3 with growing HBM edge</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:23%;background:var(--mu-blue)"></div></div>
+            <div class="comp-detail">~22-25% global DRAM share — US-based ทำให้มี geopolitical advantage (CHIPS Act, DoD customers) HBM position กำลัง differentiate จาก Samsung</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">DRAM เป็น oligopoly ที่ดี — 3 players ที่ rational ทำให้ pricing discipline ดีกว่า NAND Micron HBM thesis คือ upgrade จาก #3 DRAM player เป็น leading HBM player ใน data center AI segment</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Mission: Capture re-rating before consensus. Asymmetric opportunity: 50–100% upside in 2–3 years. Enter early in re-rating thesis. Exit when thesis fails or is fully priced.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">MU เป็น Wave เพราะ <strong>HBM re-rating thesis ยังไม่ fully priced โดย consensus</strong> — market ยังมอง Micron เป็น "cyclical DRAM company" ไม่ใช่ "AI memory platform leader" ถ้า Micron deliver HBM share gain ตาม trajectory ปัจจุบัน (~30%+ share ใน market ที่โตเป็น $25B+) valuation re-rating จะ significant</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">💜</div>
+              <div class="trait-name">HBM Share Gain Thesis</div>
+              <div class="trait-desc">Re-rating จาก "commodity DRAM" เป็น "AI memory leader" ยังไม่สมบูรณ์ HBM ~$8B annualized run rate and growing</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🔢</div>
+              <div class="trait-name">50-100% Upside Case</div>
+              <div class="trait-desc">ถ้า Micron ได้ 30% HBM share ใน $25B+ market = $7.5B+ HBM revenue เพิ่มจาก current จะ massive earnings upgrade</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">⚡</div>
+              <div class="trait-name">Catalyst: Nvidia GB300 / Next-Gen GPU</div>
+              <div class="trait-desc">แต่ละ GPU generation ใหม่ = HBM content เพิ่ม GB300/B300 ใช้ HBM3e per GPU มากกว่า H100 ถึง 2-3x</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🏭</div>
+              <div class="trait-name">CHIPS Act = US Edge</div>
+              <div class="trait-desc">$6.1B subsidy ลด capex burden สร้าง US fab ที่ DoD prefer ทำให้ competitive position ใน gov/defense segment แข็ง</div>
+            </div>
+          </div>
+          <div class="exit-box">
+            <h4>🚪 Exit Thesis ถ้า:</h4>
+            <p>
+              1. Samsung HBM3e qualify ใน NVIDIA platform → supply flood, price crash<br>
+              2. HBM market growth slow กว่า expected (AI CapEx pullback)<br>
+              3. NAND oversupply รุนแรง drag whole P&amp;L ลง<br>
+              4. Micron เสีย HBM share จาก execution problem หรือ defect rate สูง
+            </p>
+          </div>
+          <div class="fit-box">
+            <h4>🌊 Verdict: MU → Wave</h4>
+            <p>MU เป็น Wave เพราะ memory cyclicality ทำให้ไม่เหมาะ Core (ขาดทุน $5.83B ใน FY2023 ไม่ใช่ "durable" แบบ Core) แต่ HBM thesis มี asymmetry ที่ชัด — ถ้า thesis ถูก upside 50-100%+, ถ้า thesis ผิด (Samsung recover, AI capex cut) ออกได้ monitor: SK Hynix share ใน NVIDIA allocation, NAND pricing, Samsung HBM qualification status — เป็น leading indicators ของ thesis health</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — MU / Micron Technology, Inc. · Source: Micron Technology FY2025 Q4 Earnings Release (October 2025)</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="mu-dot">
+      <span style="background:var(--mu-dark)"></span>
+      <span style="background:var(--mu-blue)"></span>
+      <span style="background:var(--mu-purple)"></span>
+      <span style="background:var(--mu-navy)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

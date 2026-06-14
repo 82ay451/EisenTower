@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hall of Frames</title>
+  <style>
+    :root {
+      --bg: #f1f4f7;
+      --ink: #151f2b;
+      --muted: #657386;
+      --line: #d9e1ea;
+      --accent: #116b5f;
+      --accent-soft: #eef7f4;
+      --held-bg: #050608;
+      --core: #ffd84a;
+      --wave: #c084fc;
+      --fwb: #35d07f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    header {
+      padding: 22px 18px 16px;
+      background: #151f2b;
+      color: #fff;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 8vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      max-width: 680px;
+      margin: 10px 0 0;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .source {
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 0.86rem;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 14px 36px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .search {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 12px;
+      font: inherit;
+      box-shadow: 0 8px 20px rgba(21, 31, 43, 0.06);
+    }
+
+    .search:focus {
+      outline: 3px solid rgba(17, 107, 95, 0.18);
+      border-color: rgba(17, 107, 95, 0.55);
+    }
+
+    .count {
+      min-width: 76px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: right;
+    }
+
+    .ticker-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ticker-row {
+      margin: 0;
+    }
+
+    .ticker-link {
+      display: inline-flex;
+      min-width: 74px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .ticker-link:hover,
+    .ticker-link:focus {
+      border-color: rgba(17, 107, 95, 0.55);
+      background: var(--accent-soft);
+      outline: none;
+    }
+
+    .ticker-link.holding {
+      background: var(--held-bg);
+      border-color: var(--held-bg);
+    }
+
+    .ticker-link.holding.core { color: var(--core); }
+    .ticker-link.holding.wave { color: var(--wave); }
+    .ticker-link.holding.fwb { color: var(--fwb); }
+
+    .ticker-link.holding:hover,
+    .ticker-link.holding:focus {
+      background: #000;
+      border-color: #000;
+    }
+
+    .empty {
+      display: none;
+      border: 1px dashed var(--line);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.62);
+      color: var(--muted);
+      padding: 18px;
+      text-align: center;
+    }
+
+    @media (max-width: 540px) {
+      .toolbar { grid-template-columns: 1fr; }
+      .count { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Hall of Frames</h1>
+      <p class="sub">Hall of Frames company profile library. One ticker, one canonical company file.</p>
+      <p class="source">Local and public page · Data source: EisenTower Hall of Frames folder</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <input class="search" id="search" type="search" placeholder="Search ticker" aria-label="Search ticker">
+      <div class="count" id="count">12 tickers</div>
+    </div>
+
+    <ul class="ticker-list" id="tickerList">
+      <li class="ticker-row" data-ticker="ANET">
+        <a class="ticker-link" href="ANET.html">ANET</a>
+      </li>
+      <li class="ticker-row" data-ticker="ASML" data-holding="true" data-portfolio="core">
+        <a class="ticker-link holding core" href="ASML.html">ASML</a>
+      </li>
+      <li class="ticker-row" data-ticker="DELL" data-holding="true" data-portfolio="wave">
+        <a class="ticker-link holding wave" href="DELL.html">DELL</a>
+      </li>
+      <li class="ticker-row" data-ticker="GOOGL" data-holding="true" data-portfolio="core">
+        <a class="ticker-link holding core" href="GOOGL.html">GOOGL</a>
+      </li>
+      <li class="ticker-row" data-ticker="MU" data-holding="true" data-portfolio="wave">
+        <a class="ticker-link holding wave" href="MU.html">MU</a>
+      </li>
+      <li class="ticker-row" data-ticker="NOW" data-holding="true" data-portfolio="wave">
+        <a class="ticker-link holding wave" href="NOW.html">NOW</a>
+      </li>
+      <li class="ticker-row" data-ticker="NVDA" data-holding="true" data-portfolio="core">
+        <a class="ticker-link holding core" href="NVDA.html">NVDA</a>
+      </li>
+      <li class="ticker-row" data-ticker="PANW" data-holding="true" data-portfolio="core">
+        <a class="ticker-link holding core" href="PANW.html">PANW</a>
+      </li>
+      <li class="ticker-row" data-ticker="PLTR" data-holding="true" data-portfolio="core">
+        <a class="ticker-link holding core" href="PLTR.html">PLTR</a>
+      </li>
+      <li class="ticker-row" data-ticker="RKLB" data-holding="true" data-portfolio="wave">
+        <a class="ticker-link holding wave" href="RKLB.html">RKLB</a>
+      </li>
+      <li class="ticker-row" data-ticker="SNPS" data-holding="true" data-portfolio="core">
+        <a class="ticker-link holding core" href="SNPS.html">SNPS</a>
+      </li>
+      <li class="ticker-row" data-ticker="TSM" data-holding="true" data-portfolio="core">
+        <a class="ticker-link holding core" href="TSM.html">TSM</a>
+      </li>
+    </ul>
+
+    <div class="empty" id="empty">No ticker found.</div>
+  </main>
+
+  <script>
+    const search = document.querySelector("#search");
+    const rows = Array.from(document.querySelectorAll("[data-ticker]"));
+    const count = document.querySelector("#count");
+    const empty = document.querySelector("#empty");
+
+    function updateList() {
+      const query = search.value.trim().toUpperCase();
+      let visible = 0;
+
+      rows.forEach((row) => {
+        const match = row.dataset.ticker.includes(query);
+        row.style.display = match ? "" : "none";
+        if (match) visible += 1;
+      });
+
+      count.textContent = `${visible} ${visible === 1 ? "ticker" : "tickers"}`;
+      empty.style.display = visible === 0 ? "block" : "none";
+    }
+
+    search.addEventListener("input", updateList);
+  </script>
+</body>
+</html>

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PLTR — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --pl-dark:  #1B2237;
+      --pl-blue:  #4F7DF3;
+      --pl-navy:  #0d1b4b;
+      --pl-blue-soft: #e8effe;
+      --pl-dark-soft: #e0e4f0;
+      --pl-gold:  #C8A84B;
+      --pl-gold-soft: #fef8e8;
+      --accent:      var(--pl-blue);
+      --accent-soft: var(--pl-blue-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--pl-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--pl-blue) 40%, var(--pl-gold) 40% 60%, var(--pl-navy) 60% 80%, var(--pl-blue) 80%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-pltr { color: var(--pl-blue); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--pl-dark); border-bottom: 1px solid #2a3550; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(79,125,243,0.2); color: var(--pl-blue); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--pl-blue); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--pl-blue-soft); color: var(--pl-blue); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--pl-blue); }
+    .stat-card.gold   { border-left: 3px solid var(--pl-gold); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.dark   { border-left: 3px solid var(--pl-dark); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-usg  { background: var(--pl-navy); }
+    .bar-usc  { background: var(--pl-blue); }
+    .bar-intg { background: #7a8ab8; }
+    .bar-intc { background: #b0b8d8; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--pl-blue-soft);  border-color: var(--pl-blue); }
+    .callout.dark   { background: var(--pl-dark-soft);  border-color: var(--pl-dark); }
+    .callout.gold   { background: var(--pl-gold-soft);  border-color: var(--pl-gold); }
+    .callout.green  { background: var(--green-soft);    border-color: var(--green); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--pl-blue), var(--pl-navy)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--pl-blue); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pl-blue); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--pl-blue-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);   color: #155c38; }
+    .tag-watch { background: var(--yellow-soft);  color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);     color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--pl-blue-soft); color: var(--pl-blue); }
+    .comp-pos.contender  { background: var(--yellow-soft); color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--pl-blue); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue  { background: var(--pl-blue-soft); border-color: var(--pl-blue); color: #1a3080; }
+    .comp-verdict.green { background: var(--green-soft);   border-color: var(--green);   color: #155c38; }
+    .comp-verdict.dark  { background: var(--pl-dark-soft); border-color: var(--pl-dark); color: #111; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: #f0eeff; border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #5c2d91; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .fit-box { background: #f0eeff; border: 1px solid #c9b8f0; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #5c2d91; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--pl-blue); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(79,125,243,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--pl-navy); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .pl-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .pl-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-pltr">PLTR</span> — Palantir Technologies, Inc.</h1>
+    <div class="doc-subtitle">Understanding Palantir as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NYSE: PLTR</span>
+      <span>🏛 Founded 2003 · Colorado</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Palantir คือบริษัทที่สร้าง <strong>platform สำหรับวิเคราะห์และ operate ข้อมูลที่ซับซ้อนที่สุดในโลก</strong> — เริ่มจากงาน intelligence/defense สำหรับรัฐบาล US แล้วขยายมาสู่ enterprise commercial ในปัจจุบัน วิธีที่เข้าใจได้ชัดที่สุดคือ: <strong>Palantir คือ OS ที่ทำให้ AI ทำงานในโลกจริงได้ — ไม่ใช่แค่ demo</strong></p>
+      <p>ในปี 2025 Palantir โตอย่างรวดเร็วที่สุดในประวัติศาสตร์ รายได้ <strong>$4.475B (+53% YoY)</strong> และ US commercial business โต 109% YoY ทำให้ consensus เริ่มเข้าใจว่านี่ไม่ใช่แค่ defense contractor — แต่คือ AI software platform ที่กำลัง win enterprise market</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$4.48B</div>
+          <div class="stat-sub">+53% YoY · massive acceleration</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Adj. Op. Margin</div>
+          <div class="stat-value">50%</div>
+          <div class="stat-sub">FY2025 · world-class efficiency</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">US Commercial Growth</div>
+          <div class="stat-value">+109%</div>
+          <div class="stat-sub">FY2025 vs. FY2024</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">US Gov Revenue</div>
+          <div class="stat-value">$1.9B</div>
+          <div class="stat-sub">FY2025 · bedrock of business</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">US Commercial Rev</div>
+          <div class="stat-value">$1.5B</div>
+          <div class="stat-sub">FY2025 · from $702M (2024)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Q4 Rule of 40</div>
+          <div class="stat-value">127</div>
+          <div class="stat-sub">Growth + margin · exceptional</div>
+        </div>
+      </div>
+      <p>ถ้าอธิบายสั้นๆ Palantir คือ <strong>บริษัทที่ทำเงินจาก subscription software ที่ช่วยรัฐบาลและบริษัทวิเคราะห์ data ขนาดใหญ่และ deploy AI ในการปฏิบัติงานจริง</strong> ด้วย Gross Margin 84% (ex-SBC) และ adjusted op margin 50% นี่คือ one of the most efficient software companies in the world</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Palantir เริ่มต้นในความลับ — ลูกค้าแรกคือ CIA ไม่ใช่ startup ปกติ</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2003</div>
+          <div class="tl-text"><strong>Peter Thiel และ Alex Karp ก่อตั้ง Palantir</strong> ที่ Palo Alto — ชื่อ "Palantir" มาจาก Lord of the Rings (ก้อนหินที่มองเห็นทุกอย่าง) funding แรกมาจาก In-Q-Tel — กองทุนของ CIA ลูกค้าแรกคือรัฐบาล US</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2008–2013</div>
+          <div class="tl-text"><strong>Defense &amp; Intelligence core:</strong> Palantir สร้าง Gotham platform ที่ Army, FBI, CIA ใช้ในการ track terrorist networks, trace financial fraud, และ analyze battlefield data platform นี้บอกว่าสามารถ connect ข้อมูล disparate ที่ไม่มีระบบอื่นทำได้</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2014–2019</div>
+          <div class="tl-text"><strong>Foundry — commercial play เริ่ม:</strong> Palantir สร้าง Foundry platform สำหรับ enterprise ที่ไม่ใช่รัฐบาล ลูกค้าแรกๆ คือ Airbus, Johnson &amp; Johnson, Ferrari แต่ growth ช้ากว่าที่หวัง เพราะ sales cycle ยาวและ implementation ซับซ้อน</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2020</div>
+          <div class="tl-text"><strong>IPO ผ่าน direct listing ที่ NYSE</strong> — Palantir เลือก DPO แทน traditional IPO เพื่อรักษา founder control Karp กล่าวว่า "เราสร้างบริษัทนี้เพื่อรับใช้รัฐบาล democratic nations ไม่ใช่เพื่อ IPO" — ยืนยัน DNA ที่ unusual ของบริษัทนี้</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2023</div>
+          <div class="tl-text"><strong>AIP (Artificial Intelligence Platform) เปิดตัว</strong> — Palantir สร้าง layer บน top of LLMs ที่ให้องค์กรสามารถ deploy AI ใน operational context ได้อย่างปลอดภัยและ controllable นี่คือ turning point ที่เปลี่ยน narrative ของบริษัททั้งหมด</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024–2025</div>
+          <div class="tl-text"><strong>Commercial explosion:</strong> AIP Boot Camp strategy ทำให้ US commercial โต 109% ปี 2025 ทั้งบริษัท GAAP profitable แล้ว บริษัทย้าย domicile จาก Delaware ไป Colorado ปี 2024 เพื่อใกล้ชิดกับ defense ecosystem ที่ Denver/Colorado Springs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Palantir เปลี่ยนจาก "ขาดทุนเรื้อรัง" เป็น "hypergrowth profitable" ใน 2 ปี</strong> — GAAP profitable ครั้งแรกปี 2023 และ accelerate ขึ้นอย่างรวดเร็วในปี 2024-2025</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>GAAP Net Income</th>
+            <th>Adj. Op. Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2020</td><td>$1.09B</td><td>-$1.17B</td><td>~(17%)</td></tr>
+          <tr><td>2021</td><td>$1.54B</td><td>-$520M</td><td>~(5%)</td></tr>
+          <tr><td>2022</td><td>$1.91B</td><td>-$374M</td><td>~(3%)</td></tr>
+          <tr><td>2023</td><td>$2.23B</td><td>+$210M</td><td>~22%</td></tr>
+          <tr><td>2024</td><td>$2.87B</td><td>~$462M</td><td>~38%</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$4.48B</td><td>~$1.5B+</td><td>50%</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: Palantir FY2025 Earnings Releases (2026) · FY2025 adjusted operating income $2.254B · Q4 2025 GAAP net income alone = $608.7M | Historical GAAP net income figures เป็น approximate</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue 5-yr CAGR</div>
+          <div class="stat-value">~33%</div>
+          <div class="stat-sub">2020 → 2025</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Adj. Op. Margin (2025)</div>
+          <div class="stat-value">50%</div>
+          <div class="stat-sub">จาก (17%) ในปี 2020</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">Gross Margin (ex-SBC)</div>
+          <div class="stat-value">84%</div>
+          <div class="stat-sub">FY2025 · pure software power</div>
+        </div>
+      </div>
+      <p>สิ่งที่เปลี่ยนไปในปี 2025 คือ <strong>revenue acceleration ที่ไม่เคยเห็นมาก่อน</strong> — จาก 28% growth ปี 2023, 29% ปี 2024, กลายเป็น 53% ปี 2025 และ Q4 2025 US commercial โต 137% YoY สิ่งนี้ไม่เกิดขึ้นโดยบังเอิญ — AIP กำลัง land และ enterprise ซื้อ</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Alex Karp</div>
+          <div class="boss-title">Co-Founder &amp; CEO, Palantir Technologies</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>October 2, 1967, New York City</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>Haverford College BA · Stanford Law JD · Goethe Uni Frankfurt PhD (Social Theory)</span></div>
+            <div class="boss-fact"><span class="label">ร่วมก่อตั้ง</span><span>Palantir Technologies, 2003</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>2003 — ปัจจุบัน</span></div>
+            <div class="boss-fact"><span class="label">Co-founder</span><span>Peter Thiel (ผู้ถือหุ้นใหญ่)</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Alex Karp เป็น CEO ที่ <strong>ไม่เหมือนใครใน tech industry</strong> — PhD ด้าน social theory จาก Frankfurt (ศิษย์ของ Habermas), self-described progressive, เชื่อในประชาธิปไตย liberal แต่ build surveillance tools ให้รัฐบาล contradiction นี้เป็น deliberate — Karp เชื่อว่า democracies ต้องการ advantage ด้าน information เพื่อเอาชนะ autocracies ไม่ใช่เพื่อ oppress citizens</p>
+          <p style="margin-top:12px">Karp มีสไตล์ผู้นำที่ <strong>ออกความเห็น geopolitical อย่างเปิดเผย, ปฏิเสธ Silicon Valley culture, และ unapologetically Western</strong> เขาเขียนหนังสือ (The Technological Republic) เกี่ยวกับ role ของ tech companies ใน liberal democracy ความท้าทายในยุคนี้คือ scale commercial business ให้ match กับ defense revenue ซึ่งกำลังเกิดขึ้นอยู่</p>
+        </div>
+      </div>
+      <p>Peter Thiel มีบทบาทสำคัญในฐานะ founding investor และ บอร์ด แต่ Karp คือคนที่ operate จริง ทั้งคู่มีวิสัยทัศน์ตรงกันว่า Palantir ไม่ใช่แค่บริษัท software แต่คือ institution ที่มี mission — นั่นคือ DNA ที่ทำให้ตัดสินใจบางอย่างที่ wall street ไม่เข้าใจในระยะสั้น</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Palantir ทำ platform ที่ทำให้ข้อมูลกระจัดกระจายที่มีอยู่ตอนนี้กลายเป็น intelligence ที่ใช้งานได้จริง</strong> — ไม่ว่าจะเป็น data ทางการทหาร, supply chain ขององค์กรข้ามชาติ, หรือ workflow ของ hospital</p>
+      <div class="callout dark">
+        <p><strong>Gotham — Government Platform:</strong> ใช้โดย intelligence agencies, military, law enforcement ของ democratic nations (US, UK, allies) วิเคราะห์ข้อมูลจากหลาย source พร้อมกัน connect dots ที่มนุษย์จะเห็นไม่ทัน ปกป้องด้วย security ระดับ classified</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>Foundry — Enterprise Platform:</strong> สำหรับองค์กรเอกชน ทำ data integration, operational intelligence, และ decision support บน top of existing data เอา Excel, ERP, sensor data, ทุกอย่างมารวมกัน — แล้วให้ operator ใช้งานได้โดยไม่ต้อง write code</p>
+      </div>
+      <div class="callout gold">
+        <p><strong>AIP (AI Platform) — the growth engine ใหม่:</strong> Layer บน top of Foundry+Gotham ที่ integrate LLMs เข้ากับ operational data — ทำให้ AI "actions" เกิดในบริบทของ actual data และ process ขององค์กรนั้นๆ ไม่ใช่ generic AI ที่ไม่รู้ว่า context คืออะไร AIP Boot Camps ใช้เวลา 5 วันเพื่อ prove ROI → นี่คือ driver ของการโต 137% QoQ</p>
+      </div>
+      <p><strong>ใน 1 ประโยค: Palantir คือ "operating system" สำหรับ AI deployment ใน enterprise และ government</strong> — เมื่อ AI มาถึง ทุกองค์กรต้องการ layer ที่ connect AI กับ real data และ real workflows — นั่นคือ Palantir</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Subscription SaaS เป็นหลัก</strong> — รัฐบาลจ่ายรายปี, enterprise จ่ายรายปีหรือตาม usage แต่ละ contract ใหญ่มาก implementation ซับซ้อน → switching cost สูงมากเมื่อ deploy แล้ว</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $4.475B แบ่งตาม customer segment</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🏛 US Government</div>
+            <div class="rev-numbers"><strong>$1.9B</strong> · 42%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-usg" style="width:42%"></div></div>
+          <div class="rev-note">DoD, intelligence agencies, federal civilian — ระยะยาว ต่ออายุสูง แต่โตช้ากว่า commercial</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🏢 US Commercial</div>
+            <div class="rev-numbers"><strong>$1.5B</strong> · 33%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-usc" style="width:33%"></div></div>
+          <div class="rev-note">Enterprise US — โต 109% YoY ในปี 2025, Q4 โต 137% YoY · นี่คือ growth engine ใหม่</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🌍 International Government</div>
+            <div class="rev-numbers"><strong>~$0.6B</strong> · ~14%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-intg" style="width:14%"></div></div>
+          <div class="rev-note">UK, EU allies, other governments — stable แต่ไม่ใช่ focus growth area</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🌐 International Commercial</div>
+            <div class="rev-numbers"><strong>~$0.5B</strong> · ~11%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-intc" style="width:11%"></div></div>
+          <div class="rev-note">Enterprise outside US — โตช้ากว่า US commercial อย่างมีนัย</div>
+        </div>
+      </div>
+      <p><strong>AIP Boot Camp strategy</strong> ทำให้ US commercial explode — แทนที่จะใช้ enterprise sales cycle 12-18 เดือน Palantir เชิญ customer มา 5 วัน build use case จริงด้วย AIP แล้วออก order ทันที time-to-value ลดลงจาก months เป็น days ทำให้ commercial revenue เร่ง dramatically</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Palantir มี compounding mechanics ที่มาจากสองทิศทาง — <strong>government moat ที่แน่นและ commercial flywheel ที่กำลัง accelerate</strong></p>
+      <div class="callout dark">
+        <p><strong>Government Moat — Impossible to Replace:</strong> Gotham embed อยู่ใน US military และ intelligence operations ลึกมาก ไม่ใช่แค่ software — เป็น institutional knowledge และ workflow ที่ soldiers, analysts, และ officers ใช้ในทุก mission การเปลี่ยน system แบบนี้ต้องใช้เวลาเป็น decade และ Palantir เป็น only vendor ที่ trusted ในระดับนี้</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>The AIP Flywheel:</strong> ยิ่งมี customer ใช้ AIP → ยิ่งมี use cases ที่ Palantir เรียนรู้ → AIP ยิ่ง improve → ROI ของลูกค้าสูงขึ้น → ลูกค้าซื้อ module เพิ่ม → Palantir เก็บ expansion revenue → reinvest ใน AI R&amp;D → วนซ้ำ</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">US RDV (Remaining Deal Value)</div>
+          <div class="stat-value">$4.38B</div>
+          <div class="stat-sub">+145% YoY · forward revenue visibility</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Adj. FCF Margin Q4</div>
+          <div class="stat-value">56%</div>
+          <div class="stat-sub">Cash generation ระดับ elite software</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">Gross Margin (ex-SBC)</div>
+          <div class="stat-value">84%</div>
+          <div class="stat-sub">Cost of revenue ต่ำมาก = scalable</div>
+        </div>
+      </div>
+      <p><strong>Capital allocation:</strong> Palantir ยังไม่ dividend แต่ buyback เริ่ม ส่วนใหญ่ reinvest ใน product (AI, AIP) และ sales capacity (Boot Camps) เพื่อ accelerate commercial growth ให้ match government revenue</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ปี 2025-2026 Palantir อยู่ใน <strong>moment ที่ยาวนานรอ</strong> — commercial acceleration ที่ทุกคนถามมา 5 ปีกำลังเกิดขึ้นจริงใน numbers</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>US Commercial ที่ 137% growth ใน Q4 — ไม่ใช่ noise</h4>
+        <p>US commercial โต 137% YoY ใน Q4 2025 และ US RDV (remaining deal value) โต 145% YoY ถึง $4.38B สิ่งนี้บอกว่าบริษัทใหญ่กำลัง commit เงินจริงๆ ไม่ใช่แค่ pilot — AIP Boot Camp strategy prove ตัวเองแล้ว</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>US Government กำลัง spend ใน AI defense อย่างหนัก</h4>
+        <p>Pentagon, SOCOM, NSA กำลัง accelerate AI adoption สำหรับ intelligence, targeting, logistics Palantir เป็น incumbent ที่ trust ที่สุด ทำให้ US gov revenue โต 66% YoY ใน Q4 2025 — แม้ว่า government ปกติโตช้า</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Rule of 40 ที่ 127 — exceptional SaaS metric</h4>
+        <p>Rule of 40 (revenue growth % + profit margin %) ที่ 127 ใน Q4 2025 สูงกว่า almost ทุก public software company ทำให้ยาก argue ว่า PLTR แพงเกินไปถ้าใช้ growth-adjusted metrics</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Valuation premium ที่สูงมาก</h4>
+        <p>PLTR trade ที่ P/E 100x+ ซึ่ง embed assumption ว่า growth rate จะคง 40%+ ต่อไปอีกหลายปี ถ้า commercial growth decelerate หรือ competition เข้ามาแรง re-rating ลงจะรุนแรง</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>European business ยังเติบโตช้า</h4>
+        <p>International commercial ยังไม่ catch up กับ US commercial ส่วนหนึ่งเพราะ GDPR และ procurement rules ที่ซับซ้อน ถ้า EU market unlock ได้ นั่นคือ runway ใหม่ที่ใหญ่มาก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Dependence on US Government &amp; Geopolitical concentration</h4>
+        <p>US government ยัง 42% ของ revenue ถ้ามี budget cut ใน defense/intelligence, change in administration ที่ไม่ friendly, หรือ geopolitical shift — core revenue ส่วนนี้จะกระทบทันที</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Palantir ยากที่จะ bucket ใน competitive landscape ปกติ — เพราะ product มัน unique มาก แต่สนามแข่งมีอยู่</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🏛</div>
+          <div>
+            <div class="comp-segment">Government Intelligence &amp; Defense Software</div>
+            <div class="comp-pos dominant">Dominant — ไม่มีใคร come close</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Palantir Gotham</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:70%;background:var(--pl-navy)"></div></div>
+            <div class="comp-detail">Embedded ใน DoD, NSA, CIA, Five Eyes allies มานาน 15+ ปี — switching cost สูงที่สุดใน software industry เกือบทั้งหมด</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Leidos / SAIC / Booz Allen</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#556"></div></div>
+            <div class="comp-detail">Government IT contractors — integrators ที่มักเป็น partner กับ Palantir มากกว่า competitor โดยตรง</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Anduril / Shield AI</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:5%;background:#333"></div></div>
+            <div class="comp-detail">Defense tech startups ที่ focus hardware+software แต่ไม่ overlap โดยตรงใน data analytics</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">Government segment เป็น fortress — Palantir มี trust ระดับ classified ที่ไม่มีใครเข้ามาแทนได้ในระยะสั้น</div>
+      </div>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🏢</div>
+          <div>
+            <div class="comp-segment">Enterprise AI Platform / Data Ops</div>
+            <div class="comp-pos challenger">Challenger — market ใหม่ที่ยังไม่ settle</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Palantir AIP + Foundry</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:var(--pl-blue)"></div></div>
+            <div class="comp-detail">Growing fastest — 137% US commercial Q4 2025 advantage: proven in hardest environments (war zones), security first, human-in-loop AI</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Databricks / Snowflake</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:#e87722"></div></div>
+            <div class="comp-detail">Data infrastructure leaders — more focused on data storage/pipeline than operational AI applications that Palantir targets</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">ServiceNow / Salesforce AI</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:#00a1e0"></div></div>
+            <div class="comp-detail">Focus ใน workflow automation — overlap กับ Palantir ใน use cases บางส่วนแต่ approach ต่างกัน</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">Enterprise AI data ops ยังเป็น fragmented market — Palantir มี moat ใน "operational AI" (AI ที่ทำงานใน real ops context) ซึ่งต่างจาก pure data analytics</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Mission: Capture future re-rating before consensus recognizes it. Find tomorrow's leaders before they're obvious. Wave is opportunistic, accepts uncertainty, and targets 50–100% upside within 2–3 years. Enter early, add on confirmation, exit on thesis failure.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Wave ถือหุ้นที่ <strong>re-rating thesis ยังไม่ถูก fully priced</strong> — ต้องการ conviction ที่ consensus ยังไม่มี และ upside ใหญ่ถ้า thesis deliver Wave ไม่ใช่ gamble แต่คือ calculated bet ที่มี validation path ชัด</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Re-rating จาก "defense" → "AI OS"</div>
+              <div class="trait-desc">ตลาดมอง PLTR เป็น government software มานาน แต่ 137% US commercial growth กำลัง re-rate มันเป็น enterprise AI platform — consensus ยังไล่ตาม</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🚀</div>
+              <div class="trait-name">Growth Rate ใน Wave Territory</div>
+              <div class="trait-desc">+53% FY revenue, +137% US commercial Q4 — growth rate นี้ไม่ใช่ Core, มันคือ re-rating accelerator ที่ Wave ต้องการ</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🎯</div>
+              <div class="trait-name">AIP Thesis ยังไม่ fully validated</div>
+              <div class="trait-desc">AIP Boot Camp โต 137% ใน 2 quarter — ถ้า sustain อีก 4 quarter consensus จะ re-rate PLTR ขึ้นอีกรอบ</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">💎</div>
+              <div class="trait-name">Operational Foundation แน่น</div>
+              <div class="trait-desc">50% adj. op margin, 84% gross margin, GAAP profitable — Wave ที่มี solid fundamental ไม่ใช่ burn-and-pray</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่ Core ตอนนี้ — valuation ต้องการ growth สูงต่อเนื่อง (risky for Core)</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB — นี่คือ thesis hold ไม่ใช่ rotation</span>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: PLTR → Wave</h4>
+            <p>PLTR อยู่ใน Wave เพราะ re-rating thesis ยังไม่จบ — consensus กำลัง transition จากมองว่า PLTR เป็น "niche defense contractor" ไปเป็น "enterprise AI OS" thesis นี้กำลัง validate ด้วย US commercial +137% YoY ใน Q4 2025 ถ้า AIP sustain growth rate นี้อีก 2-3 ปี upside 50-100%+ จากระดับปัจจุบันสมเหตุสมผล Entry: establish position ตอนนี้ — Add: ถ้า Q1/Q2 2026 US commercial ยังโต 80%+ Exit thesis: ถ้า AIP growth decelerates ต่ำกว่า 50% YoY สองไตรมาสติด หรือ government contract renewal rate ลดลง</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — PLTR / Palantir Technologies, Inc. · Source: Palantir FY2025 Earnings Releases (2026) · SEC Filings · Public Sources</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="pl-dot">
+      <span style="background:var(--pl-dark)"></span>
+      <span style="background:var(--pl-blue)"></span>
+      <span style="background:var(--pl-gold)"></span>
+      <span style="background:var(--pl-navy)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

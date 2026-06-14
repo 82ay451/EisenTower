@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOW — Company File</title>
+  <style>
+    :root {
+      --bg: #f4f7f6;
+      --surface: #ffffff;
+      --border: #dde8e5;
+      --text-primary: #1a2e2b;
+      --text-secondary: #4d6b65;
+      --text-muted: #8aaba4;
+      --tag-bg: #e8f5f2;
+      --sn-dark:  #293E40;
+      --sn-green: #80B6A1;
+      --sn-teal:  #00B388;
+      --sn-sage:  #4D7A72;
+      --sn-light: #E8F5F2;
+      --sn-dark-soft: #dfe8e8;
+      --sn-green-soft: #e6f4ef;
+      --sn-teal-soft:  #d4f0e8;
+      --accent:      var(--sn-dark);
+      --accent-soft: var(--sn-dark-soft);
+      --green:       var(--sn-teal);
+      --green-soft:  var(--sn-teal-soft);
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: var(--surface);
+      border-bottom: 4px solid transparent;
+      border-image: linear-gradient(90deg,
+        var(--sn-dark) 40%, var(--sn-teal) 40% 70%,
+        var(--sn-green) 70% 85%, var(--sn-sage) 85%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); background: var(--tag-bg);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-now { color: var(--sn-dark); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+
+    /* ── Nav ── */
+    .toc {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: var(--sn-light); color: var(--sn-dark); }
+
+    /* ── Body ── */
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+
+    /* ── Toggle Section ── */
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      cursor: pointer; user-select: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--sn-teal); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .section-h2 {
+      font-size: 24px; font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--text-primary); transition: color 0.15s;
+    }
+    .toggle-icon {
+      flex-shrink: 0; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--tag-bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.25s;
+      font-size: 16px; color: var(--text-secondary);
+    }
+    .section-header:hover .toggle-icon { background: var(--sn-light); color: var(--sn-teal); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content {
+      overflow: hidden;
+      transition: max-height 0.35s ease, opacity 0.3s ease;
+      max-height: 9999px; opacity: 1;
+    }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+
+    /* ── Prose ── */
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+
+    /* ── Stat Cards ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--sn-dark); }
+    .stat-card.green  { border-left: 3px solid var(--sn-teal); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+
+    /* ── Revenue Bars ── */
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-sub   { background: var(--sn-dark); }
+    .bar-pro   { background: var(--sn-green); }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Callout ── */
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--sn-dark-soft);  border-color: var(--sn-dark); }
+    .callout.green  { background: var(--sn-teal-soft);  border-color: var(--sn-teal); }
+    .callout.yellow { background: var(--yellow-soft);   border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);      border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+      width: 2px; background: linear-gradient(180deg, var(--sn-dark), var(--sn-teal));
+    }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--sn-dark); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sn-teal); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+
+    /* ── Boss Card ── */
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+
+    /* ── Track Table ── */
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--sn-light); }
+
+    /* ── Situation Items ── */
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--sn-teal-soft); color: #005c44; }
+    .tag-watch { background: var(--yellow-soft);  color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);     color: #b71c1c; }
+
+    /* ── Competition ── */
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--sn-teal-soft); color: var(--sn-teal); }
+    .comp-pos.challenger { background: var(--sn-dark-soft); color: var(--sn-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);  color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--sn-dark); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--sn-dark-soft);  border-color: var(--sn-dark);  color: #1a3030; }
+    .comp-verdict.green  { background: var(--sn-teal-soft);  border-color: var(--sn-teal);  color: #004d36; }
+    .comp-verdict.red    { background: var(--red-soft);      border-color: var(--red);      color: #b71c1c; }
+
+    /* ── Portfolio Card ── */
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--sn-dark) 0%, #1a3030 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--sn-light); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: var(--sn-dark); margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .fit-box { background: var(--sn-teal-soft); border: 1px solid #a3d9c9; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: var(--sn-teal); margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+
+    /* ── Back to Top ── */
+    #back-to-top {
+      position: fixed; bottom: 32px; right: 32px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--sn-dark); color: white;
+      border: none; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(41,62,64,0.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s; z-index: 200;
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--sn-teal); }
+
+    /* ── Footer ── */
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .sn-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .sn-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<!-- Header -->
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1>
+      <span class="ticker-now">NOW</span> — ServiceNow, Inc.
+    </h1>
+    <div class="doc-subtitle">Understanding ServiceNow as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NYSE: NOW</span>
+      <span>🏛 Founded 2004</span>
+    </div>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ลองนึกถึง <strong>ระบบปฏิบัติการของงานองค์กร</strong> — ทุกคำขอ, ทุก workflow, ทุกกระบวนการอนุมัติ ที่เคยต้องส่งอีเมลหรือใช้ Excel ไปมา ทั้งหมดนั้นคือสิ่งที่ ServiceNow แทนที่ด้วย platform เดียว บริษัทนี้ไม่ได้ขาย software — บริษัทนี้ขาย <strong>วิธีที่องค์กรทำงาน</strong></p>
+      <p>ServiceNow เป็น cloud-based enterprise workflow platform ที่ครอบคลุมตั้งแต่ IT service management (ส่วนที่เริ่มต้นและยังครองตลาด), HR, customer service, ไปจนถึง AI agent สำหรับ digital workflow ทุกประเภท รายได้ FY2025 อยู่ที่ <strong>$13.28B</strong> เป็น subscription เกือบทั้งหมด สำนักงานใหญ่ที่ Santa Clara, California</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$13.3B</div>
+          <div class="stat-sub">+21% YoY</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Income FY2025</div>
+          <div class="stat-value">$1.75B</div>
+          <div class="stat-sub">GAAP · +23% YoY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Non-GAAP Op. Margin</div>
+          <div class="stat-value">~30%</div>
+          <div class="stat-sub">SaaS leverage ชัดเจน</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Subscription Rev.</div>
+          <div class="stat-value">$12.9B</div>
+          <div class="stat-sub">97% ของ total revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total RPO</div>
+          <div class="stat-value">$28.2B</div>
+          <div class="stat-sub">Revenue ที่มั่นใจในอนาคต</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Customers $5M+ ACV</div>
+          <div class="stat-value">603</div>
+          <div class="stat-sub">+20% YoY · ลูกค้าระดับองค์กร</div>
+        </div>
+      </div>
+      <p>ถ้าอธิบายสั้นๆ ServiceNow คือ <strong>บริษัทที่ทำเงินจาก subscription รายปีที่องค์กรทั่วโลกจ่ายเพื่อรัน workflow ทุกอย่าง</strong> ทั้ง IT, HR, และ customer service — ด้วย renewal rate ที่ใกล้ 99% แปลว่าเมื่อเซ็นสัญญาแล้ว ลูกค้าแทบไม่ออกไปไหน</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ServiceNow เกิดจากความหงุดหน่ายของคนทำงาน IT — Fred Luddy อยากทำให้การขอซ่อมคอมพิวเตอร์ในองค์กรไม่ต้องส่งอีเมลไปมา นั่นคือจุดเริ่มต้น แต่บริษัทที่เกิดมานั้นใหญ่กว่าวิสัยทัศน์แรกมาก</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2004</div>
+          <div class="tl-text"><strong>Fred Luddy ก่อตั้ง Glidesoft</strong> (ต่อมาเปลี่ยนชื่อเป็น ServiceNow) ที่ San Diego Fred มีประสบการณ์จาก Peregrine Systems และ Remedy Corporation — เขารู้ดีว่า ITSM software ที่มีอยู่นั้นซับซ้อนและแพงเกินไป จึงสร้าง cloud-native platform ที่ใช้งานง่ายกว่าเดิม</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2007–2011</div>
+          <div class="tl-text"><strong>เติบโตเงียบๆ ในกลุ่ม IT departments</strong> — ServiceNow ค่อยๆ แทนที่ระบบ legacy ของ BMC Remedy ที่ใช้กันมา 20 ปี ด้วยราคาที่ต่ำกว่าและ deployment ที่เร็วกว่า Enterprise customers เริ่มทยอยมา</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2012</div>
+          <div class="tl-text"><strong>IPO ที่ NYSE</strong> — ระดมทุน $210M ที่ราคา $18/หุ้น valuate ที่ $2.1B ตลาดเริ่มมองว่านี่คือ cloud software play ที่น่าสนใจ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2014–2016</div>
+          <div class="tl-text"><strong>ขยายออกจาก IT:</strong> ServiceNow เพิ่ม HR Service Delivery และ Customer Service Management เข้า platform — สัญญาณแรกที่บอกว่าบริษัทนี้ไม่ใช่แค่ IT tool แต่เป็น enterprise workflow platform</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019</div>
+          <div class="tl-text"><strong>Bill McDermott เข้ามาเป็น CEO</strong> — มาจาก SAP ที่เขา build market cap จาก $39B เป็น $156B McDermott เปลี่ยน narrative ของ ServiceNow จาก "ITSM platform" เป็น "the AI platform for business transformation" เขาทำให้ Now โตเร็วขึ้นอีก</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022</div>
+          <div class="tl-text"><strong>McDermott ขึ้นเป็น Chairman &amp; CEO</strong> พร้อมกับการลงทุนด้าน AI อย่างจริงจัง ServiceNow เริ่ม embed AI capabilities เข้าทุก workflow บน platform</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024–ปัจจุบัน</div>
+          <div class="tl-text"><strong>ยุค AI Agents:</strong> ServiceNow เปิดตัว <strong>Now Assist</strong> — AI agent layer ที่ทำงานแทนมนุษย์ใน workflow ต่างๆ Now Assist ทำ ACV เกิน $600M ในปี 2025 และ ServiceNow ตั้งเป้า $1B ACV จาก AI ในปี 2026 Platform ถูก position ใหม่เป็น "AI control tower" สำหรับ enterprise automation</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>รายได้โต 7 ปีติดต่อกัน ไม่เคยสะดุด</strong> — จาก $3.5B ปี 2019 เป็น $13.3B ปี 2025 CAGR ~25% และ GAAP profitability ที่กำลัง scale ขึ้นอย่างชัดเจน</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>Op. Income (GAAP)</th>
+            <th>Net Income (GAAP)</th>
+            <th>Op. Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2019</td><td>$3.46B</td><td>~$0.07B</td><td>~$0.03B</td><td>~2%</td></tr>
+          <tr><td>2020</td><td>$4.52B</td><td>~$0.14B</td><td>$0.12B</td><td>~3%</td></tr>
+          <tr><td>2021</td><td>$5.90B</td><td>$0.26B</td><td>~$0.23B</td><td>4.4%</td></tr>
+          <tr><td>2022</td><td>$7.25B</td><td>$0.36B</td><td>~$0.32B</td><td>4.9%</td></tr>
+          <tr><td>2023</td><td>$8.97B</td><td>$0.76B</td><td>$1.73B†</td><td>8.5%</td></tr>
+          <tr><td>2024</td><td>$10.98B</td><td>$1.36B</td><td>$1.43B</td><td>12.4%</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$13.28B</td><td>~$1.82B</td><td>$1.75B</td><td>~13.7%</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">† ปี 2023 net income สูงผิดปกติเพราะมี deferred tax asset recognition เข้ามา — ไม่ใช่การดำเนินงานปกติ | ✦ Source: ServiceNow Q4 &amp; FY2025 Earnings Release (January 2026)</p>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Revenue 6-yr CAGR</div>
+          <div class="stat-value">~25%</div>
+          <div class="stat-sub">2019→2025 ไม่มีสะดุด</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">GAAP Op. Margin Trend</div>
+          <div class="stat-value">2% → 14%</div>
+          <div class="stat-sub">Scale กำลัง work</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Non-GAAP Op. Margin</div>
+          <div class="stat-value">~30%</div>
+          <div class="stat-sub">FY2025 — SaaS power</div>
+        </div>
+      </div>
+      <p><strong>GAAP margin กับ Non-GAAP margin ต่างกันมาก</strong> เพราะ ServiceNow ใช้ Stock-Based Compensation (SBC) เยอะมาก — นั่นคือสาเหตุที่ GAAP op margin ยัง 13.7% แต่ non-GAAP อยู่ที่ ~30% ถ้าต้องการดู "ธุรกิจจริงๆ มีกำไรเท่าไหร่" non-GAAP คือตัวที่ ServiceNow (และ investor ส่วนใหญ่) ใช้อ้างอิง</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Bill McDermott</div>
+          <div class="boss-title">Chairman &amp; CEO, ServiceNow, Inc.</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>1961, Long Island, NY</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>Dowling College · Kellogg MBA · Wharton Exec.</span></div>
+            <div class="boss-fact"><span class="label">เข้า ServiceNow</span><span>November 2019</span></div>
+            <div class="boss-fact"><span class="label">Chairman &amp; CEO</span><span>2022 – ปัจจุบัน</span></div>
+            <div class="boss-fact"><span class="label">ก่อนหน้า</span><span>CEO, SAP SE (2010–2019)</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Bill McDermott ไม่ใช่ tech founder แต่เป็น <strong>enterprise software dealmaker ที่เก่งที่สุดคนหนึ่งในโลก</strong> เขาเริ่มชีวิตจากการขายหนังสือพิมพ์และเปิดร้านขายของในวัยเด็กที่ Long Island แล้วปีนขึ้นมาเป็น CEO ของ SAP ที่ market cap โต 4 เท่าในช่วงที่เขาคุม ก่อนจะมารับงาน ServiceNow ในปี 2019</p>
+          <p style="margin-top:12px">สไตล์ของ McDermott คือ <strong>energy สูง, vision กล้า, execution แม่น</strong> — เขา re-positioned ServiceNow จาก ITSM software เป็น "AI platform for business transformation" และ push ลูกค้าระดับ Fortune 500 เต็มที่ ความท้าทายในยุคของเขาคือ prove ว่า AI (Now Assist) ไม่ใช่แค่ feature แต่เป็น revenue driver จริงๆ ที่จะ justify premium valuation</p>
+        </div>
+      </div>
+      <p>สิ่งที่น่าสังเกตคือ McDermott เป็น <strong>outside CEO</strong> ที่ถูก hire มาเพื่อ scale — Fred Luddy (founder) ยังอยู่ในบอร์ดในฐานะ Board Chair จนปี 2022 การที่ McDermott ก้าวขึ้นเป็น Chairman ด้วยนั้นแสดงว่าบอร์ดเชื่อมั่นใน direction ที่เขาพาบริษัทไป</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>ServiceNow คือ platform ที่ทำให้ "งาน" เดินโดยอัตโนมัติ</strong> — ไม่ว่าจะเป็นการแจ้งซ่อมคอมพิวเตอร์, การ onboard พนักงานใหม่, การแก้ปัญหาลูกค้า หรือการขออนุมัติงบ — ทุกอย่างนั้น "flow" ผ่าน Now Platform</p>
+      <div class="callout blue">
+        <p><strong>โซนที่ 1 — IT Workflow (จุดเริ่มต้นและ core ที่ยัง dominant):</strong> IT Service Management (ITSM) คือที่มาของ ServiceNow เมื่อ server ล่ม, อุปกรณ์พัง, หรือพนักงานต้องการ access ใหม่ ทีม IT ทำงานผ่าน ServiceNow ทั้งหมด บริษัทใน Fortune 500 กว่า 85% ใช้ Now สำหรับ IT operations</p>
+      </div>
+      <div class="callout green">
+        <p><strong>โซนที่ 2 — Employee Workflow:</strong> HR Service Delivery — onboarding พนักงานใหม่, การลา, การเปลี่ยนตำแหน่ง ทุก HR process ที่เคยต้องกรอกฟอร์มและส่งอีเมล กลายเป็น automated workflow บน Now Platform</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>โซนที่ 3 — Customer Workflow:</strong> Customer Service Management (CSM) — ลูกค้าโทรมาแจ้งปัญหา, case เปิด, route ไปถูกทีม, resolve และปิด ทั้งหมดใน platform เดียว ไม่ต้อง copy-paste ระหว่าง system</p>
+      </div>
+      <div class="callout green">
+        <p><strong>โซนที่ 4 — Now Assist (AI Layer):</strong> AI agents ที่ทำงานแทนมนุษย์ใน workflow ต่างๆ ตั้งแต่ตอบคำถาม IT, summarize cases, resolve tickets โดยอัตโนมัติ — นี่คือ next revenue layer ที่ ServiceNow กำลัง build อยู่ ACV เกิน $600M แล้วในปี 2025</p>
+      </div>
+      <p><strong>ใน 1 ประโยค: ServiceNow คือ "operating system" ของงานองค์กร</strong> — เมื่อองค์กรใหญ่ใช้ ServiceNow แล้ว การถอดออกแทบเป็นไปไม่ได้ เพราะ workflow ทั้งองค์กรวิ่งอยู่บน platform นี้</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>โมเดลง่ายมาก: เซ็นสัญญา annual subscription → เก็บเงินทุกปี → ลูกค้าซื้อ module เพิ่ม → contract ใหญ่ขึ้นทุกปี</strong> — ไม่มีโฆษณา, ไม่มีขาย hardware, ไม่มี variable revenue คาดเดาได้สูงมาก</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $13.28B แบ่งตามประเภท</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">📋 Subscription Revenue</div>
+            <div class="rev-numbers"><strong>$12.88B</strong> · 97%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-sub" style="width:97%"></div></div>
+          <div class="rev-note">Annual / multi-year contracts กับองค์กรขนาดใหญ่ — เป็น SaaS model แท้ๆ ที่ predictable มาก</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔧 Professional Services &amp; Other</div>
+            <div class="rev-numbers"><strong>$0.40B</strong> · 3%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-pro" style="width:3%"></div></div>
+          <div class="rev-note">Implementation, consulting, training — ส่วนนี้เล็กและ intentionally ไม่ grow เร็ว ServiceNow prefer ให้ partners handle แทน</div>
+        </div>
+      </div>
+      <p><strong>Pricing model:</strong> ServiceNow คิดค่าใช้จ่ายตาม seat (จำนวน user) และ modules ที่ใช้ ยิ่งองค์กรใหญ่ ยิ่งจ่ายเยอะ ยิ่ง deploy modules เพิ่ม ยิ่ง contract ขนาดใหญ่ขึ้น นั่นคือ "land and expand" ในโลกจริง — เซ็นสัญญาเล็ก แล้วโตใน account ทุกปี</p>
+      <p><strong>cRPO (Current Remaining Performance Obligations) $12.85B</strong> คือรายได้ที่ ServiceNow มั่นใจว่าจะได้รับใน 12 เดือนข้างหน้า — ตัวเลขนี้โต +25% YoY บอกว่า visibility ของรายได้ในอนาคตดีมาก ไม่ต้องเดาว่าปีหน้าจะขายได้เท่าไหร่</p>
+      <p>Q4 2025 มี <strong>244 deals ที่ net new ACV เกิน $1M</strong> ในไตรมาสเดียว (+40% YoY) — นั่นคือองค์กรใหญ่กำลังเซ็นสัญญาใหม่หรือขยายสัญญาเดิมในอัตราที่เร็วขึ้นเรื่อยๆ</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ServiceNow มี compounding engine ที่ทรงพลัง — ไม่ใช่เพราะโตเร็ว แต่เพราะ <strong>ยิ่งใหญ่ขึ้น ยิ่งยากจะเอาออก</strong></p>
+      <div class="callout green">
+        <p><strong>The Stickiness Engine:</strong> เมื่อองค์กรติดตั้ง ServiceNow เสร็จ — process ทุกอย่างวิ่งผ่านมัน พนักงานใช้ชินแล้ว, integration กับ ERP และ other systems ทำไว้หมดแล้ว, data อยู่ใน platform แล้ว การ migrate ออกไปใช้ system อื่นจะกินเวลาและเงินมหาศาล → renewal rate ใกล้ 99% ทุกปี</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>Land and Expand Flywheel:</strong> เซ็น ITSM ก่อน → deploy HR workflow เพิ่ม → เพิ่ม CSM → add AI agents → contract ใหญ่ขึ้นทุกปี ServiceNow ได้ $1 จากลูกค้า แล้ว expand เป็น $3-4 ใน 3-4 ปีผ่าน module expansion เพียงอย่างเดียว</p>
+      </div>
+      <p><strong>Now Assist คือ next flywheel:</strong> AI agents ที่ทำงานใน workflow → ยิ่งมี data workflow เยอะ → AI ยิ่ง accurate → ROI ของลูกค้าสูงขึ้น → ลูกค้าซื้อ AI module เพิ่ม → ServiceNow เก็บ premium pricing ได้ → นี่คือ upsell vector ใหม่ที่ยังไม่ได้ monetize เต็มที่</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Non-GAAP Op. Margin FY25</div>
+          <div class="stat-value">~30%</div>
+          <div class="stat-sub">Scale กำลัง drive margin expansion</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Now Assist ACV (2025)</div>
+          <div class="stat-value">$600M+</div>
+          <div class="stat-sub">เป้า $1B+ ปี 2026</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total RPO</div>
+          <div class="stat-value">$28.2B</div>
+          <div class="stat-sub">+26.5% YoY · forward visibility</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">R&amp;D Focus</div>
+          <div class="stat-value">AI-first</div>
+          <div class="stat-sub">Now Assist, Agentic AI, LLM integration</div>
+        </div>
+      </div>
+      <p><strong>Capital allocation:</strong> ServiceNow ไม่จ่าย dividend ทุก FCF reinvest ใน R&amp;D (AI, platform expansion) และ M&amp;A เล็กๆ เพื่อเสริม capability บอร์ดอนุมัติ buyback program $5B ใหม่ใน Q4 2025 — signal ว่าบริษัทเริ่ม mature พอที่จะ return capital</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ปลายปี 2025 ถึงปี 2026 ServiceNow อยู่ใน <strong>moment ที่สำคัญ</strong> — AI กำลัง open door ให้ขาย premium ใหม่ที่ไม่เคยมีมาก่อน ขณะที่ core business ยังโตแข็งกว่า market คาดไว้</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Now Assist — AI revenue เกิน $600M ACV ในปีแรก</h4>
+        <p>Now Assist เปิดตัวปี 2023 และกลายเป็น product ที่ ramp เร็วที่สุดในประวัติศาสตร์ ServiceNow $600M ACV ใน 2025 และตั้งเป้า "significantly exceed $1B ACV" ในปี 2026 AI ไม่ใช่ buzzword สำหรับ ServiceNow — มัน monetize ได้จริงแล้ว</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Enterprise deals กำลังขนาดใหญ่ขึ้นเรื่อยๆ</h4>
+        <p>244 deals เกิน $1M net new ACV ใน Q4 2025 เพียงไตรมาสเดียว (+40% YoY) และมี 603 customers ที่มี ACV เกิน $5M (+20% YoY) — นี่คือสัญญาณว่า enterprise adoption กำลัง accelerate ไม่ใช่ชะลอ</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Agentic AI — platform ถูก position เป็น "AI Control Tower"</h4>
+        <p>McDermott pitch ServiceNow ว่าเป็น control tower ที่ AI agents จากทุก vendor (OpenAI, Microsoft, Google) จะ "work through" เพื่อ execute enterprise tasks บน platform ถ้า vision นี้ work เอาชนะทุก competitor ได้พร้อมกัน</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Valuation Premium ที่ต้องการให้ AI story prove ตัวเอง</h4>
+        <p>NOW ซื้อขายที่ P/E สูง — premium ที่ embed ไว้ใน price คือ assumption ว่า AI revenue จะ scale ได้จริงและ margin จะ expand ต่อเนื่อง ถ้า Now Assist โตช้ากว่าที่ตลาดคาด หรือ margin ไม่ expand ราคาจะ re-rate ลงแรง</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Microsoft เป็น partner แต่ก็เป็น competitor</h4>
+        <p>Microsoft Copilot กำลัง expand เข้า ITSM และ HR workflow — พื้นที่เดียวกับ ServiceNow Microsoft มีข้อได้เปรียบด้าน distribution ผ่าน Office 365 ที่ทุกองค์กรใช้ ServiceNow ต้องพิสูจน์ว่า Now Platform ดีกว่า native Microsoft tools</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Budget cycle ขององค์กรอ่อนแอ = expansion ช้าลง</h4>
+        <p>ServiceNow พึ่งพาการ expand ใน existing customers เป็นหลัก ถ้า IT budget ถูกตัดหรือองค์กรชะลอ digital transformation โอกาสขาย module ใหม่จะลดลงและ NRR (net revenue retention) อาจกดดัน</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ServiceNow ไม่มีคู่แข่งที่ครบวงจรเหมือนกันในทุก segment แต่แต่ละ workflow zone มี competitor ที่ต้องระวัง</p>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🖥</div>
+          <div>
+            <div class="comp-segment">IT Service Management (ITSM)</div>
+            <div class="comp-pos dominant">Dominant — ผู้นำตลาดชัดเจน</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">ServiceNow</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:40%;background:var(--sn-dark)"></div></div>
+            <div class="comp-detail">~40% market share ใน Enterprise ITSM · แทบไม่มี head-to-head อีกต่อไป — competition หลักคือ "do nothing" หรือ legacy system</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">BMC Helix</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:#e55c00"></div></div>
+            <div class="comp-detail">Legacy player ที่ ServiceNow แย่ง market มาตลอด 10 ปี ยังมีฐาน enterprise เก่าๆ แต่ momentum อ่อน</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Atlassian Jira Service Mgmt</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#0052CC"></div></div>
+            <div class="comp-detail">แข็งใน tech companies และ SMB แต่ยังไม่ crack enterprise Fortune 500 ได้เหมือน ServiceNow</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">ServiceNow มี moat ที่แน่นมากใน ITSM — switching cost สูง, partner ecosystem ใหญ่, และ data ที่ organically สะสมมา 15+ ปี competitor เข้ามาใหม่แทบไม่ได้</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">👥</div>
+          <div>
+            <div class="comp-segment">Employee &amp; HR Workflow</div>
+            <div class="comp-pos challenger">Challenger — แข็งแต่ไม่ dominant เหมือน ITSM</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">ServiceNow HR Service Delivery</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:var(--sn-dark)"></div></div>
+            <div class="comp-detail">แข็งมากในองค์กรที่ใช้ ServiceNow อยู่แล้ว — ขาย HR ต่อจาก IT ได้ง่ายมาก</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Workday</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:35%;background:#0875e1"></div></div>
+            <div class="comp-detail">System of record ด้าน HR ที่ dominant — Workday เก็บ HR data หลัก ServiceNow มักทำ workflow layer บนหน้า Workday มากกว่า compete head-to-head</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">SAP SuccessFactors</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#0a6ed1"></div></div>
+            <div class="comp-detail">Strong ในองค์กรที่ใช้ SAP อยู่แล้ว McDermott รู้จัก SAP ดี — และรู้ว่าต้องโจมตีจุดไหน</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">HR เป็น expansion play ไม่ใช่ greenfield — ServiceNow ทำ workflow layer ที่ดีกว่า แต่ไม่ได้ replace Workday ในฐานะ HR system of record</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🤖</div>
+          <div>
+            <div class="comp-segment">AI Workflow &amp; Enterprise Automation</div>
+            <div class="comp-pos contender">Contender — ยังเป็น race ที่เปิดอยู่</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">ServiceNow Now Assist</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:var(--sn-teal)"></div></div>
+            <div class="comp-detail">$600M ACV ใน 2025 — early lead แต่ market ยังเปิดอยู่ advantage คือ data ที่อยู่ใน platform + direct workflow access</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Microsoft Copilot for Enterprise</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:40%;background:#0078d4"></div></div>
+            <div class="comp-detail">Distribution ที่ใหญ่ที่สุด — ทุกองค์กรมี Office 365 อยู่แล้ว Copilot เข้าถึงคนได้ง่ายกว่า แต่ยังขาด deep workflow execution</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Salesforce Agentforce</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#00a1e0"></div></div>
+            <div class="comp-detail">Strong ใน customer-facing AI แต่ ServiceNow แข็งกว่าใน IT และ internal operations</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">AI Workflow เป็นสนามที่ยังไม่ settle — ServiceNow มีข้อได้เปรียบด้าน existing workflow data และ integration depth แต่ Microsoft's distribution อาจเอาชนะในระยะยาวถ้า Copilot mature ขึ้น</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding — own durable businesses positioned inside major global money-flow layers. Core is patient. Core does not chase. Core accepts volatility and focuses on business quality. Target: ~15% annualized return over a multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Core ถือหุ้นที่ <strong>ธุรกิจพิสูจน์ตัวเองด้วยตัวเลขจริง</strong> ไม่ใช่ด้วย narrative — low turnover, thesis-driven, real earnings matter, market leadership matters ถ้าธุรกิจยังแข็ง ราคาผันผวนคือ noise ไม่ใช่ signal ให้ขาย</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🏗</div>
+              <div class="trait-name">Real Earnings — ชัดเจน</div>
+              <div class="trait-desc">Revenue $13.3B · GAAP Net Income $1.75B · Non-GAAP Op Margin ~30% · cRPO $12.85B — เงินจริง, revenue จริง, visibility สูงมาก</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">👑</div>
+              <div class="trait-name">Market Leadership ที่แน่น</div>
+              <div class="trait-desc">~40% Enterprise ITSM market share · 85%+ Fortune 500 เป็นลูกค้า · renewal rate ใกล้ 99% — position ที่ competitor เข้ามาแทนไม่ได้ง่ายๆ</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Compounding ผ่าน Expansion</div>
+              <div class="trait-desc">Land ITSM → expand HR → expand CSM → expand AI — ลูกค้าแต่ละราย contract ขนาดใหญ่ขึ้นทุกปีโดยไม่ต้องหาลูกค้าใหม่</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🧱</div>
+              <div class="trait-name">Positioned ใน Enterprise Software Layer</div>
+              <div class="trait-desc">Enterprise digitization และ AI automation คือ money-flow layer ที่ทุก CIO ต้อง invest — ServiceNow อยู่ตรงกลางของ wave นั้น</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Core ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่หุ้นซิ่ง</span>
+            <span class="not-tag">✗ ไม่ใช่ momentum play</span>
+            <span class="not-tag">✗ ไม่ใช่ re-rating story ที่ consensus ยังไม่รู้</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB ที่ต้อง rotate เมื่อ structure เปลี่ยน</span>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: NOW → Core</h4>
+            <p>NOW ผ่าน Core criteria ทุกข้อตาม doctrine — real earnings ($1.75B GAAP net income, $13.3B revenue), market leadership ที่ dominant ใน ITSM มา 15+ ปีพร้อม renewal rate ใกล้ 99%, compounding mechanics ผ่าน land-and-expand ที่ทำงานอยู่ทุกวัน, และ positioned ตรงกลาง enterprise software + AI automation layer ที่ CIOs ทั่วโลกกำลัง invest หนัก Wave ไม่ใช่ตัวเลือก — consensus รู้จัก ServiceNow ดีอยู่แล้ว ไม่มี re-rating story ที่ซ่อนอยู่ FWB ไม่ใช่ — นี่คือ multi-year compound ไม่ใช่ rotation trade สรุป: ซื้อ NOW เพราะธุรกิจแข็ง แล้วปล่อยให้ flywheel หมุนเอง</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — NOW / ServiceNow, Inc. · Source: ServiceNow Q4 &amp; FY2025 Earnings Release (January 2026) · SEC 10-K FY2025 · Public Sources</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="sn-dot">
+      <span style="background:var(--sn-dark)"></span>
+      <span style="background:var(--sn-teal)"></span>
+      <span style="background:var(--sn-green)"></span>
+      <span style="background:var(--sn-sage)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

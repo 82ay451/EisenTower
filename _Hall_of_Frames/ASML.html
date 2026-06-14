@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASML — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --asml-blue:  #0071C5;
+      --asml-dark:  #00294F;
+      --asml-teal:  #00AEEF;
+      --asml-gray:  #5A6878;
+      --asml-blue-soft: #e0f0ff;
+      --asml-teal-soft: #e0f7ff;
+      --accent:      var(--asml-blue);
+      --accent-soft: var(--asml-blue-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--asml-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--asml-blue) 35%, var(--asml-teal) 35% 65%, var(--asml-gray) 65% 85%, var(--asml-dark) 85%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-asml { color: var(--asml-teal); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--asml-dark); border-bottom: 1px solid #003a72; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(0,113,197,0.3); color: var(--asml-teal); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--asml-blue); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--asml-blue-soft); color: var(--asml-blue); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue  { border-left: 3px solid var(--asml-blue); }
+    .stat-card.teal  { border-left: 3px solid var(--asml-teal); }
+    .stat-card.green { border-left: 3px solid var(--green); }
+    .stat-card.gray  { border-left: 3px solid var(--asml-gray); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-euv  { background: var(--asml-blue); }
+    .bar-duv  { background: var(--asml-teal); }
+    .bar-svc  { background: var(--asml-gray); }
+    .bar-mi   { background: #a0b8cc; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue  { background: var(--asml-blue-soft); border-color: var(--asml-blue); }
+    .callout.teal  { background: var(--asml-teal-soft); border-color: var(--asml-teal); }
+    .callout.green { background: var(--green-soft);     border-color: var(--green); }
+    .callout.dark  { background: #e8edf5;               border-color: var(--asml-dark); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--asml-blue), var(--asml-teal)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--asml-blue); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--asml-blue); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--asml-blue-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #155c38; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--asml-blue-soft); color: var(--asml-blue); }
+    .comp-pos.contender  { background: var(--yellow-soft); color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--asml-blue); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue  { background: var(--asml-blue-soft); border-color: var(--asml-blue); color: #003d75; }
+    .comp-verdict.green { background: var(--green-soft);     border-color: var(--green);     color: #155c38; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--asml-dark) 0%, #00417a 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--asml-blue-soft); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: var(--asml-blue); margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .fit-box { background: var(--green-soft); border: 1px solid #a8d8bc; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #155c38; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--asml-blue); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,113,197,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--asml-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .asml-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .asml-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-asml">ASML</span> — ASML Holding N.V.</h1>
+    <div class="doc-subtitle">Understanding ASML as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NASDAQ: ASML</span>
+      <span>🏛 Founded 1984 · Veldhoven, Netherlands</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ASML คือ <strong>บริษัทเดียวในโลกที่ผลิต EUV lithography machines</strong> — เครื่องจักรที่ใช้แสง ultraviolet ระดับขีดสุด (wavelength 13.5nm) เพื่อ "print" circuit patterns บน silicon wafer ที่ความละเอียด 3nm, 2nm, และในอนาคต 1nm ถ้าไม่มี ASML ก็ไม่มีชิป advanced ทุกอย่าง ไม่มีทาง</p>
+      <p>ปี 2025 ASML รายได้ <strong>€32.7B (+15.5% YoY)</strong> กำไรสุทธิ <strong>€9.6B (+23% YoY)</strong> Gross margin 52.8%, Operating margin 35.3% — สำหรับบริษัทที่ขายเครื่องจักรที่ราคาเครื่องละ €200-350M นี่คือ economics ที่ exceptional</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">€32.7B</div>
+          <div class="stat-sub">+15.5% YoY</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Income FY2025</div>
+          <div class="stat-value">€9.6B</div>
+          <div class="stat-sub">+23% YoY</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">52.8%</div>
+          <div class="stat-sub">FY2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Op. Margin</div>
+          <div class="stat-value">35.3%</div>
+          <div class="stat-sub">FY2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">EUV Systems Shipped</div>
+          <div class="stat-value">48</div>
+          <div class="stat-sub">FY2025 (revenue recognized)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">2026 Revenue Guidance</div>
+          <div class="stat-value">€34–39B</div>
+          <div class="stat-sub">+4% to +19% YoY range</div>
+        </div>
+      </div>
+      <p>ใน 1 ประโยค: <strong>ASML เป็น single-point-of-failure ของ entire semiconductor industry</strong> — ไม่มีบริษัทไหนใกล้จะทำสิ่งที่ ASML ทำได้ และนั่นคือ moat ที่ powerful ที่สุดในโลก tech</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1984</div>
+          <div class="tl-text"><strong>ASML ก่อตั้งเป็น joint venture ระหว่าง ASM International และ Philips</strong> — ชื่อ Advanced Semiconductor Materials Lithography เริ่มต้นใน Eindhoven แล้วย้ายมา Veldhoven ลูกค้าแรกๆ คือ Philips Semiconductors (ต่อมา NXP) และ Texas Instruments</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1995</div>
+          <div class="tl-text"><strong>IPO บน Amsterdam Stock Exchange และ NASDAQ:</strong> ASML list ทั้งสองตลาด ในปีเดียวกัน Philips เริ่มลด stake ลง (จนถึง 0% ในปีต่อมา) ASML เป็นบริษัทอิสระแล้ว</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2001</div>
+          <div class="tl-text"><strong>ASML ซื้อ Silicon Valley Group (SVG)</strong> — $1.6B — ซึ่งเป็น US-based lithography competitor ทำให้ ASML consolidate ตลาด และกลายเป็น global leader ใน DUV lithography อย่างชัดเจน</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2012</div>
+          <div class="tl-text"><strong>Intel, Samsung, TSMC ซื้อ stake ใน ASML</strong> (ระดับ 10-15% รวม) เพื่อ co-fund การพัฒนา EUV — นี่คือ signal ว่า EUV technology คือ critical path ของ Moore's Law ทั้งสาม chip giants ต้องการ ASML ให้สำเร็จ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2018–2020</div>
+          <div class="tl-text"><strong>EUV enters high-volume manufacturing:</strong> TSMC เป็นรายแรกที่ใช้ EUV ใน production (7nm/5nm) ในปี 2018-2019 Samsung ตาม ใน 2020 Intel เริ่ม order — EUV พิสูจน์ตัวเองแล้วว่า scale ได้ ASML เริ่ม ramp up production จาก ~20 EUV/ปี เป็น 40-50/ปี</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2023</div>
+          <div class="tl-text"><strong>US export controls บน China:</strong> US กด Netherlands ห้าม ASML export EUV ไป China (ซึ่ง ASML ปฏิบัติตามมาตั้งแต่ 2019) แล้วขยายไปห้าม DUV immersion รุ่นใหม่ด้วย China เคยเป็น ~15% ของรายได้ — collapse ของ China revenue ถูก offset ด้วย TSMC, Samsung, Intel ที่ demand เพิ่ม</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>High-NA EUV (EXE:5200) เริ่ม ship:</strong> Intel เป็นลูกค้าแรก ราคา ~€350M ต่อเครื่อง (vs €200M สำหรับ standard EUV) High-NA คือ next generation ที่จะ enable 1.4nm, 1nm nodes Christophe Fouquet เข้ารับตำแหน่ง CEO เมษายน 2024</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>EUV revenue โต 39% YoY:</strong> AI chip demand ทำให้ TSMC และ Samsung order EUV เพิ่มมาก High-NA EXE:5200 ยืนยัน Site Acceptance Test แรกสำเร็จ FY2025 revenue €32.7B, net income €9.6B — record</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ASML เติบโตแทบทุกปี ยกเว้นปีที่ semiconductor cycle ลง — และแม้แต่ปีที่ดูเหมือนชะลอ ASML ก็ยัง backlog ที่แน่น</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>Net Income</th>
+            <th>Gross Margin</th>
+            <th>EPS (basic)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2020</td><td>€14.0B</td><td>€3.6B</td><td>48.6%</td><td>€8.83</td></tr>
+          <tr><td>2021</td><td>€18.6B</td><td>€5.9B</td><td>52.7%</td><td>€14.37</td></tr>
+          <tr><td>2022</td><td>€21.2B</td><td>€5.6B</td><td>49.9%</td><td>€13.77</td></tr>
+          <tr><td>2023</td><td>€27.6B</td><td>€7.8B</td><td>51.3%</td><td>€19.89</td></tr>
+          <tr><td>2024</td><td>€28.3B</td><td>€7.8B</td><td>51.3%</td><td>€20.0*</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>€32.7B</td><td>€9.6B</td><td>52.8%</td><td>€24.73</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: ASML FY2025 Press Release (January 28, 2026) · Historical figures approximate · *2024 EPS approx</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue 5-yr CAGR</div>
+          <div class="stat-value">~18%</div>
+          <div class="stat-sub">2020 → 2025</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Income 5-yr CAGR</div>
+          <div class="stat-value">~22%</div>
+          <div class="stat-sub">Faster than revenue</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-label">Returned to Shareholders</div>
+          <div class="stat-value">€8.5B</div>
+          <div class="stat-sub">FY2025 (dividends + buybacks)</div>
+        </div>
+      </div>
+      <p>สังเกตว่า 2022 net income ต่ำกว่า 2021 ทั้งที่ revenue สูงกว่า — เพราะ one-time charges และ product mix เป็นปีที่ High-NA R&D cost สูง แต่นี่คือ anomaly ไม่ใช่ trend</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Christophe Fouquet</div>
+          <div class="boss-title">President &amp; CEO, ASML Holding N.V.</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>1973, ฝรั่งเศส</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>Master's in Physics, Institut Polytechnique de Grenoble · Master's in Management, Stanford University</span></div>
+            <div class="boss-fact"><span class="label">เข้า ASML</span><span>2008</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>April 25, 2024</span></div>
+            <div class="boss-fact"><span class="label">ก่อน ASML</span><span>Applied Materials, KLA Tencor</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Christophe Fouquet เป็น <strong>insider ที่โตมาจาก EUV business</strong> — เข้า ASML ปี 2008 ด้านการตลาดและ product management ก่อนจะขึ้นเป็น EVP EUV ในปี 2018 (ช่วงที่ EUV กำลัง enter production) จากนั้น Chief Business Officer ปี 2022 และ CEO ปี 2024 Fouquet เป็นคนที่เห็นการ transition จาก "EUV ยังไม่พร้อม" สู่ "EUV เป็น backbone ของ leading-edge" ด้วยตาตัวเอง</p>
+          <p style="margin-top:12px">ก่อน ASML Fouquet ทำงานที่ Applied Materials และ KLA Tencor ซึ่งเป็น semiconductor equipment peers ทำให้เขามาพร้อม industry context กว้าง ความท้าทายหลักในยุคนี้: <strong>navigate export control landscape ที่ซับซ้อน, scale High-NA EUV production, และ expand fab capacity ให้ match AI chip demand ที่เร่ง</strong></p>
+        </div>
+      </div>
+      <div class="callout dark">
+        <p><strong>Peter Wennink — Predecessor CEO (2013–2024):</strong> Wennink นำ ASML ผ่าน EUV commercialization ช่วงที่ยากที่สุด — ตั้งแต่เป็นแค่ R&D project จนกลายเป็น €11.6B revenue stream เขาเกษียณเมษายน 2024 หลังจาก lead ASML 11 ปี ซึ่งเป็นช่วงที่ stock value เพิ่มขึ้น 10x+</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>ASML ทำเครื่อง lithography — เครื่องจักรที่ใช้ "พิมพ์" circuit patterns ลงบน silicon wafer</strong> — เปรียบเสมือนเครื่องพิมพ์ที่พิมพ์ลาย circuit ด้วยแสง แต่แทนที่จะพิมพ์ลงกระดาษ พิมพ์ลงบน silicon wafer ที่จะกลายเป็น chip</p>
+      <div class="callout blue">
+        <p><strong>EUV Lithography (Extreme Ultraviolet) — ระดับ physics ขีดสุด:</strong> ใช้แสง wavelength 13.5nm (100x สั้นกว่าแสงที่มองเห็น) เพื่อ print circuit ที่ขนาด 3nm, 2nm ASML ต้องสร้าง vacuum chamber พิเศษ (เพราะ EUV light ถูก air absorb ทั้งหมด), ใช้ tin plasma เป็น light source, และ mirror ที่แม่นยำระดับ atomic ทุกเครื่องมีชิ้นส่วน ~100,000 ชิ้น จาก 5,000 suppliers ราคา €150-200M ต่อเครื่อง ASML ผลิตได้ ~50-60 เครื่องต่อปี</p>
+      </div>
+      <div class="callout teal">
+        <p><strong>High-NA EUV (EXE:5200) — ยุคต่อไป:</strong> "High Numerical Aperture" EUV เพิ่ม resolution อีกขั้น — จาก 0.33 NA เป็น 0.55 NA ทำให้ print ได้ละเอียดขึ้น ~70% จะ enable 1.4nm และ 1nm nodes ในอนาคต ราคา ~€350M ต่อเครื่อง ลูกค้าแรก: Intel TSMC และ Samsung จะตามมาในปี 2026-2027</p>
+      </div>
+      <div class="callout green">
+        <p><strong>DUV Lithography — mature แต่ยังใหญ่:</strong> Deep Ultraviolet (193nm) ใช้สำหรับ nodes 5nm ขึ้นไป (mature) รวมถึง DRAM และ special processes ยังขายได้ดี €12B ปี 2025 แม้จะ down 6% YoY เพราะ China ลด order (export control)</p>
+      </div>
+      <div class="callout dark">
+        <p><strong>Service &amp; Parts — recurring revenue ที่โต:</strong> ทุก EUV machine ที่ install ต้องการ service, calibration, parts upgrade จาก ASML ตลอด 20-30 ปีอายุเครื่อง ยิ่งมี installed base มาก → service revenue โตตาม ตอนนี้ service revenue ประมาณ ~€8B/ปี และโตทุกปี</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>สองสาย: ขายเครื่อง + service เครื่องที่ขายไปแล้ว</strong> — เมื่อ sell เครื่อง 1 ครั้ง ASML จะ service เครื่องนั้นอีก 20+ ปี ทำให้ revenue model มีทั้ง lumpy (system sales) และ recurring (service)</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — €32.7B แบ่งตาม product line</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">💡 EUV Lithography Systems</div>
+            <div class="rev-numbers"><strong>€11.6B</strong> · 35% · +39% YoY</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-euv" style="width:35%"></div></div>
+          <div class="rev-note">NXE (standard EUV) + EXE:5200 (High-NA, first unit accepted 2025) — 48 systems recognized revenue</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔵 DUV Lithography Systems</div>
+            <div class="rev-numbers"><strong>€12.0B</strong> · 37% · -6% YoY</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-duv" style="width:37%"></div></div>
+          <div class="rev-note">279 systems (47% immersion) — down YoY เพราะ China export control ลด demand แต่ยังใหญ่มาก</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔧 Service &amp; Field Options</div>
+            <div class="rev-numbers"><strong>~€8.3B</strong> · ~25%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-svc" style="width:25%"></div></div>
+          <div class="rev-note">Annual contracts, parts, upgrades สำหรับ installed base ทั่วโลก — growing YoY เพราะ installed base ขยาย recurring nature สูงมาก</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔬 Metrology &amp; Inspection</div>
+            <div class="rev-numbers"><strong>€825M</strong> · 2.5% · +28% YoY</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-mi" style="width:3%"></div></div>
+          <div class="rev-note">YieldStar, e-beam inspection — growing fast as advanced fabs need more quality control</div>
+        </div>
+      </div>
+      <p><strong>Key insight:</strong> EUV revenue เกือบแซง DUV แล้วในปี 2025 และแนวโน้มชัดเจนว่า EUV + High-NA จะ dominate revenue mix ใน 3-5 ปีข้างหน้า ซึ่ง ASP สูงกว่า → margin expansion ตามมา</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ASML compounding มาจาก moat structure ที่แทบจะ unique ในโลก business — <strong>บริษัทเดียวที่ทำสิ่งที่ทำได้ และทุกคนต้องใช้</strong></p>
+      <div class="callout blue">
+        <p><strong>Absolute Monopoly ใน EUV — No Viable Alternative:</strong> Canon และ Nikon ทำ DUV ได้ แต่ไม่มีใครอีกที่ทำ EUV ได้ ในโลก ไม่มีคนที่สอง ASML ลงทุน R&amp;D ใน EUV มากกว่า €6B ตั้งแต่ปี 2000 กว่าจะ commercial success ปี 2018 barrier to entry นี้ทำให้ not even a serious competitor ใน pipeline</p>
+      </div>
+      <div class="callout teal">
+        <p><strong>Installed Base + Service Flywheel:</strong> ทุกเครื่อง EUV ที่ ship → customer ต้องซื้อ service contract → service revenue โต → ยิ่ง install base ใหญ่ขึ้น → service revenue ใหญ่ขึ้น → cash flow ที่ recurring fund R&amp;D ของ next-gen (High-NA) → High-NA ยิ่งดีกว่า EUV เก่า → ลูกค้าต้อง upgrade → cycle วน</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Moore's Law Dependency — ทุกชิป gen ใหม่ต้องการ ASML:</strong> ทุกครั้งที่ TSMC, Samsung, Intel ก้าวไปยัง process node ใหม่ ต้องใช้ EUV รุ่นใหม่ ซึ่งมาจาก ASML ทุกครั้ง semiconductor roadmap เดินต่อ → ASML ขายได้เพิ่ม AI chip era ทำให้ fab investment accelerate → ASML ได้รับ benefit ทันที</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Returned to Shareholders FY2025</div>
+          <div class="stat-value">€8.5B</div>
+          <div class="stat-sub">Dividends + buybacks</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">R&amp;D Spending (est.)</div>
+          <div class="stat-value">~€4B/yr</div>
+          <div class="stat-sub">~12% of revenue — continuous innovation</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>High-NA EUV ยืนยัน Site Acceptance Test แรกสำเร็จ — ไม่ใช่แค่ prototype</h4>
+        <p>EXE:5200 (High-NA EUV) ผ่าน SAT (Site Acceptance Test) ครั้งแรกในปี 2025 หมายความว่า customer ยืนยันว่าเครื่องทำงานได้ตาม spec ใน real environment นี่คือ milestone สำคัญที่บอกว่า High-NA ใกล้ enter volume production</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>EUV revenue +39% YoY — AI driving fab investment</h4>
+        <p>TSMC และ Samsung order EUV เพิ่มเพื่อ serve AI chip demand EUV revenue โต 39% ปี 2025 เป็น €11.6B โดยมี 48 units revenue recognized สะท้อน demand ที่แข็งแกร่งจาก leading-edge fab expansion</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>China collapse กระทบ DUV sales</h4>
+        <p>DUV ลง 6% ปี 2025 เพราะ China export restriction ขยายครอบคลุม DUV immersion China เคยเป็น ~15-20% ของ ASML revenue — loss นี้ถูก offset ด้วย non-China demand แต่ถ้า restrictions ขยายเพิ่มอีก impact จะหนักขึ้น</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>2026 guidance wide range (€34–39B) สะท้อน uncertainty</h4>
+        <p>Range กว้างมาก ($5B difference) บอกว่า ASML เองไม่แน่ใจว่า customer order timing จะเป็นอย่างไร ส่วนหนึ่งเพราะ system delivery timing สามารถ slip ข้ามไตรมาสได้ง่าย</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Geopolitical risk — Netherlands กลางระหว่าง US และ China</h4>
+        <p>ASML อยู่ Netherlands แต่ต้องปฏิบัติตาม US export control กดดัน ถ้า US กด Netherlands เพิ่มอีก (เช่น ห้าม DUV ทั้งหมดไป China) revenue impact จะมีนัยสำคัญ แม้จะ manageable ในระยะยาว</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Semiconductor capex cycle — ASML cyclical ตาม customer investment</h4>
+        <p>ถ้า TSMC หรือ Samsung ชะลอ fab expansion (เช่น demand AI chip ลดลงชั่วคราว) order ของ ASML จะ delay ตาม ASML มี backlog ยาวหลายปีเป็น buffer แต่ cycle downturn จะกระทบ</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">💡</div>
+          <div>
+            <div class="comp-segment">EUV Lithography</div>
+            <div class="comp-pos dominant">Monopoly — 100% market share</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">ASML — only player</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:100%;background:var(--asml-blue)"></div></div>
+            <div class="comp-detail">ไม่มีคู่แข่ง ไม่มี second source ไม่มีแผนที่ใครจะทำได้ใน 10 ปีข้างหน้า — semiconductor monopoly ที่ pure ที่สุดในโลก</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">EUV = ASML = period. ไม่มีอะไรเพิ่มเติมที่ต้องวิเคราะห์</div>
+      </div>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🔵</div>
+          <div>
+            <div class="comp-segment">DUV Lithography (mature nodes)</div>
+            <div class="comp-pos dominant">Dominant — ~80%+ immersion market share</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">ASML NXT series</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:80%;background:var(--asml-blue)"></div></div>
+            <div class="comp-detail">Dominant ใน immersion DUV (ที่ใช้สำหรับ leading nodes ก่อน EUV) ซึ่งเป็น highest value DUV segment</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Nikon</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:10%;background:#777"></div></div>
+            <div class="comp-detail">Japanese competitor ใน DUV ไม่ได้ pursue EUV หลังจากแพ้ ASML ใน R&amp;D race ตั้งแต่ 2000s</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Canon</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:10%;background:#555"></div></div>
+            <div class="comp-detail">Japanese competitor ใน DUV mature segments กำลัง pursue nano-imprint lithography (NIL) เป็น alternative แต่ยังไม่ proof ใน leading-edge</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">DUV ก็ ASML dominant — Nikon และ Canon ยังอยู่ใน market แต่ไม่ close ใน immersion ซึ่งเป็น high-value segment</div>
+      </div>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🔬</div>
+          <div>
+            <div class="comp-segment">Semiconductor Equipment (broader)</div>
+            <div class="comp-pos dominant">Top-tier within equipment ecosystem</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">ASML — lithography only, best in class</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:60%;background:var(--asml-blue)"></div></div>
+            <div class="comp-detail">Focus บน lithography 100% — ไม่ diversify ไป etch, deposition หรืออื่น</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Applied Materials (AMAT)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:#e87722"></div></div>
+            <div class="comp-detail">Leader ใน deposition, etch — ทำงาน complementary กับ ASML ไม่ใช่ competitor โดยตรง</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">KLA Corporation</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#005c99"></div></div>
+            <div class="comp-detail">Leader ใน inspection, metrology — complementary กับ ASML ASML เองมี Metrology segment เพื่อ compete บางส่วน</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">ASML, AMAT, KLA เป็น semiconductor equipment triumvirate ที่ลูกค้าต้องใช้ทั้งสาม — compete ไม่มากนัก แต่ ASML เป็น most unique ของสาม</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding. Own durable businesses inside major global money-flow layers. Patient. Accepts volatility. Focuses on business quality. Target: ~15% annualized return over multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">ASML เป็น <strong>textbook Core ที่ชัดที่สุดในโลก</strong> — monopoly product ที่ต้องการโดยทุก leading-edge fab, switching cost = ไม่มีทาง switch เพราะไม่มีตัวเลือก, เงินไหลเข้า €9.6B net income ปี 2025, compounding ผ่าน service flywheel และ installed base ที่เพิ่มทุกปี</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🏆</div>
+              <div class="trait-name">Absolute Monopoly ใน EUV</div>
+              <div class="trait-desc">100% market share ใน EUV — ไม่มีใครทำได้ ไม่มี serious competitor ใน pipeline moat ที่ impossible to replicate</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Service Recurring Revenue</div>
+              <div class="trait-desc">~€8B/yr service revenue จาก installed base ที่โตทุกปี ทุกเครื่อง EUV ที่ ship = 20+ ปีของ service contract ที่โต</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">💎</div>
+              <div class="trait-name">Real Earnings Large Scale</div>
+              <div class="trait-desc">€9.6B net income, 52.8% gross margin, 35.3% op margin สำหรับ equipment maker — exceptional economics</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🚀</div>
+              <div class="trait-name">Moore's Law ขึ้นอยู่กับ ASML</div>
+              <div class="trait-desc">ทุกครั้งที่ chip advances → ต้องใช้ EUV รุ่นใหม่จาก ASML AI era = Moore's Law ที่ accelerate = ASML ที่ demand สูงขึ้น</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>ASML ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่ Wave — ไม่ต้องรอ re-rating ทุกคนรู้ว่า ASML critical</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB — ไม่ใช่ tactical rotation นี่คือ multi-decade hold</span>
+            <span class="not-tag">✗ ไม่ใช่ cyclical play — service revenue ทำให้ ลดความ cyclicality</span>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: ASML → Core</h4>
+            <p>ASML เป็น arguably strongest Core holding ที่มีอยู่ใน equity market — monopoly ใน EUV ที่ required สำหรับทุก advanced chip ทั่วโลก, €9.6B net income ที่ตาม earnings power จริง, service flywheel ที่โตทุกปีพร้อม installed base, และ High-NA EUV (EXE:5200) คือ growth runway อีก 10+ ปี Geopolitical risk (Netherlands position, China export) ต้อง monitor แต่ไม่เปลี่ยน long-term thesis</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — ASML / ASML Holding N.V. · Source: ASML FY2025 Press Release (January 28, 2026) · SEC Form 6-K</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="asml-dot">
+      <span style="background:var(--asml-dark)"></span>
+      <span style="background:var(--asml-blue)"></span>
+      <span style="background:var(--asml-teal)"></span>
+      <span style="background:var(--asml-gray)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOOGL — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --g-blue:   #4285F4;
+      --g-red:    #EA4335;
+      --g-yellow: #FBBC04;
+      --g-green:  #34A853;
+      --g-blue-soft:   #e8f0fe;
+      --g-red-soft:    #fce8e6;
+      --g-yellow-soft: #fef9e0;
+      --g-green-soft:  #e6f4ea;
+      --accent:      var(--g-blue);
+      --accent-soft: var(--g-blue-soft);
+      --green:       var(--g-green);
+      --green-soft:  var(--g-green-soft);
+      --red:         var(--g-red);
+      --red-soft:    var(--g-red-soft);
+      --yellow:      var(--g-yellow);
+      --yellow-soft: var(--g-yellow-soft);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: var(--surface);
+      border-bottom: 3px solid transparent;
+      border-image: linear-gradient(90deg,
+        var(--g-blue) 25%, var(--g-red) 25% 50%,
+        var(--g-yellow) 50% 75%, var(--g-green) 75%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); background: var(--tag-bg);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-g  { color: var(--g-blue); }
+    .ticker-o1 { color: var(--g-red); }
+    .ticker-o2 { color: var(--g-yellow); }
+    .ticker-l  { color: var(--g-green); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+
+    /* ── Nav ── */
+    .toc {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: var(--g-blue-soft); color: var(--g-blue); }
+
+    /* ── Body ── */
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+
+    /* ── Toggle Section ── */
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      cursor: pointer; user-select: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--g-blue); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .section-h2 {
+      font-size: 24px; font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--text-primary); transition: color 0.15s;
+    }
+    .toggle-icon {
+      flex-shrink: 0; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--tag-bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.25s;
+      font-size: 16px; color: var(--text-secondary);
+    }
+    .section-header:hover .toggle-icon { background: var(--g-blue-soft); color: var(--g-blue); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content {
+      overflow: hidden;
+      transition: max-height 0.35s ease, opacity 0.3s ease;
+      max-height: 9999px; opacity: 1;
+    }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+
+    /* ── Prose ── */
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+
+    /* ── Stat Cards ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--g-blue); }
+    .stat-card.green  { border-left: 3px solid var(--g-green); }
+    .stat-card.red    { border-left: 3px solid var(--g-red); }
+    .stat-card.yellow { border-left: 3px solid var(--g-yellow); }
+
+    /* ── Revenue Bars ── */
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-search  { background: var(--g-blue); }
+    .bar-cloud   { background: var(--g-green); }
+    .bar-youtube { background: var(--g-red); }
+    .bar-network { background: var(--g-yellow); }
+    .bar-subs    { background: #9334ea; }
+    .bar-other   { background: #bdbdbd; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Callout ── */
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--g-blue-soft);   border-color: var(--g-blue); }
+    .callout.green  { background: var(--g-green-soft);  border-color: var(--g-green); }
+    .callout.yellow { background: var(--g-yellow-soft); border-color: var(--g-yellow); }
+    .callout.red    { background: var(--g-red-soft);    border-color: var(--g-red); }
+    .callout p { color: var(--text-primary); }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+      width: 2px; background: linear-gradient(180deg, var(--g-blue), var(--g-green));
+    }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--g-blue); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--g-blue); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+
+    /* ── Boss Card ── */
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+
+    /* ── Track Table ── */
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--g-blue-soft); }
+
+    /* ── Situation Items ── */
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--g-green-soft); color: #1e6e3a; }
+    .tag-watch { background: var(--g-yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--g-red-soft); color: #b71c1c; }
+
+    /* ── Competition ── */
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--g-green-soft); color: var(--g-green); }
+    .comp-pos.challenger { background: var(--g-blue-soft);  color: var(--g-blue); }
+    .comp-pos.contender  { background: var(--g-yellow-soft); color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--g-blue); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--g-blue-soft);   border-color: var(--g-blue);  color: #174ea6; }
+    .comp-verdict.green  { background: var(--g-green-soft);  border-color: var(--g-green); color: #1e6e3a; }
+    .comp-verdict.red    { background: var(--g-red-soft);    border-color: var(--g-red);   color: #b71c1c; }
+
+    /* ── Portfolio Card ── */
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--g-blue) 0%, #1557b0 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--g-blue-soft); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: var(--g-blue); margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--g-red-soft); color: var(--g-red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .googl-fit { background: var(--g-green-soft); border: 1px solid #c3e6cb; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .googl-fit h4 { font-size: 15px; font-weight: 700; color: var(--g-green); margin-bottom: 10px; }
+    .googl-fit p { font-size: 15px; }
+
+    /* ── Back to Top ── */
+    #back-to-top {
+      position: fixed; bottom: 32px; right: 32px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--g-blue); color: white;
+      border: none; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(66,133,244,0.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s; z-index: 200;
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: #1557b0; }
+
+    /* ── Footer ── */
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<!-- Header -->
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1>
+      <span class="ticker-g">G</span><span class="ticker-o1">O</span><span class="ticker-o2">O</span><span class="ticker-g">G</span><span class="ticker-l">L</span>
+      — Alphabet Inc.
+    </h1>
+    <div class="doc-subtitle">Understanding Google as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 14, 2026</span>
+      <span>📊 NASDAQ: GOOGL</span>
+      <span>🏛 Founded 1998 / Alphabet 2015</span>
+    </div>
+  </div>
+</div>
+
+<!-- Nav — numbers only -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a>
+    <a href="#s2">2</a>
+    <a href="#s3">3</a>
+    <a href="#s4">4</a>
+    <a href="#s5">5</a>
+    <a href="#s6">6</a>
+    <a href="#s7">7</a>
+    <a href="#s8">8</a>
+    <a href="#s9">9</a>
+    <a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ถ้าพูดถึง "Google" คนส่วนใหญ่นึกถึง search engine ที่ใช้ทุกวัน แต่บริษัทที่เราซื้อหุ้นชื่อ <strong>Alphabet Inc.</strong> — holding company ที่ถือ Google อยู่ข้างใน รวมถึงธุรกิจอื่นๆ ตั้งแต่รถยนต์ไร้คนขับไปจนถึง life sciences</p>
+      <p>Alphabet เป็นหนึ่งในบริษัทที่ใหญ่ที่สุดในโลก มีรายได้ปี 2025 อยู่ที่ <strong>$402.8 พันล้านดอลลาร์</strong> กำไรสุทธิ $132.2 พันล้านดอลลาร์ พนักงานทั่วโลกเกือบ 191,000 คน สำนักงานใหญ่ที่ Mountain View, California</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$402.8B</div>
+          <div class="stat-sub">+15% YoY</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Income FY2025</div>
+          <div class="stat-value">$132.2B</div>
+          <div class="stat-sub">+32% YoY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Operating Margin</div>
+          <div class="stat-value">32%</div>
+          <div class="stat-sub">กำไร 32 เซนต์ต่อทุก $1</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">190,820</div>
+          <div class="stat-sub">ณ สิ้นปี 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Free Cash Flow</div>
+          <div class="stat-value">$73.3B</div>
+          <div class="stat-sub">FY2025 trailing 12M</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Cash &amp; Securities</div>
+          <div class="stat-value">$126.8B</div>
+          <div class="stat-sub">ในมือ ณ สิ้นปี 2025</div>
+        </div>
+      </div>
+      <p>ถ้าอธิบายสั้นๆ Alphabet คือ <strong>บริษัทที่ทำเงินจากโฆษณาออนไลน์เป็นหลัก</strong> ผ่าน Search, YouTube และเครือข่ายพันธมิตร พร้อมกำลัง diversify เข้าสู่ cloud computing และ AI อย่างจริงจัง</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>จาก project วิจัยในมหาวิทยาลัยสู่บริษัทที่ใหญ่ที่สุดในโลก — เส้นทางของ Google ใช้เวลาไม่ถึง 30 ปี</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1996–1998</div>
+          <div class="tl-text"><strong>จุดเริ่มต้นใน Stanford</strong> — Larry Page และ Sergey Brin พัฒนา "BackRub" search engine ที่ rank เว็บด้วยการนับ inbound links Google Inc. จดทะเบียนบริษัทเมื่อ September 4, 1998 ในโรงจอดรถที่ Menlo Park</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2000–2001</div>
+          <div class="tl-text"><strong>เปิดตัว AdWords</strong> — โมเดลธุรกิจที่ทุกอย่างวิ่งผ่านมันจนทุกวันนี้ ระบบประมูลโฆษณา pay-per-click Eric Schmidt เข้ามาเป็น CEO เพื่อช่วยบริหารองค์กรที่กำลังโตเร็ว</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2004</div>
+          <div class="tl-text"><strong>IPO ระดับตำนาน</strong> — NASDAQ ที่ราคา $85/หุ้น ระดมทุน $1.67B ปีเดียวกันเปิดตัว Gmail พร้อม storage 1GB ซึ่งตอนนั้นถือว่าเยอะมากเมื่อเทียบกับคู่แข่ง</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2005–2007</div>
+          <div class="tl-text"><strong>M&amp;A ที่สำคัญที่สุด:</strong> ซื้อ Android Inc. (ต่อมากลายเป็น OS ที่ครอง 70% ตลาด smartphone), ซื้อ YouTube ด้วยเงิน $1.65B (ตอนนี้ทำเงินกว่า $60B/ปี), ซื้อ DoubleClick เพื่อเสริม ad tech infrastructure</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2008</div>
+          <div class="tl-text"><strong>Chrome เปิดตัว</strong> — browser ที่ตอนนี้ครอง ~65% ของตลาดทั่วโลก ทั้งที่ตอนเปิดตัวใครๆ ก็บอกว่า IE กับ Firefox ครองอยู่แล้ว</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2015</div>
+          <div class="tl-text"><strong>เกิด Alphabet Inc.</strong> — Larry Page ต้องการให้ Google core มีความ accountable ชัดเจน ขณะที่ moonshot projects มีอิสระดำเนินงาน Sundar Pichai รับตำแหน่ง CEO ของ Google</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019</div>
+          <div class="tl-text"><strong>Founders ออก</strong> — Larry Page และ Sergey Brin ลาออกจาก executive roles Sundar Pichai ขยับขึ้นเป็น CEO ของ Alphabet ด้วย</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2023–ปัจจุบัน</div>
+          <div class="tl-text"><strong>ยุค AI:</strong> ChatGPT ของ OpenAI ปลาย 2022 ทำให้ Google ตื่นตัวอย่างรุนแรง — เปิดตัว Gemini, ลงทุน $91B ด้าน AI infrastructure ปี 2025 และประกาศ CapEx ปี 2026 ที่ $175-185B Gemini 3 เปิดตัวปลายปี 2025 ถือเป็น milestone สำคัญ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>10 ปีที่ผ่านมา รายได้โตจาก ~$75B เป็น $402B</strong> — CAGR ประมาณ 18% ต่อปี และกำไรโตเร็วกว่ารายได้</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>Operating Income</th>
+            <th>Net Income</th>
+            <th>EPS (Diluted)</th>
+            <th>Op. Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2019</td><td>$161.9B</td><td>$34.2B</td><td>$23.7B</td><td>$1.61</td><td>21%</td></tr>
+          <tr><td>2020</td><td>$182.5B</td><td>$41.2B</td><td>$40.3B</td><td>$2.93</td><td>23%</td></tr>
+          <tr><td>2021</td><td>$257.6B</td><td>$78.7B</td><td>$76.0B</td><td>$5.61</td><td>31%</td></tr>
+          <tr><td>2022</td><td>$282.8B</td><td>$74.8B</td><td>$59.9B</td><td>$4.56</td><td>26%</td></tr>
+          <tr><td>2023</td><td>$307.4B</td><td>$84.3B</td><td>$73.8B</td><td>$5.80</td><td>27%</td></tr>
+          <tr><td>2024</td><td>$350.0B</td><td>$112.4B</td><td>$100.1B</td><td>$8.04</td><td>32%</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$402.8B</td><td>$129.0B</td><td>$132.2B</td><td>$10.81</td><td>32%</td></tr>
+        </tbody>
+      </table>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Revenue 5-yr CAGR</div>
+          <div class="stat-value">~17%</div>
+          <div class="stat-sub">ต่อเนื่องทุกปี</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">EPS 5-yr CAGR</div>
+          <div class="stat-value">~32.7%</div>
+          <div class="stat-sub">โตเร็วกว่า revenue มาก</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">FCF FY2025</div>
+          <div class="stat-value">$73.3B</div>
+          <div class="stat-sub">เงินสดจริงหลังลงทุน</div>
+        </div>
+      </div>
+      <p>ปี 2022 กำไรสะดุดครั้งเดียวในรอบหลายปี เพราะ ad market ชะลอตัวช่วง post-COVID + เงินเฟ้อสูง แต่ recovery ชัดมากตั้งแต่ปี 2023 และ 2024-2025 กลับมา all-time high</p>
+      <p><strong>EPS โตเร็วกว่า Revenue</strong> เพราะ (1) operating leverage: scale ใหญ่ขึ้นแต่ fixed cost ไม่ได้โตตาม (2) buyback ลด share count ทุกปี ทำให้ EPS โตกว่า Net Income</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Sundar Pichai</div>
+          <div class="boss-title">CEO, Alphabet Inc. &amp; Google LLC</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>1972, Chennai, India</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>IIT Kharagpur · Stanford MS · Wharton MBA</span></div>
+            <div class="boss-fact"><span class="label">เข้า Google</span><span>2004</span></div>
+            <div class="boss-fact"><span class="label">CEO Google</span><span>2015</span></div>
+            <div class="boss-fact"><span class="label">CEO Alphabet</span><span>December 2019</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Sundar Pichai ไม่ใช่ founder แต่คือคนที่ build ผลิตภัณฑ์ที่สำคัญที่สุดของ Google หลายตัว — Chrome, Google Toolbar, Google Drive, Gmail ล้วนผ่านมือเขา</p>
+          <p style="margin-top:12px">สไตล์ผู้นำ <strong>เงียบแต่ sharp</strong> — ไม่ใช่ CEO ประเภท drama แต่เป็นคนที่ฟังเก่ง มอง product ออก และ execute ได้จริง ความท้าทายใหญ่ที่สุดในยุคของเขาคือ navigate AI transition ที่กำลังเปลี่ยน Search และรับมือ antitrust หลายคดีพร้อมกัน</p>
+        </div>
+      </div>
+      <p>น่าสังเกตว่า Founders Larry Page และ Sergey Brin ยังถือ <strong>Super-voting shares (Class B)</strong> — 10 เท่าต่อหุ้น แปลว่าแม้จะลาออกจากตำแหน่ง executive แต่ทั้งคู่ยังคุม direction ของบริษัทในระดับ structural อยู่</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Google สร้างสินค้าและบริการที่คนทั่วโลกใช้ฟรีทุกวัน แล้วเก็บเงินจากโฆษณาที่แสดงบนสิ่งเหล่านั้น</strong> แต่ถ้าดูให้ลึกกว่านั้น Alphabet มีธุรกิจอยู่สามโซนใหญ่ๆ</p>
+      <div class="callout blue">
+        <p><strong>โซนที่ 1 — Google Services:</strong> ทุกอย่างที่คุณรู้จัก — Search, YouTube, Gmail, Maps, Chrome, Android, Google Photos, Google Play และอุปกรณ์ Pixel รายได้จากโซนนี้คิดเป็น 85% ของ Alphabet ทั้งหมด</p>
+      </div>
+      <div class="callout green">
+        <p><strong>โซนที่ 2 — Google Cloud:</strong> บริการ cloud infrastructure สำหรับองค์กร (Google Cloud Platform) และ productivity tools (Google Workspace เช่น Docs, Sheets, Meet) — Cloud โตถึง +48% YoY ใน Q4 2025</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>โซนที่ 3 — Other Bets:</strong> โปรเจกต์ moonshot ทั้งหลาย ตัวสำคัญที่สุดคือ Waymo (รถยนต์ไร้คนขับ) และ Verily (life sciences) ยังขาดทุนอยู่ แต่อาจกลายเป็นธุรกิจขนาดใหญ่ในอนาคต</p>
+      </div>
+      <p><strong>จริงๆ Google คือ "internet infrastructure" ของโลก</strong> — ถ้าคุณใช้ Android (70% ของ smartphone ทั่วโลก), Chrome (~65% ตลาด browser) หรือ Google Search (~90% ตลาด search ทั่วโลก) คุณกำลังอยู่บนโครงสร้างพื้นฐานดิจิทัลของ Google ตลอดเวลา</p>
+      <p>นอกจากนี้ Google ยังเป็นหนึ่งในองค์กรวิจัย AI ที่ล้ำหน้าที่สุดในโลกผ่าน <strong>Google DeepMind</strong> ซึ่งเป็นที่มาของโมเดล Gemini ที่กำลัง deploy อยู่ในทุก product ของบริษัท</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>ให้คนใช้ฟรี เก็บเงินจากแบรนด์ที่อยากเข้าถึงคนเหล่านั้น</strong> — ฟังดูง่าย แต่กลไกเบื้องหลังซับซ้อนกว่านั้น</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $402.8 พันล้าน แบ่งตามประเภท</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔍 Google Search &amp; Other</div>
+            <div class="rev-numbers"><strong>$224.5B</strong> · 55.7%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-search" style="width:55.7%"></div></div>
+          <div class="rev-note">ทุกครั้งที่คุณ search แล้วคลิก Ad ที่ขึ้นก่อน นั่นคือรายได้ของ Google</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">💳 Subscriptions, Platforms &amp; Devices</div>
+            <div class="rev-numbers"><strong>$48.0B</strong> · 11.9%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-subs" style="width:11.9%"></div></div>
+          <div class="rev-note">YouTube Premium, YouTube TV, Google One, Pixel, Play Store</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">☁️ Google Cloud</div>
+            <div class="rev-numbers"><strong>$58.7B</strong> · 14.6%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-cloud" style="width:14.6%"></div></div>
+          <div class="rev-note">บริการ cloud สำหรับองค์กร — segment ที่โตเร็วที่สุด</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">▶️ YouTube Ads</div>
+            <div class="rev-numbers"><strong>$40.4B</strong> · 10.0%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-youtube" style="width:10%"></div></div>
+          <div class="rev-note">โฆษณาที่ขึ้นบน YouTube — รวม ads+subs เกิน $60B/ปี</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🌐 Google Network</div>
+            <div class="rev-numbers"><strong>$29.8B</strong> · 7.4%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-network" style="width:7.4%"></div></div>
+          <div class="rev-note">โฆษณาที่แสดงบนเว็บไซต์และแอปของพันธมิตรผ่าน ad network</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🚀 Other Bets</div>
+            <div class="rev-numbers"><strong>$1.5B</strong> · 0.4%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-other" style="width:0.4%"></div></div>
+          <div class="rev-note">Waymo, Verily — ยังเล็กมาก แต่เป็น bet ระยะยาว</div>
+        </div>
+      </div>
+      <p><strong>Search Ads คือหัวใจ</strong> — มีคนค้นหาวันละกว่า 8.5 พันล้านครั้งบน Google ทุกครั้งคือ intent signal ที่ชัดเจนที่สุดในโลก แบรนด์ทั้งโลกยินดีจ่ายแพงเพื่อขึ้น sponsored result ระบบประมูลแบบ auction ทำให้ยิ่ง intent ชัด (เช่น "ซื้อประกันรถยนต์") ราคายิ่งสูง กำไรยิ่งดี</p>
+      <p><strong>Google Cloud</strong> โตจาก $43.2B ปี 2024 เป็น $58.7B ปี 2025 (+35.8%) และ Q4 2025 โต +48% YoY — ตัวเลขนี้บอกว่าองค์กรทั่วโลกกำลังย้าย workload มาอยู่บน Google Cloud เพิ่มขึ้นเรื่อยๆ โดยเฉพาะ AI workloads</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ธุรกิจ Google มี flywheel ที่หมุนเองได้ — ยิ่งหมุน ยิ่งแกร่ง</p>
+      <div class="callout blue">
+        <p><strong>The Search Flywheel:</strong> ยิ่งมีคนใช้ Google Search → ยิ่งมีข้อมูลการค้นหามาก → algorithm ยิ่ง improve → ผลลัพธ์ยิ่งดี → คนยิ่งอยากใช้ → แบรนด์ยิ่งอยาก advertise → Google มีเงินไปลงทุน R&amp;D ต่อ → วนซ้ำ</p>
+      </div>
+      <p><strong>Data Moat:</strong> Google นั่งอยู่บนข้อมูลที่ไม่มีใครเทียบได้ ทุกครั้งที่คุณค้นหา ดู YouTube ใช้ Maps หรือเปิด Android — Google กำลังเรียนรู้ว่าคุณสนใจอะไร ข้อมูลสะสมนี้ทำให้ ad targeting ของ Google แม่นกว่าใคร ยิ่งแม่น แบรนด์ยิ่ง ROI ดี ยิ่งอยากซื้อโฆษณาต่อ</p>
+      <p><strong>Platform Lock-in:</strong> Google ควบคุม "ประตูหน้าบ้าน" ของ internet ผ่าน Android OS (3+ พันล้านเครื่องทั่วโลก) และ Chrome browser — สำหรับคนส่วนใหญ่ในโลก การ "เริ่มใช้ internet" คือการ "เริ่มใช้ Google" เลย</p>
+      <div class="callout green">
+        <p><strong>The AI Flywheel:</strong> ยิ่งมีคนใช้ผลิตภัณฑ์ Google → ยิ่งมี data ฝึก AI model → AI ยิ่งฉลาด → ผลิตภัณฑ์ยิ่งดี → คนยิ่งใช้ ปัจจุบัน Gemini App มีผู้ใช้ต่อเดือน 750 ล้านคน และ process กว่า 10 พันล้าน tokens ต่อนาที</p>
+      </div>
+
+      <p style="margin-top:24px"><strong>Capital Allocation — เงินไปไหน?</strong></p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">R&amp;D FY2025</div>
+          <div class="stat-value">$61.1B</div>
+          <div class="stat-sub">~15% ของ revenue · AI, quantum, DeepMind</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Share Buyback FY2025</div>
+          <div class="stat-value">$45.7B</div>
+          <div class="stat-sub">ซื้อหุ้นตัวเองกลับ — ลด share count ทุกปี</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">CapEx FY2025</div>
+          <div class="stat-value">$91.4B</div>
+          <div class="stat-sub">Data centers, AI chips, infrastructure</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Dividend FY2025</div>
+          <div class="stat-value">$10.0B</div>
+          <div class="stat-sub">$0.21/quarter · เพิ่งเริ่มปี 2024</div>
+        </div>
+      </div>
+      <p><strong>R&amp;D ($61.1B):</strong> Google ลงทุนใน R&amp;D มากกว่า revenue ของบริษัทส่วนใหญ่ในโลก ครอบ AI research ผ่าน Google DeepMind, quantum computing, next-gen chip (Ironwood TPU) และ moonshot projects — เป็นการ reinvest เพื่อรักษา moat ในระยะยาว</p>
+      <p><strong>Buyback ($45.7B):</strong> วิธีที่เงียบที่สุดแต่ทรงพลังที่สุดในการ return value — ทุกๆ ปี share count ลดลง ~1-2% ถ้าธุรกิจโตแค่เท่าเดิม EPS ก็โตขึ้นเองแล้ว นั่นคือสาเหตุที่ EPS 5-yr CAGR อยู่ที่ ~32.7% ในขณะที่ revenue CAGR อยู่ที่ ~17%</p>
+      <p><strong>CapEx ($91.4B → $175-185B ในปี 2026):</strong> bet ที่ใหญ่ที่สุดในประวัติศาสตร์บริษัท Google กำลังสร้าง AI infrastructure ล่วงหน้าเพื่อรองรับ demand จาก Cloud และ AI workloads ถ้า bet ถูก margin ใน 2-3 ปีข้างหน้าจะ expand หนัก</p>
+      <p><strong>Dividend ($10B):</strong> Google เพิ่งเริ่มจ่าย dividend ปี 2024 — ไม่ใช่เพราะอยาก yield แต่เป็น signal ว่าธุรกิจ mature พอที่จะ return เงินแม้ขณะที่กำลัง invest หนัก</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>ปี 2025-2026 Alphabet อยู่ใน <strong>สองโลกพร้อมกัน</strong> — momentum ทางธุรกิจที่แข็งแกร่งมาก กับความไม่แน่นอนจาก AI disruption และ antitrust pressure</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>AI กำลังทำให้ Search ใหญ่ขึ้น ไม่ใช่เล็กลง</h4>
+        <p>Search โต +17% YoY ใน Q4 2025 และ Google AI Overview กลับดึงให้คนใช้ Search เพิ่มขึ้น เพราะ query ที่ซับซ้อนขึ้นได้รับคำตอบที่ดีขึ้น Sundar Pichai เรียกสิ่งนี้ว่า "expansionary moment for Search"</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Google Cloud — จากที่สาม ขึ้นมาแข่งอย่างจริงจัง</h4>
+        <p>Google Cloud โต +48% YoY ใน Q4 2025 ปิดปีด้วย annual run rate $70B+ AI workloads บน Google Cloud กำลังโตเร็วมาก เพราะ Gemini models และ TPU infrastructure สำหรับ training AI</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Gemini กลับมาแล้ว</h4>
+        <p>Gemini 3 เปิดตัวปลายปี 2025 Gemini App มีผู้ใช้ต่อเดือน 750 ล้านคน และ Gemini API ถูกใช้ process กว่า 10 พันล้าน tokens ต่อนาทีโดย developer ทั่วโลก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>CapEx ระดับ $175-185B ในปี 2026</h4>
+        <p>Google กำลัง bet ว่า AI demand จะโตพอที่จะ justify การลงทุน infrastructure ขนาดนี้ ถ้า demand ชะลอหรือ competitor ส่ง AI ที่ดีกว่าราคาถูกกว่าได้ FCF อาจถูกกดหนักในอีก 2-3 ปีข้างหน้า</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Antitrust — DOJ กำลัง push ให้ Breakup</h4>
+        <p>Judge ตัดสินว่า Google ผูกขาด Search ผิดกฎหมาย DOJ กำลัง appeal เพื่อให้ forced sale Chrome/Android ผล D.C. Circuit คาดว่าจะออกปลายปี 2026 — risk จริงแต่ timeline ยาว</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>AdTech — คดีที่อาจบังคับ Divest AdX</h4>
+        <p>คดีแยกเกี่ยวกับ ad tech infrastructure — DOJ อาจบังคับให้ขาย AdX exchange ออก ถ้าเกิดขึ้นกระทบรายได้ ad network ส่วนหนึ่ง</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Alphabet ไม่ได้อยู่ในสนามแข่งเดียว — แต่ละ segment มีคู่แข่งต่างกัน และ position ของ Google ในแต่ละสนามก็ต่างกันด้วย</p>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🔍</div>
+          <div>
+            <div class="comp-segment">Search &amp; Discovery</div>
+            <div class="comp-pos dominant">Dominant — ~90% Global Market Share</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Google Search</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:90%;background:var(--g-blue)"></div></div>
+            <div class="comp-detail">~90% global share · 8.5B+ queries/day · 25+ ปีของ training data · default บน Android + Chrome + Safari</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Microsoft Bing</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:3.5%;background:#0078d4"></div></div>
+            <div class="comp-detail">~3-4% market share · แม้ผนึก GPT-4 เข้าไป ยังไม่ดึง user จาก Google ได้มากพอ</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">ChatGPT / Perplexity</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:2%;background:#10a37f"></div></div>
+            <div class="comp-detail">ยังเล็กมากเป็น % แต่เป็น behavioral shift ที่ต้องจับตา — คนบางกลุ่มเริ่ม "search" ผ่าน AI แทน Google</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">Google มี structural advantage ที่แข็งมาก — data ที่สะสม 25 ปี, default placement บนเกือบทุก device, และ AI Overview ที่กลับทำให้คนใช้ Search มากขึ้น ไม่ใช่น้อยลง</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">☁️</div>
+          <div>
+            <div class="comp-segment">Cloud Infrastructure</div>
+            <div class="comp-pos challenger">Challenger — อันดับ 3 แต่โตเร็วที่สุด</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">Amazon AWS</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:31%;background:#ff9900"></div></div>
+            <div class="comp-detail">~31% market share · ผู้นำตลาด · เริ่มก่อน มี ecosystem ที่ใหญ่ที่สุด</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Microsoft Azure</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:#0078d4"></div></div>
+            <div class="comp-detail">~25% market share · โตเร็วจาก enterprise + Microsoft 365 + OpenAI partnership</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Google Cloud</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:11%;background:var(--g-green)"></div></div>
+            <div class="comp-detail">~11% market share · โตเร็วที่สุดในกลุ่ม (+48% YoY Q4 2025) · Gemini + TPU คือ differentiator หลักใน AI workloads</div>
+          </div>
+        </div>
+        <div class="comp-verdict green">Google Cloud ยังอันดับสาม แต่ใน AI segment เริ่มชนะ deal จากขนาดใหญ่ขึ้น Gemini + custom TPU (Ironwood) สร้าง performance ที่ competitor ยาก replicate</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🤖</div>
+          <div>
+            <div class="comp-segment">AI Models &amp; Ecosystem</div>
+            <div class="comp-pos contender">Contender — กำลัง reclaim position</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">OpenAI (+ Microsoft)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:60%;background:#10a37f"></div></div>
+            <div class="comp-detail">First-mover ใน consumer AI · GPT-4o แข็ง · ได้เปรียบจาก Microsoft distribution ผ่าน Windows, Office, Bing</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Google Gemini</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:55%;background:var(--g-blue)"></div></div>
+            <div class="comp-detail">Gemini 3 เปิดตัวปลาย 2025 · native บน Android 800M เครื่อง · 750M MAU · advantage ด้าน distribution ที่ใหญ่กว่าใคร</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Meta AI (LLaMA)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:#0668E1"></div></div>
+            <div class="comp-detail">Open-source strategy · distribute ผ่าน Facebook, Instagram, WhatsApp · strong ใน efficiency และ fine-tuning</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">AI เป็นสนามที่ Google สูญเสีย perception ช่วง 2022-2023 แต่กำลังกลับมา — advantage ที่ยั่งยืนของ Google คือ distribution ผ่าน Android + Search ที่ไม่มีใครเทียบได้</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">▶️</div>
+          <div>
+            <div class="comp-segment">Video &amp; Streaming</div>
+            <div class="comp-pos dominant">Dominant ใน long-form · Challenged ใน short-form</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">YouTube</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:75%;background:var(--g-red)"></div></div>
+            <div class="comp-detail">Platform video ที่ใหญ่ที่สุดในโลก · 2.5B+ MAU · รายได้ $60B+/ปี · YouTube Shorts กำลัง fight กลับใน short-form</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">TikTok</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:45%;background:#69C9D0"></div></div>
+            <div class="comp-detail">ครอง attention ของ Gen Z ใน short-form · algorithm เก่งมากด้าน content discovery</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Meta (Reels)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:35%;background:#0668E1"></div></div>
+            <div class="comp-detail">Instagram Reels + Facebook Video กินส่วนแบ่ง short-form ไปด้วย แต่ YouTube ยัง irreplaceable ใน long-form</div>
+          </div>
+        </div>
+        <div class="comp-verdict red">YouTube ยัง dominant ใน long-form และ live streaming อย่างมาก สนามที่ fight คือ short-form ซึ่ง YouTube Shorts กำลัง scale ขึ้น</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding — own durable businesses positioned inside major global money-flow layers. Core is patient. Core does not chase. Core accepts volatility and focuses on business quality over short-term price movement. Target: ~15% annualized return over a multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Core ถือหุ้นที่ <strong>ธุรกิจพิสูจน์ตัวเองด้วยตัวเลขจริง</strong> ไม่ใช่ด้วย narrative — low turnover, thesis-driven, real earnings matter, market leadership matters. ถ้าธุรกิจยังแข็ง ราคาผันผวนคือ noise ไม่ใช่ signal ให้ขาย</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🏗</div>
+              <div class="trait-name">Real Earnings — ไม่ใช่แค่ story</div>
+              <div class="trait-desc">Revenue $402B · Net Income $132B · Op. Margin 32% · FCF $73.3B — ตัวเลขทุกตัวมาจาก earnings จริง ไม่ใช่ promise ในอนาคต</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">👑</div>
+              <div class="trait-name">Market Leadership ที่ irreplaceable</div>
+              <div class="trait-desc">~90% global search share · Android ครอง 70% smartphone · Cloud อันดับ 3 แต่โตเร็วที่สุด — position ที่ไม่มีใครเข้ามาแทนได้ง่ายๆ</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Compounding Mechanics ชัดเจน</div>
+              <div class="trait-desc">Buyback $45.7B/ปี ลด share count ทำให้ EPS CAGR ~32.7% โตเร็วกว่า Revenue CAGR ~17% — เงินทำงานให้ผู้ถือหุ้นทุกปีโดยไม่ต้องทำอะไร</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🧱</div>
+              <div class="trait-name">Positioned Inside Major Money-Flow Layers</div>
+              <div class="trait-desc">AI infrastructure (TPU, Gemini) · Cloud · Digital advertising — สามใน sector หลักที่ capital ไหลเข้าในระยะยาว ไม่ใช่ theme ชั่วคราว</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Core ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่หุ้นซิ่ง</span>
+            <span class="not-tag">✗ ไม่ใช่ momentum play</span>
+            <span class="not-tag">✗ ไม่ใช่ defensive / dividend trap</span>
+            <span class="not-tag">✗ ไม่ใช่ Wave ที่ต้องการ re-rating จาก consensus</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB ที่ต้อง rotate ออกเมื่อ structure เปลี่ยน</span>
+          </div>
+          <div class="googl-fit">
+            <h4>✅ Verdict: GOOGL → Core</h4>
+            <p>GOOGL ผ่าน Core criteria ทุกข้อตาม doctrine — real earnings ($132B net income), market leadership ที่ dominant มา 20+ ปี, compounding mechanics ที่ทำงานผ่าน buyback + flywheel, และ positioned ตรงกลางของ AI infrastructure + cloud ซึ่งเป็น money-flow layer ระยะยาว Wave ไม่ใช่ตัวเลือกเพราะ consensus รู้จัก GOOGL ดีแล้ว — ไม่มี re-rating story ที่ซ่อนอยู่ FWB ไม่ใช่เพราะนี่ไม่ใช่ tactical trade ที่ต้อง rotate capital ออก GOOGL ถือไว้ ปล่อยให้มัน compound</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — GOOGL / Alphabet Inc. · Source: Alphabet Earnings Release FY2025 (Feb 4, 2026) · SEC Filings · Public Sources</p>
+    <p style="margin-top:6px">Written June 14, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--g-blue)"></span>
+      <span style="background:var(--g-red)"></span>
+      <span style="background:var(--g-yellow)"></span>
+      <span style="background:var(--g-green)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
