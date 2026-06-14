@@ -1,677 +1,855 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nixon Cockpit - OG Version 1.0</title>
-  <style>
-    :root {
-      --bg: #0f131a;
-      --panel: #171d26;
-      --panel-2: #202735;
-      --text: #f4f7fb;
-      --muted: #9aa6b8;
-      --line: #303948;
-      --green: #35b779;
-      --red: #ed5f72;
-      --amber: #d8ae55;
-      --blue: #5c9df4;
-      --cyan: #5ed3ca;
-      --core: #f2bd3f;
-      --core-soft: rgba(242, 189, 63, .12);
-      --wave: #8c72ff;
-      --wave-blue: #638cff;
-      --wave-soft: rgba(140, 114, 255, .12);
-      --fwb: #79e339;
-      --fwb-lemon: #c8f04a;
-      --fwb-soft: rgba(121, 227, 57, .11);
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nixon — US Portfolio Weekly Briefing</title>
+<style>
+:root{
+  --bg:#0b0b0d;
+  --s1:#111114;
+  --s2:#17171c;
+  --b1:#242430;
+  --b2:#2d2d3a;
+  --tx:#d8d8e8;       /* default text — warm off-white, NOT red */
+  --tx2:#a8a8c0;      /* secondary text */
+  --mu:#6a6a88;       /* muted — lightened from before */
+  --core:#FFD700;
+  --core-lo:#1e1900;
+  --core-mid:#5a4e00;
+  --wave:#9333ea;
+  --wave-lo:#150622;
+  --wave-mid:#4a1585;
+  --fwb:#22c55e;
+  --fwb-lo:#041008;
+  --fwb-mid:#0d4a22;
+  --pos:#6ee7b7;      /* soft mint green — positive */
+  --neg:#ef4444;      /* red — negative P&L */
+  --neg-sig:#ef4444;  /* red — significant negative */
+  --warn:#fcd34d;     /* warm yellow — warning/watch */
+  --info:#93c5fd;     /* soft blue */
+  --neutral:#f97316;  /* orange — neutral/contextual metadata */
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;font-size:13px;line-height:1.6;}
 
-    * { box-sizing: border-box; }
+/* ── HEADER ── */
+.hdr{background:linear-gradient(150deg,#141419 0%,#0b0b0d 100%);border-bottom:1px solid var(--b1);padding:28px 36px 24px;}
+.hdr-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;}
+.hdr-eye{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--mu);margin-bottom:6px;}
+.hdr-title{font-size:52px;font-weight:900;letter-spacing:-.02em;color:#fff;line-height:.9;margin-bottom:8px;}
+.hdr-tag{font-size:13px;color:var(--mu);font-style:italic;}
+.hdr-tag em{color:var(--tx2);font-style:normal;}
+.hdr-right{text-align:right;min-width:0;}
+.hdr-clock{font-size:18px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.hdr-wk{font-size:9px;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-top:3px;}
+.pills{display:flex;gap:5px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap;}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border:1px solid;}
+.p-core{background:var(--core-lo);color:var(--core);border-color:var(--core-mid);}
+.p-wave{background:var(--wave-lo);color:var(--wave);border-color:var(--wave-mid);}
+.p-fwb {background:var(--fwb-lo); color:var(--fwb); border-color:var(--fwb-mid);}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.5;
-    }
+/* ── PAGE BODY ── */
+.body{max-width:1200px;margin:0 auto;padding:40px 36px 80px;}
+.section{margin-bottom:52px;}
+.slabel{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mu);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.slabel::after{content:'';flex:1;height:1px;background:var(--b1);}
 
-    header {
-      padding: 30px clamp(18px, 4vw, 52px) 22px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #151b24 0%, #0f131a 100%);
-    }
+/* ── CARDS ── */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:10px;overflow:hidden;}
+.card-hdr{padding:10px 18px;border-bottom:1px solid var(--b1);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mu);}
 
-    main {
-      padding: 24px clamp(14px, 3vw, 42px) 44px;
-    }
+/* ── MEMO ── */
+.memo{background:var(--s1);border:1px solid var(--b1);border-left:3px solid var(--b2);border-radius:10px;padding:26px 32px;}
+.memo-from{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;}
+.memo p{font-size:13.5px;color:var(--tx);line-height:1.85;margin-bottom:13px;}
+.memo p:last-of-type{margin-bottom:0;}
+.memo strong{color:#fff;font-weight:700;}
+.memo-q{margin-top:20px;padding-top:18px;border-top:1px solid var(--b1);font-size:12.5px;color:var(--tx2);line-height:1.8;font-style:italic;}
+.memo-q em{color:var(--tx);font-style:normal;font-weight:600;}
 
-    html { scroll-behavior: smooth; }
+/* ── TABLE UTIL ── */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:480px;}
+thead th{background:#13131a;padding:9px 14px;font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--mu);font-weight:600;text-align:left;border-bottom:1px solid var(--b1);white-space:nowrap;}
+thead th.r{text-align:right;}
+tbody td{padding:9px 14px;border-bottom:1px solid var(--b1);font-size:12px;vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody td.r{text-align:right;font-variant-numeric:tabular-nums;}
+.tfoot td{background:#16161e;font-weight:700;border-top:2px solid var(--b2);font-size:13px;}
+.sym{font-weight:800;font-size:13px;letter-spacing:.02em;color:#fff;}
 
-    h1, h2, h3 { margin: 0; letter-spacing: 0; }
-    h1 { font-size: clamp(30px, 5vw, 48px); }
-    h2 { font-size: 21px; margin-bottom: 14px; }
-    h3 { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
-    p { margin: 0; }
+/* portfolio name in table — big name, small desc */
+.pname-big{font-size:15px;font-weight:900;line-height:1;}
+.pname-sub{font-size:10px;color:var(--mu);margin-top:2px;}
 
-    .subhead {
-      max-width: 980px;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 15px;
-    }
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+.t-core{background:var(--core-lo);color:var(--core);}
+.t-wave{background:var(--wave-lo);color:var(--wave);}
+.t-fwb {background:var(--fwb-lo); color:var(--fwb);}
+.pos{color:var(--pos);}
+.neg{color:var(--neg);}
+.neg-sig{color:var(--neg-sig);}
+.warn{color:var(--warn);}
+.info{color:var(--info);}
+/* neutral = orange: factual data that carries no positive/negative judgment
+   applies to: NAV, MV, close price, qty, cash amounts, position counts,
+   trade counts, dates, allocation %, win rate stats, source refs */
+.nt{color:var(--neutral);font-variant-numeric:tabular-nums;}
 
-    .release-line {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0;
-      margin-top: 13px;
-      color: #c5ccd7;
-      font-size: 12px;
-      letter-spacing: .03em;
-    }
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9.5px;font-weight:700;}
+.b-ok  {background:rgba(110,231,183,.1);  color:var(--pos);}
+.b-warn{background:rgba(252,211,77,.1);   color:var(--warn);}
+.b-attn{background:rgba(251,146,60,.1);   color:var(--neg);}
+.b-info{background:rgba(147,197,253,.1);  color:var(--info);}
 
-    .release-line span + span::before {
-      content: " / ";
-      color: #687384;
-      margin: 0 8px;
-    }
+/* ── ALLOCATION ── */
+.alloc-wrap{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:start;}
+.alloc-cards{display:flex;flex-direction:column;gap:14px;}
+.ac{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:18px 22px;}
+.ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px;flex-wrap:wrap;}
+.ac-label .name{font-size:17px;font-weight:900;line-height:1;}
+.ac-label .desc{font-size:10px;color:var(--mu);margin-top:2px;}
+.ac-nums{display:flex;gap:18px;flex-shrink:0;}
+.an{text-align:right;}
+.an-l{font-size:8.5px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;}
+.an-v{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;}
+.bar-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--mu);margin-bottom:4px;}
+.bar-bg{height:5px;background:var(--b1);border-radius:3px;overflow:hidden;position:relative;}
+.bar-fill{height:100%;border-radius:3px;}
+.bar-target{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.2);border-radius:1px;}
+.cash-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--b1);font-size:11px;flex-wrap:wrap;gap:6px;}
+.cash-row .cl{color:var(--mu);}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 14px;
-    }
+/* alloc panel */
+.alloc-panel{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:20px;position:sticky;top:20px;}
+.ap-title{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--mu);margin-bottom:13px;font-weight:600;}
+.stacked{height:22px;border-radius:5px;overflow:hidden;display:flex;margin-bottom:13px;}
+.leg{display:flex;flex-direction:column;gap:8px;}
+.leg-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;}
+.leg-left{display:flex;align-items:center;gap:7px;}
+.leg-sq{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.ap-divider{height:1px;background:var(--b1);margin:13px 0;}
+.ap-note{font-size:11px;color:var(--mu);line-height:1.7;font-style:italic;}
 
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 16px;
-      min-width: 0;
-    }
+/* ── NOTABLE POSITIONS ── */
+.np-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.np-card{background:var(--s1);border:1px solid var(--b1);border-radius:10px;overflow:hidden;}
+.np-hdr{padding:11px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:baseline;gap:8px;}
+.np-body{padding:12px 16px;display:flex;flex-direction:column;gap:7px;}
+.np-row{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;gap:8px;}
+.np-sym{font-weight:800;font-size:13px;color:#fff;white-space:nowrap;}
+.np-detail{color:var(--mu);font-size:11px;}
+.np-pnl{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.np-flag{margin-top:8px;padding:8px 12px;border-radius:6px;font-size:11px;line-height:1.55;border-left:2px solid;}
+.nf-core{background:rgba(255,215,0,.03);  border-color:var(--core);}
+.nf-wave{background:rgba(147,51,234,.04); border-color:var(--wave);}
+.nf-fwb {background:rgba(34,197,94,.03);  border-color:var(--fwb);}
+.nf-warn{background:rgba(252,211,77,.04); border-color:var(--warn);}
 
-    .span-3 { grid-column: span 3; }
-    .span-4 { grid-column: span 4; }
-    .span-5 { grid-column: span 5; }
-    .span-6 { grid-column: span 6; }
-    .span-7 { grid-column: span 7; }
-    .span-8 { grid-column: span 8; }
-    .span-12 { grid-column: span 12; }
+/* ── ROLE INTEGRITY ── */
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.rc{background:var(--s1);border:1px solid var(--b1);border-radius:10px;overflow:hidden;}
+.rc-hdr{padding:13px 17px;border-bottom:1px solid var(--b1);}
+.rc-name{font-size:16px;font-weight:900;}
+.rc-desc{font-size:9.5px;color:var(--mu);margin-top:2px;}
+.rc-body{padding:13px 17px;display:flex;flex-direction:column;gap:8px;}
+.rr{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;gap:8px;}
+.rl{color:var(--mu);flex-shrink:0;}
+.rv{font-weight:600;text-align:right;}
+.rdiv{height:1px;background:var(--b1);}
+.rflag{padding:9px 12px;border-radius:6px;font-size:11px;border-left:2px solid;line-height:1.55;}
+.rf-ok  {background:rgba(110,231,183,.04);border-color:var(--pos);}
+.rf-warn{background:rgba(252,211,77,.05); border-color:var(--warn);}
+.rf-attn{background:rgba(251,146,60,.04); border-color:var(--neg);}
+.rf-info{background:rgba(147,197,253,.04);border-color:var(--info);}
+.rf-tx{color:var(--tx);}
+.rf-tx small{color:var(--mu);display:block;font-size:10px;margin-top:3px;}
 
-    .metric {
-      font-size: 29px;
-      font-weight: 800;
-      margin-top: 6px;
-    }
+/* ── DEEP DIVE TABS ── */
+.dtabs{display:flex;gap:4px;margin-bottom:18px;flex-wrap:wrap;}
+.dtab{padding:7px 18px;border-radius:7px;font-size:11.5px;font-weight:700;letter-spacing:.04em;border:1px solid var(--b1);background:var(--s1);color:var(--mu);cursor:pointer;transition:all .12s;}
+.dtab:hover{color:var(--tx2);}
+.dtab.ac-core{background:var(--core-lo);color:var(--core);border-color:var(--core-mid);}
+.dtab.ac-wave{background:var(--wave-lo);color:var(--wave);border-color:var(--wave-mid);}
+.dtab.ac-fwb {background:var(--fwb-lo); color:var(--fwb); border-color:var(--fwb-mid);}
+.dpanel{display:none;}
+.dpanel.active{display:block;}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.src-note{font-size:10px;color:var(--mu);font-style:italic;padding:6px 12px;background:var(--s2);border-radius:6px;margin-bottom:12px;}
+.ins-list{display:flex;flex-direction:column;gap:8px;}
+.ins{padding:9px 13px;border-radius:7px;font-size:12px;line-height:1.6;border-left:2px solid;color:var(--tx);}
+.ins strong{color:#fff;}
+.ins-core{background:rgba(255,215,0,.03); border-color:var(--core);}
+.ins-wave{background:rgba(147,51,234,.04);border-color:var(--wave);}
+.ins-fwb {background:rgba(34,197,94,.03); border-color:var(--fwb);}
+.ins-warn{background:rgba(252,211,77,.04);border-color:var(--warn);}
+.krow{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+.kpi{flex:1;min-width:65px;}
+.kpi-l{font-size:8.5px;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
+.kpi-v{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;}
+.kpi-s{font-size:10px;color:var(--mu);margin-top:1px;}
 
-    .muted { color: var(--muted); }
-    .green { color: var(--green); }
-    .red { color: var(--red); }
-    .amber { color: var(--amber); }
-    .blue { color: var(--blue); }
-    .cyan { color: var(--cyan); }
+/* ── DOCTRINE ── */
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.drow{display:grid;grid-template-columns:160px 64px 1fr;gap:8px;align-items:start;padding:11px 17px;border-bottom:1px solid var(--b1);font-size:12px;}
+.drow:last-child{border-bottom:none;}
+.d-rule{font-weight:500;color:var(--tx);}
+.d-st{text-align:center;}
+.d-obs{color:var(--tx2);font-size:11px;line-height:1.55;}
+.st-ok {color:var(--pos);font-weight:700;font-size:10.5px;}
+.st-w  {color:var(--warn);font-weight:700;font-size:10.5px;}
+.st-na {color:var(--mu);font-size:10.5px;}
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 8px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--panel-2);
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
+/* ── REFLECTION ── */
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ref-card{background:var(--s1);border:1px solid var(--b1);border-radius:10px;overflow:hidden;}
+.ref-hdr{padding:11px 17px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:8px;}
+.ref-title{font-size:13px;font-weight:600;color:#fff;}
+.ref-body{padding:13px 17px;display:flex;flex-direction:column;gap:8px;}
+.ri{font-size:12px;line-height:1.65;padding:9px 12px;border-radius:6px;border-left:2px solid;color:var(--tx);}
+.ri strong{color:#fff;}
+.ri-core{background:rgba(255,215,0,.03); border-color:var(--core);}
+.ri-wave{background:rgba(147,51,234,.04);border-color:var(--wave);}
+.ri-fwb {background:rgba(34,197,94,.03); border-color:var(--fwb);}
+.ri-warn{background:rgba(252,211,77,.04);border-color:var(--warn);}
 
-    .pill.good { color: var(--green); border-color: rgba(53, 183, 121, .36); }
-    .pill.watch { color: var(--amber); border-color: rgba(216, 174, 85, .4); }
-    .pill.bad { color: var(--red); border-color: rgba(237, 95, 114, .38); }
+/* ── FOOTER ── */
+.footer{border-top:1px solid var(--b1);padding:16px 36px;display:flex;justify-content:space-between;font-size:10px;color:var(--mu);flex-wrap:wrap;gap:6px;}
 
-    .note-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .note {
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel-2);
-    }
-
-    .note strong { color: var(--text); }
-
-    table {
-      display: block;
-      width: 100%;
-      font-size: 14px;
-    }
-
-    thead { display: none; }
-
-    tbody {
-      display: grid;
-      gap: 10px;
-    }
-
-    tr {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 7px;
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(32, 39, 53, .55);
-    }
-
-    td {
-      padding: 0;
-      border-bottom: 0;
-      text-align: left;
-      vertical-align: top;
-      overflow-wrap: anywhere;
-    }
-
-    th {
-      color: var(--muted);
-      background: rgba(32, 39, 53, .7);
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
-    .table-wrap { overflow: visible; }
-    .ticker { font-weight: 850; color: var(--text); }
-    .small { font-size: 12px; color: var(--muted); }
-
-    .wave-read-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .read-tile {
-      min-height: 132px;
-      padding: 13px;
-      border: 1px solid rgba(140, 114, 255, .34);
-      border-radius: 8px;
-      background: rgba(32, 39, 53, .72);
-    }
-
-    .read-label {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
-
-    .read-value {
-      margin: 8px 0 7px;
-      color: #b9aaff;
-      font-size: 20px;
-      font-weight: 850;
-      line-height: 1.2;
-    }
-
-    .read-tile p {
-      color: #c5ccd7;
-      font-size: 13px;
-    }
-
-    .question-strip {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .question-strip div {
-      padding: 12px;
-      min-height: 86px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel-2);
-      color: var(--text);
-      font-weight: 750;
-    }
-
-    .bar {
-      display: grid;
-      grid-template-columns: 65.9fr 26.9fr 7.3fr;
-      height: 18px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: #0b0f15;
-    }
-
-    .bar span:nth-child(1) { background: var(--blue); }
-    .bar span:nth-child(2) { background: var(--cyan); }
-    .bar span:nth-child(3) { background: var(--amber); }
-
-    .section-title {
-      margin: 28px 0 14px;
-      color: var(--text);
-      scroll-margin-top: 86px;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 28px 0 14px;
-      scroll-margin-top: 86px;
-    }
-
-    .section-heading .section-title { margin: 0; }
-
-    .back-top {
-      flex: 0 0 auto;
-      color: var(--muted);
-      text-decoration: none;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 6px 9px;
-      background: var(--panel);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .back-top:hover {
-      color: var(--text);
-      border-color: var(--blue);
-      background: var(--panel-2);
-    }
-
-    .section-nav {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding: 10px clamp(14px, 3vw, 42px);
-      border-bottom: 1px solid var(--line);
-      background: rgba(15, 19, 26, .96);
-      backdrop-filter: blur(10px);
-    }
-
-    .section-nav a {
-      color: var(--muted);
-      text-decoration: none;
-      white-space: nowrap;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 7px 10px;
-      font-size: 12px;
-      font-weight: 800;
-      background: var(--panel);
-    }
-
-    .section-nav a:hover,
-    .section-nav a.active {
-      color: var(--text);
-      border-color: var(--blue);
-      background: var(--panel-2);
-    }
-
-    .section-nav a.core-link.active { border-color: var(--core); color: var(--core); }
-    .section-nav a.wave-link.active { border-color: var(--wave); color: #b9aaff; }
-    .section-nav a.fwb-link.active { border-color: var(--fwb); color: var(--fwb-lemon); }
-
-    .port-core {
-      border-color: rgba(242, 189, 63, .5);
-      background: linear-gradient(145deg, var(--core-soft), var(--panel) 42%);
-    }
-
-    .port-core h2,
-    .port-core .ticker { color: var(--core); }
-
-    .port-wave {
-      border-color: rgba(140, 114, 255, .48);
-      background: linear-gradient(145deg, var(--wave-soft), var(--panel) 44%);
-    }
-
-    .port-wave h2,
-    .port-wave .ticker { color: #b9aaff; }
-
-    .port-fwb {
-      border-color: rgba(121, 227, 57, .46);
-      background: linear-gradient(145deg, var(--fwb-soft), var(--panel) 44%);
-    }
-
-    .port-fwb h2,
-    .port-fwb .ticker { color: var(--fwb-lemon); }
-
-    .source {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border: 1px solid rgba(216, 174, 85, .35);
-      border-radius: 8px;
-      background: rgba(216, 174, 85, .08);
-      color: #ecd6a5;
-      max-width: 1040px;
-    }
-
-    @media (max-width: 980px) {
-      .span-3, .span-4, .span-5, .span-6, .span-7, .span-8 { grid-column: span 12; }
-      .wave-read-grid,
-      .question-strip { grid-template-columns: 1fr; }
-      .metric { font-size: 24px; }
-      .section-heading { align-items: flex-start; }
-    }
-  </style>
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .alloc-wrap{grid-template-columns:1fr;}
+  .alloc-panel{position:static;}
+  .np-grid{grid-template-columns:1fr;}
+  .role-grid{grid-template-columns:1fr;}
+  .dgrid{grid-template-columns:1fr;}
+  .doc-grid{grid-template-columns:1fr;}
+  .ref-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .hdr-inner{grid-template-columns:1fr;gap:16px;}
+  .hdr-right{text-align:left;}
+  .pills{justify-content:flex-start;}
+  .hdr-title{font-size:40px;}
+  .body{padding:28px 18px 60px;}
+  .footer{padding:14px 18px;}
+  .drow{grid-template-columns:130px 54px 1fr;font-size:11px;}
+}
+@media(max-width:420px){
+  .drow{grid-template-columns:1fr;gap:4px;}
+  .d-st{text-align:left;}
+}
+</style>
 </head>
 <body>
-  <header id="top">
-    <h1>Nixon Cockpit</h1>
-    <p class="subhead">Portfolio audit for Jay, based on the latest portfolio data shared on EisenTower. Nixon role: doctrine first, portfolio second, stocks third.</p>
-    <div class="release-line">
-      <span>OG Version 1.0</span>
-      <span>Locked 2026-06-06</span>
-      <span>Portfolio data version: IBKR workbook Portfolio 20260611 9am</span>
+
+<!-- ══ HEADER ══ -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div>
+      <div class="hdr-eye">EisenTower · US Portfolio · Weekly Briefing</div>
+      <div class="hdr-title">NIXON</div>
+      <div class="hdr-tag"><em>"Am I still doing what I said I would do?"</em></div>
     </div>
-    <div class="source">Source: IBKR workbook Portfolio 20260611 9am. Core U17787165; Wave U17986722; FWB U18001257.</div>
-  </header>
-
-  <nav class="section-nav" aria-label="Report sections">
-    <a href="#overview">Overview</a>
-    <a href="#account-reads">Port Reads</a>
-    <a class="core-link" href="#core-deep-dive">Core</a>
-    <a class="wave-link" href="#wave-deep-dive">Wave</a>
-    <a class="fwb-link" href="#fwb-deep-dive">FWB</a>
-    <a href="#cross-portfolio">Cross-Port</a>
-    <a href="#behavior-audit">Behavior</a>
-    <a href="#review-queue">Review</a>
-    <a href="#conclusion">Conclusion</a>
-  </nav>
-
-  <main>
-    <div class="grid" id="overview">
-      <div class="card span-3 port-core">
-        <h3>Total Portfolio</h3>
-        <div class="metric">$163,147</div>
-        <p class="small">Core + Wave + FWB · confirmed account map</p>
-      </div>
-      <div class="card span-3 port-core">
-        <h3>Core NLV</h3>
-        <div class="metric">$107,462</div>
-        <p class="small">U17787165 · 11 positions · Day P&amp;L $0</p>
-      </div>
-      <div class="card span-3 port-wave">
-        <h3>Wave NLV</h3>
-        <div class="metric">$43,813</div>
-        <p class="small">U17986722 · 20 positions · Day P&amp;L $0</p>
-      </div>
-      <div class="card span-3 port-fwb">
-        <h3>FWB NLV</h3>
-        <div class="metric">$11,873</div>
-        <p class="small">U18001257 · 25 positions · Day P&amp;L $0</p>
+    <div class="hdr-right">
+      <div class="hdr-clock">Updated: Sat 13 Jun 2026 · 16:38</div>
+      <div class="hdr-wk">Week 24 · IBKR data: 12 Jun 2026</div>
+      <div class="pills">
+        <div class="pill p-core"><div class="dot" style="background:var(--core)"></div>CORE</div>
+        <div class="pill p-wave"><div class="dot" style="background:var(--wave)"></div>WAVE</div>
+        <div class="pill p-fwb"><div class="dot"  style="background:var(--fwb)"></div>FWB</div>
       </div>
     </div>
+  </div>
+</header>
 
-    <div class="grid">
-      <div class="card span-8">
-        <h2>Doctrine Allocation</h2>
-        <div class="bar" aria-label="Current allocation bar"><span></span><span></span><span></span></div>
-        <br>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Bucket</th><th>Current</th><th>Doctrine</th><th>Drift</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><span class="ticker">Core</span><div class="small">U17787165 · long-term compounding</div></td><td>65.9%</td><td>70.0%</td><td class="red">-4.1%</td><td><span class="pill watch">Under Anchor</span></td></tr>
-              <tr><td><span class="ticker">Wave</span><div class="small">U17986722 · future re-rating opportunities</div></td><td>26.9%</td><td>25.0%</td><td class="green">+1.9%</td><td><span class="pill good">Near Doctrine</span></td></tr>
-              <tr><td><span class="ticker">FWB</span><div class="small">U18001257 · cash flow and execution skill</div></td><td>7.3%</td><td>5.0%</td><td class="red">+2.3%</td><td><span class="pill watch">Over Tactical</span></td></tr>
-            </tbody>
-          </table>
+<div class="body">
+
+<!-- ══ 1. MEMO ══ -->
+<section class="section">
+  <div class="slabel">Nixon's Weekly Memo</div>
+  <div class="memo">
+    <div class="memo-from">From Nixon · To Jay · Week 24 · 13 June 2026 · Data: 12 Jun</div>
+    <p>Total US portfolio stands at <strong>$168,145</strong> across three accounts. Core at 65.2% (target 70%), Wave at 29.1% (target 25%), FWB at 5.7% (target 5%). <span class="nt">All three within acceptable doctrine range — no structural action required this week.</span></p>
+    <p>Core is doing what it is supposed to do. <strong>+$14,885 unrealized</strong> — TSM, ASML and GOOGL together account for the majority of that gain. PANW and LLY are both well ahead of entry. META and AMZN are slightly negative. <span class="nt">SNPS and PLTR are down on the Jun 12 snapshot — whether that reflects a thesis problem or normal volatility is for Jay to judge.</span></p>
+    <p>Wave's concern is structural, not performance. <span class="nt">Silicon Stack is 20 points below its target layer weight</span> (30% actual vs 50% target), while AI Infrastructure is 23 points over (51% actual vs 28% target). SMH is carrying most of the Wave gain. <span class="nt">NOW at −15.9% is the notable drag and the only position in the AI Software layer, which is itself already underweight.</span></p>
+    <p>FWB Week 3 was a tough one — 39% win rate, −$398 realized. Total since May 26 is still <strong>+$1,501 realized</strong> with a 2.6× profit factor over 69 trades. <span class="nt">Post-W3 reset is reflected in the 44% FWB cash position. Three OCO entries (COHR, CRWD, SPCX) are queued and pending price.</span></p>
+    <div class="memo-q">Nixon's question to Jay this week: <em>"SNPS is −7.1% and PLTR is −5.7% in Core as of Jun 12. The question is not the loss — it is whether the thesis for each still holds. Would you buy either today at this price? If the honest answer is 'I'm not sure' — that is the answer worth sitting with."</em></div>
+  </div>
+</section>
+
+<!-- ══ 2. US PORTFOLIO OVERVIEW ══ -->
+<section class="section">
+  <div class="slabel">US Portfolio Overview · Data: 12 Jun 2026</div>
+  <div class="card">
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Portfolio</th>
+            <th class="r">Positions</th>
+            <th class="r">Stock MV</th>
+            <th class="r">Cash</th>
+            <th class="r">NAV</th>
+            <th class="r">Actual %</th>
+            <th class="r">Target %</th>
+            <th class="r">Drift</th>
+            <th class="r">Unr. P&amp;L</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="pname-big" style="color:var(--core)">CORE</div>
+              <div class="pname-sub">Foundation</div>
+            </td>
+            <td class="r">10</td>
+            <td class="r">$100,043</td>
+            <td class="r" style="color:var(--tx2)">$9,397</td>
+            <td class="r" style="font-weight:800;font-size:14px">$109,561</td>
+            <td class="r" style="color:var(--core);font-weight:700">65.2%</td>
+            <td class="r" style="color:var(--mu)">70%</td>
+            <td class="r"><span class="badge b-warn">−4.8pt</span></td>
+            <td class="r pos">+$14,885</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="pname-big" style="color:var(--wave)">WAVE</div>
+              <div class="pname-sub">Strategist</div>
+            </td>
+            <td class="r">19</td>
+            <td class="r">$44,358</td>
+            <td class="r" style="color:var(--tx2)">$4,584</td>
+            <td class="r" style="font-weight:800;font-size:14px">$48,940</td>
+            <td class="r" style="color:var(--wave);font-weight:700">29.1%</td>
+            <td class="r" style="color:var(--mu)">25%</td>
+            <td class="r"><span class="badge b-warn">+4.1pt</span></td>
+            <td class="r pos">+$859</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="pname-big" style="color:var(--fwb)">FWB</div>
+              <div class="pname-sub">Execution</div>
+            </td>
+            <td class="r">11</td>
+            <td class="r">$5,437</td>
+            <td class="r warn">$4,207</td>
+            <td class="r" style="font-weight:800;font-size:14px">$9,644</td>
+            <td class="r" style="color:var(--fwb);font-weight:700">5.7%</td>
+            <td class="r" style="color:var(--mu)">5%</td>
+            <td class="r"><span class="badge b-ok">+0.7pt</span></td>
+            <td class="r pos">+$73</td>
+          </tr>
+          <tr class="tfoot">
+            <td>US Total</td>
+            <td class="r">40</td>
+            <td class="r">$149,838</td>
+            <td class="r">$18,189</td>
+            <td class="r" style="font-size:16px">$168,145</td>
+            <td class="r">100%</td>
+            <td class="r" style="color:var(--mu)">—</td>
+            <td class="r" style="color:var(--mu)">NLV</td>
+            <td class="r pos">+$15,817</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 3. ALLOCATION ══ -->
+<section class="section">
+  <div class="slabel">Allocation · Market Value + Per-Portfolio Cash</div>
+  <div class="alloc-wrap">
+    <div class="alloc-cards">
+
+      <div class="ac" style="border-left:3px solid var(--core)">
+        <div class="ac-top">
+          <div class="ac-label">
+            <div class="name" style="color:var(--core)">CORE</div>
+            <div class="desc">Foundation · Long-term compounding</div>
+          </div>
+          <div class="ac-nums">
+            <div class="an"><div class="an-l">Target</div><div class="an-v" style="color:var(--mu)">70%</div></div>
+            <div class="an"><div class="an-l">Actual</div><div class="an-v" style="color:var(--core)">65.2%</div></div>
+            <div class="an"><div class="an-l">NAV</div><div class="an-v">$109,561</div></div>
+          </div>
+        </div>
+        <div class="bar-labels"><span>0%</span><span>▸ Target 70%</span><span>100%</span></div>
+        <div class="bar-bg">
+          <div class="bar-fill" style="width:65.2%;background:var(--core)"></div>
+          <div class="bar-target" style="left:70%"></div>
+        </div>
+        <div class="cash-row">
+          <span class="cl">Core Cash</span>
+          <span>$9,397 &nbsp;·&nbsp; 8.6% of Core NAV</span>
+          <span class="badge b-ok">On-track</span>
         </div>
       </div>
-      <div class="card span-4">
-        <h2>Nixon Verdict</h2>
-        <div class="note-list">
-          <div class="note"><strong>Structure intact.</strong> The portfolio still clearly separates Core, Wave, and FWB.</div>
-          <div class="note"><strong>Allocation read.</strong> Core remains below its 70% anchor, Wave is close to mandate, and FWB is still above its 5% tactical sleeve.</div>
-          <div class="note"><strong>Risk posture:</strong> Core is 4.1% below anchor, Wave is 1.9% from doctrine, and FWB is 2.3% above tactical mandate.</div>
+
+      <div class="ac" style="border-left:3px solid var(--wave)">
+        <div class="ac-top">
+          <div class="ac-label">
+            <div class="name" style="color:var(--wave)">WAVE</div>
+            <div class="desc">Strategist · Structural re-rating plays</div>
+          </div>
+          <div class="ac-nums">
+            <div class="an"><div class="an-l">Target</div><div class="an-v" style="color:var(--mu)">25%</div></div>
+            <div class="an"><div class="an-l">Actual</div><div class="an-v" style="color:var(--wave)">29.1%</div></div>
+            <div class="an"><div class="an-l">NAV</div><div class="an-v">$48,940</div></div>
+          </div>
         </div>
+        <div class="bar-labels"><span>0%</span><span>▸ Target 25%</span><span>100%</span></div>
+        <div class="bar-bg">
+          <div class="bar-fill" style="width:29.1%;background:var(--wave)"></div>
+          <div class="bar-target" style="left:25%"></div>
+        </div>
+        <div class="cash-row">
+          <span class="cl">Wave Cash</span>
+          <span>$4,584 &nbsp;·&nbsp; 9.4% of Wave NAV</span>
+          <span class="badge b-warn">Portfolio slightly overweight</span>
+        </div>
+      </div>
+
+      <div class="ac" style="border-left:3px solid var(--fwb)">
+        <div class="ac-top">
+          <div class="ac-label">
+            <div class="name" style="color:var(--fwb)">FWB</div>
+            <div class="desc">Execution · Tactical cash generation</div>
+          </div>
+          <div class="ac-nums">
+            <div class="an"><div class="an-l">Target</div><div class="an-v" style="color:var(--mu)">5%</div></div>
+            <div class="an"><div class="an-l">Actual</div><div class="an-v" style="color:var(--fwb)">5.7%</div></div>
+            <div class="an"><div class="an-l">NAV</div><div class="an-v">$9,644</div></div>
+          </div>
+        </div>
+        <div class="bar-labels"><span>0%</span><span>▸ Target 5%</span><span>100%</span></div>
+        <div class="bar-bg">
+          <div class="bar-fill" style="width:5.7%;background:var(--fwb)"></div>
+          <div class="bar-target" style="left:5%"></div>
+        </div>
+        <div class="cash-row">
+          <span class="cl">FWB Cash</span>
+          <span class="warn">$4,207 &nbsp;·&nbsp; 43.6% of FWB NAV</span>
+          <span class="badge b-attn">Post-W3 reset · OCO queued</span>
+        </div>
+      </div>
+
+    </div><!-- /alloc-cards -->
+
+    <div class="alloc-panel">
+      <div class="ap-title">$168,145 Total NLV</div>
+      <div class="stacked">
+        <div style="width:60%;background:var(--core)"></div>
+        <div style="width:26.4%;background:var(--wave)"></div>
+        <div style="width:3.2%;background:var(--fwb)"></div>
+        <div style="width:10.4%;background:var(--b2)"></div>
+      </div>
+      <div class="leg">
+        <div class="leg-row">
+          <div class="leg-left"><div class="leg-sq" style="background:var(--core)"></div><span>CORE <span style="color:var(--mu);font-size:10px">Foundation</span></span></div>
+          <span style="font-weight:700;color:var(--core)">65.2%</span>
+        </div>
+        <div class="leg-row">
+          <div class="leg-left"><div class="leg-sq" style="background:var(--wave)"></div><span>WAVE <span style="color:var(--mu);font-size:10px">Strategist</span></span></div>
+          <span style="font-weight:700;color:var(--wave)">29.1%</span>
+        </div>
+        <div class="leg-row">
+          <div class="leg-left"><div class="leg-sq" style="background:var(--fwb)"></div><span>FWB <span style="color:var(--mu);font-size:10px">Execution</span></span></div>
+          <span style="font-weight:700;color:var(--fwb)">5.7%</span>
+        </div>
+        <div class="leg-row">
+          <div class="leg-left"><div class="leg-sq" style="background:var(--b2)"></div><span style="color:var(--mu)">Total Cash</span></div>
+          <span style="color:var(--tx2)">$18,189</span>
+        </div>
+      </div>
+      <div class="ap-divider"></div>
+      <div class="ap-note">All three portfolios within ±5pt of doctrine. FWB internal cash at 44% reflects post-W3 reset — not structural.</div>
+    </div>
+
+  </div><!-- /alloc-wrap -->
+</section>
+
+<!-- ══ 4. NOTABLE POSITIONS ══ -->
+<section class="section">
+  <div class="slabel">Notable Positions · What's Moving — Data: 12 Jun 2026</div>
+  <div class="np-grid">
+
+    <!-- CORE -->
+    <div class="np-card" style="border-top:2px solid var(--core)">
+      <div class="np-hdr">
+        <span style="font-size:15px;font-weight:900;color:var(--core)">CORE</span>
+        <span style="font-size:9.5px;color:var(--mu)">Foundation · 10 positions</span>
+      </div>
+      <div class="np-body">
+        <div class="np-row">
+          <div><span class="np-sym">TSM</span> <span class="np-detail">49.19 @ $423.93</span></div>
+          <span class="np-pnl pos">+$5,842 · +38.9%</span>
+        </div>
+        <div class="np-row">
+          <div><span class="np-sym">ASML</span> <span class="np-detail">5.41 @ $1,863.55</span></div>
+          <span class="np-pnl pos">+$4,280 · +73.8%</span>
+        </div>
+        <div class="np-row">
+          <div><span class="np-sym">GOOGL</span> <span class="np-detail">59.05 @ $359.68</span></div>
+          <span class="np-pnl pos">+$3,113 · +17.2%</span>
+        </div>
+        <div style="height:1px;background:var(--b1);margin:4px 0"></div>
+        <div class="np-row">
+          <div><span class="np-sym">SNPS</span> <span class="np-detail">5 @ $453.89</span></div>
+          <span class="np-pnl neg">−$173 · −7.1%</span>
+        </div>
+        <div class="np-row">
+          <div><span class="np-sym">PLTR</span> <span class="np-detail">50 @ $127.99</span></div>
+          <span class="np-pnl neg">−$387 · −5.7%</span>
+        </div>
+        <div class="np-flag nf-core"><span class="nt">7 of 10 positions in profit.</span> Three positions (TSM, ASML, GOOGL) account for $13,235 of the +$14,885 unrealized. Core is compounding.</div>
+        <div class="np-flag nf-warn"><span class="nt">SNPS and PLTR are the two open questions as of Jun 12.</span> Nixon has one snapshot — no history to draw from. Jay's call on thesis status.</div>
       </div>
     </div>
 
-    <div class="section-heading" id="account-reads"><h2 class="section-title">Account Reads</h2><a class="back-top" href="#top">↑ Top</a></div>
-    <div class="grid">
-      <div class="card span-4 port-core">
-        <h2>Core</h2>
-        <div class="note-list">
-          <div class="note">Visible holdings: GOOGL, TSM, NVDA, ASML, NEE, META, AMZN, LLY, PLTR, PANW.</div>
-          <div class="note">Today: bought META 1, NVDA 4, GOOGL 2, PLTR 10; sold NEE 50.</div>
-          <div class="note">Doctrine read: mostly aligned. Activity reinforces long-term compounders and trims NEE. The open question is whether AI-platform concentration is within Core tolerance.</div>
-        </div>
+    <!-- WAVE -->
+    <div class="np-card" style="border-top:2px solid var(--wave)">
+      <div class="np-hdr">
+        <span style="font-size:15px;font-weight:900;color:var(--wave)">WAVE</span>
+        <span style="font-size:9.5px;color:var(--mu)">Strategist · 19 positions · Source: Catcha</span>
       </div>
-      <div class="card span-4 port-wave">
-        <h2>Wave</h2>
-        <div class="note-list">
-          <div class="note">Account: U17986722. Workbook value $43,812.64; stock $45,982.73; cash -$2,170.09; day P&amp;L $0.00.</div>
-          <div class="note">Visible holdings include SMH, MU, VRT, DRAM, NOW, MSFT, DELL, SNPS, LITE, ARM, GRID, CEG, RKLB, CRWV, SOFI, TSLA, VST, ASTS, ISRG, NASA, CLPT.</div>
-          <div class="note">Doctrine read: Wave is near its 25% sleeve target after correcting the account map.</div>
+      <div class="np-body">
+        <div class="np-row">
+          <div><span class="np-sym">SMH</span> <span class="np-detail">10.03 @ $619.96 · 14% alloc</span></div>
+          <span class="np-pnl pos">+$1,654 · +36.2%</span>
         </div>
-      </div>
-      <div class="card span-4 port-fwb">
-        <h2>FWB</h2>
-        <div class="note-list">
-          <div class="note">Account: U18001257. Workbook value $11,872.68; stock $12,187.66; cash -$314.98; day P&amp;L $0.00.</div>
-          <div class="note">Visible holdings include NBIS, TEL, CRWV, IREN, INTC, ASTS, MU, LITE, ONTO, AMSC, KTOS, OKLO, IONQ, SNOW, ADI, GOOGL, AAOI, ACHR, EOSE.</div>
-          <div class="note">Doctrine read: FWB is 7.3% versus 5% doctrine. It is above tactical size and should stay execution-focused.</div>
+        <div class="np-row">
+          <div><span class="np-sym">DRAM</span> <span class="np-detail">52 @ $65.01 · 7.6% alloc</span></div>
+          <span class="np-pnl pos">+$444 · +15.1%</span>
         </div>
+        <div class="np-row">
+          <div><span class="np-sym">CLPT</span> <span class="np-detail">10 @ $13.44 · Medtech</span></div>
+          <span class="np-pnl pos">+$40 · +41.9%</span>
+        </div>
+        <div style="height:1px;background:var(--b1);margin:4px 0"></div>
+        <div class="np-row">
+          <div><span class="np-sym">NOW</span> <span class="np-detail">27 @ $102.15 · AI Software</span></div>
+          <span class="np-pnl neg-sig">−$521 · −15.9%</span>
+        </div>
+        <div class="np-row">
+          <div><span class="np-sym">ASTS</span> <span class="np-detail">31 @ $82.41 · Space</span></div>
+          <span class="np-pnl neg">−$309 · −10.8%</span>
+        </div>
+        <div class="np-flag nf-warn"><span class="nt">Layer drift: Silicon Stack 30% vs 50% target (−20pt). AI Infrastructure 51% vs 28% (+23pt).</span> Structure misaligned within Wave.</div>
+        <div class="np-flag nf-warn"><span class="nt">NOW is the only AI Software position and the layer is underweight — two problems at once.</span> Catcha thesis review warranted.</div>
       </div>
     </div>
 
-    <div class="section-heading" id="core-deep-dive"><h2 class="section-title">Core Deep Dive</h2><a class="back-top" href="#top">↑ Top</a></div>
-    <div class="grid">
-      <div class="card span-7 port-core">
-        <h2>Core Ticker Quality Against Principle</h2>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Ticker</th><th>% Core</th><th>Role Quality</th><th>Doctrine Fit</th><th>Nixon Read</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><span class="ticker">GOOGL</span></td><td>19.97%</td><td><span class="pill good">High</span></td><td>Cloud, AI platform, advertising cash engine</td><td>Fits Core. Large enough that thesis must stay explicit.</td></tr>
-              <tr><td><span class="ticker">TSM</span></td><td>19.28%</td><td><span class="pill good">High</span></td><td>Semiconductor manufacturing layer</td><td>Fits Core strongly. Concentration plus geopolitical risk needs conscious acceptance.</td></tr>
-              <tr><td><span class="ticker">NVDA</span></td><td>10.60%</td><td><span class="pill good">High</span></td><td>AI infrastructure leader</td><td>Fits Core if held as platform leader, not momentum chase.</td></tr>
-              <tr><td><span class="ticker">ASML</span></td><td>8.38%</td><td><span class="pill good">High</span></td><td>Critical semiconductor equipment monopoly-like layer</td><td>Very Core-like. Volatility acceptable if thesis remains intact.</td></tr>
-              <tr><td><span class="ticker">NEE</span></td><td>8.24%</td><td><span class="pill watch">Medium</span></td><td>Utility / energy infrastructure</td><td>Less connected to Jay's AI/tech compounding map. Sale of 50 suggests role is being questioned.</td></tr>
-              <tr><td><span class="ticker">META</span></td><td>7.71%</td><td><span class="pill good">High</span></td><td>Advertising, AI distribution, platform economics</td><td>Core-compatible. Added today; should be thesis-driven, not dip reflex.</td></tr>
-              <tr><td><span class="ticker">AMZN</span></td><td>6.96%</td><td><span class="pill good">High</span></td><td>Cloud, commerce, logistics, AI infrastructure</td><td>Fits Core. Clean long-duration role.</td></tr>
-              <tr><td><span class="ticker">LLY</span></td><td>6.36%</td><td><span class="pill good">High</span></td><td>Healthcare mega-cap compounder</td><td>Diversifies away from tech. Good ballast if valuation tolerance is defined.</td></tr>
-              <tr><td><span class="ticker">PLTR</span></td><td>5.06%</td><td><span class="pill watch">Medium-High</span></td><td>Enterprise AI / government software</td><td>Can fit Core, but behaves more volatile than classic Core. Needs role guardrail.</td></tr>
-              <tr><td><span class="ticker">PANW</span></td><td>2.79%</td><td><span class="pill good">High</span></td><td>Cybersecurity platform</td><td>Small, quality, role-clear. No issue unless thesis changed.</td></tr>
-            </tbody>
-          </table>
-        </div>
+    <!-- FWB -->
+    <div class="np-card" style="border-top:2px solid var(--fwb)">
+      <div class="np-hdr">
+        <span style="font-size:15px;font-weight:900;color:var(--fwb)">FWB</span>
+        <span style="font-size:9.5px;color:var(--mu)">Execution · 11 positions · Source: Urahara</span>
       </div>
-      <div class="card span-5 port-core">
-        <h2>Core Concentration Read</h2>
-        <div class="note-list">
-          <div class="note"><strong>Top two concentration:</strong> GOOGL + TSM are about 39.25% of Core. That is acceptable only if Jay intentionally wants Core to be anchored by AI demand plus semiconductor supply chain.</div>
-          <div class="note"><strong>AI/semiconductor cluster:</strong> GOOGL, TSM, NVDA, ASML, META, AMZN, PLTR, PANW together dominate the sleeve. This is coherent, but not diversified in economic driver.</div>
-          <div class="note"><strong>NEE is the role outlier.</strong> The position is not bad by itself, but Nixon should ask whether it is Core ballast, income infrastructure, or leftover conviction.</div>
-          <div class="note"><strong>Core principle check:</strong> quality is mostly strong. The risk is not ticker quality; it is concentration and whether every name still has validation/invalidation written down.</div>
+      <div class="np-body">
+        <div class="np-row">
+          <div><span class="np-sym">Realized P&L</span> <span class="np-detail">Since May 26</span></div>
+          <span class="np-pnl pos">+$1,501</span>
         </div>
+        <div class="np-row">
+          <div><span class="np-sym">Open P&L</span> <span class="np-detail">Jun 13 · 11 positions</span></div>
+          <span class="np-pnl pos">+$77</span>
+        </div>
+        <div class="np-row">
+          <div><span class="np-sym">W3 Result</span> <span class="np-detail">Jun 8–12 · 38 trades</span></div>
+          <span class="np-pnl neg">−$398 · 39% WR</span>
+        </div>
+        <div class="np-row">
+          <div><span class="np-sym">Total Trades</span> <span class="np-detail">W1–W3 · Profit Factor</span></div>
+          <span class="np-pnl pos">69 trades · 2.6×</span>
+        </div>
+        <div class="np-row">
+          <div><span class="np-sym">FWB Cash</span> <span class="np-detail">Post-W3 reset</span></div>
+          <span class="np-pnl warn">$4,207 · 44%</span>
+        </div>
+        <div class="np-flag nf-fwb"><span class="nt">Profit factor 2.6× over 69 trades is the headline.</span> W3 win rate dropped (39%) but gross profit/loss ratio still healthy. Discipline is intact.</div>
+        <div class="np-flag nf-warn"><span class="nt">44% FWB cash — capital needs to move by next week or the pause becomes a pattern.</span></div>
       </div>
     </div>
 
-    <!-- WAVE_DEEP_DIVE_START -->
-<div class="section-heading" id="wave-deep-dive"><h2 class="section-title">Wave Deep Dive</h2><a class="back-top" href="#top">↑ Top</a></div>
-<div class="grid">
-  <div class="card span-12 port-wave">
-    <h2>Nixon Wave Read</h2>
-    <div class="wave-read-grid">
-      <div class="read-tile">
-        <div class="read-label">Role</div>
-        <div class="read-value">Future re-rating sleeve</div>
-        <p>Wave is near mandate at 26.9% of total portfolio, but the internal mix is tilted toward silicon-cycle exposure.</p>
+  </div>
+</section>
+
+<!-- ══ 5. ROLE INTEGRITY ══ -->
+<section class="section">
+  <div class="slabel">Role Integrity · Portfolio Health</div>
+  <div class="role-grid">
+
+    <div class="rc" style="border-top:2px solid var(--core)">
+      <div class="rc-hdr"><div class="rc-name" style="color:var(--core)">CORE</div><div class="rc-desc">Foundation · 10 Positions</div></div>
+      <div class="rc-body">
+        <div class="rr"><span class="rl">NAV</span><span class="rv">$109,561</span></div>
+        <div class="rr"><span class="rl">Unrealized P&L</span><span class="rv pos">+$14,885 (+14.9%)</span></div>
+        <div class="rr"><span class="rl">Positions in profit</span><span class="rv">7 of 10</span></div>
+        <div class="rr"><span class="rl">Largest gain</span><span class="rv">ASML +73.8%</span></div>
+        <div class="rr"><span class="rl">Open questions</span><span class="rv warn">SNPS −7.1% · PLTR −5.7%</span></div>
+        <div class="rdiv"></div>
+        <div class="rflag rf-ok"><div class="rf-tx">Core compounding as designed. No exits, no reactive behavior, low turnover. Structure clean.</div></div>
+        <div class="rflag rf-warn"><div class="rf-tx">SNPS and PLTR negative on Jun 12 snapshot. No prior-week data to call this a trend. Is the thesis for each still intact?</div></div>
       </div>
-      <div class="read-tile">
-        <div class="read-label">Pressure Point</div>
-        <div class="read-value">Network / Optical / Data Center Infra</div>
-        <p>33.8% actual versus 18% target. This is the largest allocation drift.</p>
+    </div>
+
+    <div class="rc" style="border-top:2px solid var(--wave)">
+      <div class="rc-hdr"><div class="rc-name" style="color:var(--wave)">WAVE</div><div class="rc-desc">Strategist · 19 Positions · Source: Catcha</div></div>
+      <div class="rc-body">
+        <div class="rr"><span class="rl">NAV</span><span class="rv">$48,940</span></div>
+        <div class="rr"><span class="rl">Unrealized P&L</span><span class="rv pos">+$859 (+1.9%)</span></div>
+        <div class="rr"><span class="rl">Positions in profit</span><span class="rv">7 of 19</span></div>
+        <div class="rr"><span class="rl">Classified by Catcha</span><span class="rv">19 / 19</span></div>
+        <div class="rr"><span class="rl">Silicon Stack actual</span><span class="rv neg">30.4% vs 50% target</span></div>
+        <div class="rr"><span class="rl">AI Infra actual</span><span class="rv warn">50.8% vs 28% target</span></div>
+        <div class="rdiv"></div>
+        <div class="rflag rf-warn"><div class="rf-tx">Layer allocation is Wave's structural concern — not performance. Catcha governs the targets and classification.</div></div>
+        <div class="rflag rf-attn"><div class="rf-tx">Defense & Drones layer is at 0% vs 5% target. Medtech (CLPT, ISRG) at 2.2% vs 0% target. CLPT is +41.9% — profit-take or reclassify decision belongs to Catcha.</div></div>
       </div>
-      <div class="read-tile">
-        <div class="read-label">Concentration</div>
-        <div class="read-value">52.8% in top five</div>
-        <p>SMH, MU, VRT, DRAM, DELL drive the review priority.</p>
+    </div>
+
+    <div class="rc" style="border-top:2px solid var(--fwb)">
+      <div class="rc-hdr"><div class="rc-name" style="color:var(--fwb)">FWB</div><div class="rc-desc">Execution · 11 Positions · Source: Urahara</div></div>
+      <div class="rc-body">
+        <div class="rr"><span class="rl">NAV</span><span class="rv">$9,644</span></div>
+        <div class="rr"><span class="rl">Realized P&L (since May 26)</span><span class="rv pos">+$1,501</span></div>
+        <div class="rr"><span class="rl">Profit factor (69 trades)</span><span class="rv pos">2.6×</span></div>
+        <div class="rr"><span class="rl">Win rate (overall)</span><span class="rv">49% (34W/35L)</span></div>
+        <div class="rr"><span class="rl">W3 · Jun 8–12</span><span class="rv neg">39% WR · −$398 · 38 trades</span></div>
+        <div class="rr"><span class="rl">Cash (post-W3)</span><span class="rv warn">$4,207 · 43.6%</span></div>
+        <div class="rdiv"></div>
+        <div class="rflag rf-ok"><div class="rf-tx">2.6× profit factor means wins are significantly larger than losses. FWB is generating cash as intended.</div></div>
+        <div class="rflag rf-warn"><div class="rf-tx">W3 volume doubled (38 trades vs 18 in W2) while quality dropped. High-volume down weeks are a known risk pattern in short-duration execution. Urahara tracks this.</div></div>
       </div>
-      <div class="read-tile">
-        <div class="read-label">Outside Core Wave</div>
-        <div class="read-value">2.1% side pockets</div>
-        <p>Medtech are held, but do not belong to the core Wave framework.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ 6. DEEP DIVE ══ -->
+<section class="section">
+  <div class="slabel">Portfolio Deep Dive · Nixon's Analysis + Agent Summaries</div>
+  <div class="dtabs">
+    <button class="dtab ac-core" onclick="dive('core',this)">◆ CORE</button>
+    <button class="dtab" onclick="dive('wave',this)">◈ WAVE</button>
+    <button class="dtab" onclick="dive('fwb',this)">● FWB</button>
+  </div>
+
+  <!-- CORE -->
+  <div class="dpanel active" id="dp-core">
+    <div class="dgrid">
+      <div class="card">
+        <div class="card-hdr">Core · Jun 12 Snapshot</div>
+        <div style="padding:16px 18px">
+          <div class="krow">
+            <div class="kpi"><div class="kpi-l">NAV</div><div class="kpi-v" style="color:var(--core)">$109.6K</div></div>
+            <div class="kpi"><div class="kpi-l">Unr. P&L</div><div class="kpi-v pos">+$14,885</div><div class="kpi-s">+14.9% on stock MV</div></div>
+            <div class="kpi"><div class="kpi-l">Cash</div><div class="kpi-v" style="color:var(--tx2)">$9,397</div><div class="kpi-s">8.6% of Core</div></div>
+          </div>
+          <div class="tscroll">
+            <table style="min-width:360px">
+              <thead><tr>
+                <th>Ticker</th><th class="r">Close</th><th class="r">MV</th><th class="r">P&L</th><th class="r">Rtn</th>
+              </tr></thead>
+              <tbody>
+                <tr><td class="sym">TSM</td><td class="r">$423.93</td><td class="r">$20,852</td><td class="r pos">+$5,842</td><td class="r pos">+38.9%</td></tr>
+                <tr><td class="sym">GOOGL</td><td class="r">$359.68</td><td class="r">$21,238</td><td class="r pos">+$3,113</td><td class="r pos">+17.2%</td></tr>
+                <tr><td class="sym">ASML</td><td class="r">$1,863.55</td><td class="r">$10,075</td><td class="r pos">+$4,280</td><td class="r pos">+73.8%</td></tr>
+                <tr><td class="sym">NVDA</td><td class="r">$205.19</td><td class="r">$11,287</td><td class="r pos">+$730</td><td class="r pos">+6.9%</td></tr>
+                <tr><td class="sym">LLY</td><td class="r">$1,133.00</td><td class="r">$6,803</td><td class="r pos">+$1,176</td><td class="r pos">+20.9%</td></tr>
+                <tr><td class="sym">PANW</td><td class="r">$279.62</td><td class="r">$3,076</td><td class="r pos">+$820</td><td class="r pos">+36.4%</td></tr>
+                <tr><td class="sym">AMZN</td><td class="r">$238.55</td><td class="r">$9,065</td><td class="r neg">−$102</td><td class="r neg">−1.1%</td></tr>
+                <tr><td class="sym">META</td><td class="r">$566.98</td><td class="r">$8,978</td><td class="r neg">−$414</td><td class="r neg">−4.4%</td></tr>
+                <tr><td class="sym">PLTR</td><td class="r">$127.99</td><td class="r">$6,400</td><td class="r neg">−$387</td><td class="r neg">−5.7%</td></tr>
+                <tr><td class="sym">SNPS</td><td class="r">$453.89</td><td class="r">$2,269</td><td class="r neg">−$173</td><td class="r neg">−7.1%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr">Nixon's Core Read</div>
+        <div style="padding:16px 18px">
+          <div class="ins-list">
+            <div class="ins ins-core"><strong>Three positions drive 89% of Core gain.</strong> TSM (+$5,842), ASML (+$4,280), GOOGL (+$3,113) = $13,235 of the +$14,885 unrealized. These three are the compounding engine.</div>
+            <div class="ins ins-core"><strong>Core is 4.8pt below its 70% doctrine weight.</strong> Core cash of $9,397 (8.6% of Core) could partially fund rebalancing without external capital — if Jay decides to act on the drift.</div>
+            <div class="ins ins-warn"><strong>SNPS −7.1% and PLTR −5.7% as of Jun 12.</strong> Nixon has a single snapshot. These positions may be short-term volatility or thesis problems. Nixon raises the question — the answer belongs to Jay.</div>
+            <div class="ins ins-core"><strong>No exits, no reactive behavior visible.</strong> Core turnover appears low and consistent with the Foundation doctrine. The structure is working as described.</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="card span-7 port-wave">
-    <h2>Theme Allocation Review</h2>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Theme</th><th>Current holdings</th><th>Allocation</th><th>Nixon read</th></tr></thead>
-      <tbody><tr><td><span class="ticker">Network / Optical / Data Center Infra</span></td><td>CRWV, DELL, LITE, NBIS, TEL, VRT</td><td>33.8% / 18% target<br><span class="pill bad">+15.8% drift</span></td><td>Slight overweight. Good AI infrastructure expression; monitor CRWV and LITE validation.</td></tr><tr><td><span class="ticker">Semiconductor Enablers</span></td><td>ARM, SMH</td><td>20.8% / 20% target<br><span class="pill good">+0.8% drift</span></td><td>Over target. Strong earnings-driver logic, but it increases one-factor silicon risk.</td></tr><tr><td><span class="ticker">Memory & Storage</span></td><td>DRAM, MU</td><td>20.7% / 10% target<br><span class="pill bad">+10.7% drift</span></td><td>Over target. Treat as tactical memory cycle risk, not broad semiconductor exposure.</td></tr><tr><td><span class="ticker">AI Software / Security / Workflow</span></td><td>MSFT, NOW, TSLA</td><td>12.3% / 12% target<br><span class="pill good">+0.3% drift</span></td><td>Near target. Quality is mixed between durable software and TSLA optionality.</td></tr><tr><td><span class="ticker">Power & Electrification</span></td><td>CEG, VST</td><td>6.6% / 10% target<br><span class="pill watch">-3.4% drift</span></td><td>Under target. Cleaner AI bottleneck theme, but needs stronger confirmation before adding.</td></tr><tr><td><span class="ticker">Space & Orbital Infrastructure</span></td><td>ASTS, NASA, RKLB</td><td>5.9% / 5% target<br><span class="pill good">+0.9% drift</span></td><td>On target. Keep as optionality; do not let ASTS/RKLB become a rescue basket.</td></tr><tr><td><span class="ticker">Medtech</span></td><td>CLPT, ISRG</td><td>2.1% / 0% target<br><span class="pill watch">+2.1% drift</span></td><td>Outside core Wave. Side-pocket only; do not let it drive Wave conviction.</td></tr></tbody>
-    </table></div>
+  <!-- WAVE -->
+  <div class="dpanel" id="dp-wave">
+    <div class="dgrid">
+      <div class="card">
+        <div class="card-hdr">Wave Layer Drift · from Catcha</div>
+        <div style="padding:16px 18px">
+          <div class="krow">
+            <div class="kpi"><div class="kpi-l">NAV</div><div class="kpi-v" style="color:var(--wave)">$48.9K</div></div>
+            <div class="kpi"><div class="kpi-l">Positions</div><div class="kpi-v">19</div><div class="kpi-s">All in Catcha</div></div>
+            <div class="kpi"><div class="kpi-l">Unr. P&L</div><div class="kpi-v pos">+$859</div><div class="kpi-s">+1.9% on MV</div></div>
+          </div>
+          <div class="tscroll">
+            <table style="min-width:320px">
+              <thead><tr>
+                <th>Layer</th><th class="r">Actual</th><th class="r">Target</th><th class="r">Drift</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>Silicon Stack</td><td class="r neg">30.4%</td><td class="r" style="color:var(--mu)">50%</td><td class="r neg">−19.6pt</td></tr>
+                <tr><td>AI Infrastructure</td><td class="r warn">50.8%</td><td class="r" style="color:var(--mu)">28%</td><td class="r warn">+22.8pt</td></tr>
+                <tr><td>AI Software</td><td class="r neg">6.2%</td><td class="r" style="color:var(--mu)">12%</td><td class="r neg">−5.8pt</td></tr>
+                <tr><td>Space & Orbital</td><td class="r warn">10.5%</td><td class="r" style="color:var(--mu)">5%</td><td class="r warn">+5.5pt</td></tr>
+                <tr><td>Defense & Drones</td><td class="r neg">0%</td><td class="r" style="color:var(--mu)">5%</td><td class="r neg">−5.0pt ·  empty</td></tr>
+                <tr><td>Medtech <span style="font-size:10px;color:var(--warn)">(off-doctrine)</span></td><td class="r warn">2.2%</td><td class="r" style="color:var(--mu)">0%</td><td class="r warn">+2.2pt</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr">Nixon's Read from Catcha</div>
+        <div style="padding:16px 18px">
+          <div class="ins-list">
+            <div class="ins ins-wave"><strong>SMH is carrying Wave.</strong> +$1,654 at 14% allocation. Without SMH, Wave unrealized would be −$795. The Semiconductor ETF is the single largest contributor.</div>
+            <div class="ins ins-warn"><strong>NOW at −15.9% (−$521)</strong> is the largest Wave drag. It is also the only AI Software position in a layer already at 6.2% vs 12% target — underweight and losing at the same time. Catcha needs a status call.</div>
+            <div class="ins ins-warn"><strong>Silicon Stack is 20pt underweight.</strong> Catcha targets this as Wave's primary layer. Only DRAM, MU, SMH, ARM are in it. The intent is not matching the deployment.</div>
+            <div class="ins ins-wave"><strong>CLPT is +41.9%</strong> in a Medtech layer that is off-doctrine (target 0%). A winning position in the wrong place needs a decision. Take profit and move the capital into a target layer, or document why Medtech belongs in Wave.</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="card span-5 port-wave">
-    <h2>Validation Work</h2>
-    <div class="note-list">
-      <div class="note"><strong>Do first:</strong> review why NOW, CRWV, ARM, DELL, VRT are losing. Cheap is not validation.</div>
-      <div class="note"><strong>Memory:</strong> keep Memory &amp; Storage separate from Semiconductor Enablers. 20.7% memory exposure is already above its 10% target.</div>
-      <div class="note"><strong>Semiconductor enablers:</strong> 20.8% is also above target. Do not add to silicon stack without a fresh reason.</div>
-      <div class="note"><strong>Outside core:</strong> Medtech and Fintech are side pockets. They need their own reason or they should not influence Wave conviction.</div>
+  <!-- FWB -->
+  <div class="dpanel" id="dp-fwb">
+    <div class="dgrid">
+      <div class="card">
+        <div class="card-hdr">FWB Execution · Weekly Performance</div>
+        <div style="padding:16px 18px">
+          <div class="krow">
+            <div class="kpi"><div class="kpi-l">Realized</div><div class="kpi-v pos">+$1,501</div><div class="kpi-s">Since May 26</div></div>
+            <div class="kpi"><div class="kpi-l">Total trades</div><div class="kpi-v">69</div></div>
+            <div class="kpi"><div class="kpi-l">PF</div><div class="kpi-v pos">2.6×</div><div class="kpi-s">Overall</div></div>
+          </div>
+          <div class="tscroll">
+            <table style="min-width:340px">
+              <thead><tr>
+                <th>Week</th><th class="r">Trades</th><th class="r">WR</th><th class="r">P&L</th><th class="r">PF</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>W1 · May 26–29</td><td class="r">13</td><td class="r pos">69%</td><td class="r pos">+$1,401</td><td class="r pos">13.3×</td></tr>
+                <tr><td>W2 · Jun 1–5</td><td class="r">18</td><td class="r">56%</td><td class="r pos">+$497</td><td class="r pos">5.3×</td></tr>
+                <tr><td>W3 · Jun 8–12</td><td class="r">38</td><td class="r neg">39%</td><td class="r neg">−$398</td><td class="r neg">0.45×</td></tr>
+                <tr style="background:#16161e;font-weight:700"><td>Total</td><td class="r">69</td><td class="r">49%</td><td class="r pos">+$1,501</td><td class="r pos">2.6×</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr">Nixon's Read from Urahara</div>
+        <div style="padding:16px 18px">
+          <div class="ins-list">
+            <div class="ins ins-fwb"><strong>2.6× profit factor is the signal, not win rate.</strong> 49% WR across 69 trades means wins are significantly larger than losses. The edge is real and showing in the numbers.</div>
+            <div class="ins ins-warn"><strong>W3 volume doubled while quality dropped.</strong> 38 trades at 39% WR is the mirror image of W1 (13 trades at 69%). High-volume down weeks are a known execution risk. Urahara's W3 pattern is worth Jay reviewing: was the volume reactive or planned?</div>
+            <div class="ins ins-fwb"><strong>Post-W3 reset is appropriate.</strong> 44% FWB cash with three OCO entries queued (COHR, CRWD, SPCX) at structure. The reset is discipline, not avoidance — as long as capital rotates by next week.</div>
+            <div class="ins ins-fwb"><strong>Realized +$1,501 since inception.</strong> FWB is generating cash as the doctrine intends. The mission is on track despite one tough week.</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="card span-12 port-wave">
-    <h2>Nixon Questions</h2>
-    <div class="question-strip">
-      <div>Which losing position has improved evidence since entry?</div>
-      <div>Which position is only being held because it is down?</div>
-      <div>Which theme deserves capital now, and which only deserves a watchlist slot?</div>
-      <div>What invalidates the silicon stack overweight?</div>
+</section>
+
+<!-- ══ 7. DOCTRINE ALIGNMENT ══ -->
+<section class="section">
+  <div class="slabel">Doctrine Alignment · Observable vs Stated Rules</div>
+  <div class="doc-grid">
+    <div class="card">
+      <div class="card-hdr">Universal &amp; Core Rules</div>
+      <div class="drow"><div class="d-rule">"Core exists to compound"</div><div class="d-st"><span class="st-ok">✓ OK</span></div><div class="d-obs">+$14,885 unrealized. No exits. Low turnover. TSM, ASML, GOOGL compounding steadily. Behavior matches doctrine.</div></div>
+      <div class="drow"><div class="d-rule">"Role before stock"</div><div class="d-st"><span class="st-ok">✓ OK</span></div><div class="d-obs">40 positions tagged across three accounts. CORE / WAVE / FWB separation maintained mechanically by account structure.</div></div>
+      <div class="drow"><div class="d-rule">"Market validates thesis"</div><div class="d-st"><span class="st-w">⚠ Watch</span></div><div class="d-obs">SNPS −7.1%, PLTR −5.7% in Core. NOW −15.9% in Wave. Price not confirming thesis on three positions. No thesis review documents available to Nixon — Jay's call.</div></div>
+      <div class="drow"><div class="d-rule">"Consistency over maximization"</div><div class="d-st"><span class="st-ok">✓ OK</span></div><div class="d-obs">FWB +$1,501 via 69 systematic trades, not a single bet. Core adds appear methodical. No outsized position-seeking observed.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr">Wave &amp; FWB Rules</div>
+      <div class="drow"><div class="d-rule">"Do not promote failed Wave to Core"</div><div class="d-st"><span class="st-ok">✓ OK</span></div><div class="d-obs">No Wave-to-Core transfers observed. Account structure enforces the separation — mechanically clean.</div></div>
+      <div class="drow"><div class="d-rule">"Capital must rotate" (FWB)</div><div class="d-st"><span class="st-w">⚠ Watch</span></div><div class="d-obs">44% FWB cash post-W3. Three OCO orders queued. Rotation paused — appropriate post-drawdown. If not deployed by next review, the pause becomes a pattern.</div></div>
+      <div class="drow"><div class="d-rule">"Better missed than trapped" (FWB)</div><div class="d-st"><span class="st-ok">✓ OK</span></div><div class="d-obs">OCO structure (COHR, CRWD, SPCX) lets price come to the order, not the reverse. Disciplined entry behavior.</div></div>
+      <div class="drow"><div class="d-rule">"Layer targets govern Wave"</div><div class="d-st"><span class="st-w">⚠ Watch</span></div><div class="d-obs">Silicon Stack 20pt underweight. AI Infrastructure 23pt overweight. Wave internal layer doctrine is not reflected in current deployment. Catcha governs the fix.</div></div>
     </div>
   </div>
-</div>
-<!-- WAVE_DEEP_DIVE_END -->
+</section>
 
-    <div class="section-heading" id="fwb-deep-dive"><h2 class="section-title">FWB Deep Dive</h2><a class="back-top" href="#top">↑ Top</a></div>
-    <div class="grid">
-      <div class="card span-7 port-fwb">
-        <h2>FWB Execution Quality</h2>
-        <div class="note-list">
-          <div class="note"><strong>Actual FWB holdings:</strong> ASTS, INTC, MU, KTOS, COHR, CRWD, FSLR, VEEV, SNOW, DDOG, AXON, VRTX, NOK, ADI, CDNS, GOOGL, MDB, AAOI, HIMX, AMBA, GH, NET, INCY, EOSE, IONQ.</div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Group</th><th>Tickers</th><th>Role Fit</th><th>Nixon Read</th></tr>
-            </thead>
-            <tbody><tr><td><span class="ticker">AI / High-Beta Compute</span></td><td>INTC, IONQ, SNOW, GOOGL</td><td><span class="pill bad">Growth Basket</span></td><td>This is the real FWB risk center. It can trade, but it cannot be treated as patient Wave capital.</td></tr><tr><td><span class="ticker">Semis / Optical / Hardware</span></td><td>MU, ADI, AAOI</td><td><span class="pill watch">Cyclical</span></td><td>Actual FWB semis are concentrated in memory, optical, equipment, and analog exposure. Keep trade horizons explicit.</td></tr><tr><td><span class="ticker">Defense / Power / Infrastructure</span></td><td>KTOS</td><td><span class="pill watch">Event-Driven</span></td><td>These can fit tactical capital only with catalysts, stops, and time limits.</td></tr><tr><td><span class="ticker">Space / Mobility Optionality</span></td><td>ASTS, EOSE</td><td><span class="pill bad">Speculative</span></td><td>These are high-variance names. They need named validation, not rescue averaging.</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card span-5 port-fwb">
-        <h2>FWB Principle Audit</h2>
-        <div class="note-list">
-          <div class="note"><strong>FWB mission:</strong> generate cash flow, improve execution quality, maintain tactical flexibility.</div>
-          <div class="note"><strong>Current size:</strong> FWB is 7.3% of total portfolio versus a 5% doctrine target.</div>
-          <div class="note"><strong>Bad sign:</strong> the sleeve holds many high-beta growth positions, so mistakes can become total-portfolio mistakes.</div>
-          <div class="note"><strong>Nixon line:</strong> FWB should not be a mini-Wave portfolio. If the position requires hope, catalyst patience, or multi-year thesis, it is not FWB.</div>
-        </div>
+<!-- ══ 8. REFLECTION ══ -->
+<section class="section">
+  <div class="slabel">Reflection · Week 24</div>
+  <div class="ref-grid">
+
+    <div class="ref-card">
+      <div class="ref-hdr"><span style="font-size:14px">✦</span><span class="ref-title">What's Working</span></div>
+      <div class="ref-body">
+        <div class="ri ri-core"><strong>Core is compounding silently.</strong> +$14,885, 7 of 10 in profit, no exits, no noise. TSM, ASML, GOOGL are the engine. Leave them alone.</div>
+        <div class="ri ri-fwb"><strong>FWB profit factor 2.6×</strong> across 69 trades. Despite W3, the size of wins vs losses over the full period shows a real edge working.</div>
+        <div class="ri ri-wave"><strong>Wave structure is clean.</strong> All 19 positions classified in Catcha. Portfolio overall in profit (+$859). SMH carrying the book.</div>
+        <div class="ri ri-fwb"><strong>OCO entry discipline.</strong> COHR, CRWD, SPCX at structure, not chasing. Proper execution posture after a down week.</div>
       </div>
     </div>
 
-    <div class="section-heading" id="cross-portfolio"><h2 class="section-title">Cross-Portfolio Theme Exposure</h2><a class="back-top" href="#top">↑ Top</a></div>
-    <div class="grid">
-      <div class="card span-12">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Theme</th><th>Where It Appears</th><th>Risk</th><th>Nixon Assessment</th></tr>
-            </thead>
-            <tbody><tr><td><span class="ticker">AI / Semiconductor Stack</span></td><td>Core: GOOGL, TSM, NVDA, ASML, META, AMZN, PLTR, PANW. Wave: SMH, MU, DRAM, ARM, LITE, VRT, DELL. FWB: INTC, MU, ADI, GOOGL, AAOI.</td><td><span class="pill bad">High</span></td><td>This is still the dominant portfolio identity, but the FWB leg is now read from the FWB account only.</td></tr><tr><td><span class="ticker">Data Center Power</span></td><td>Wave: VRT, CEG, VST. FWB: None in this sleeve.</td><td><span class="pill watch">Medium</span></td><td>Good adjacent theme. Separate proven infrastructure from speculative power trades.</td></tr><tr><td><span class="ticker">Speculative Future Tech</span></td><td>Wave: RKLB, ASTS, NASA, CLPT, TSLA, ISRG. FWB: ASTS, EOSE, IONQ.</td><td><span class="pill bad">High</span></td><td>Overlap exists, but the account definitions are separate. FWB needs trade discipline; Wave can carry thesis patience.</td></tr><tr><td><span class="ticker">Diversifiers</span></td><td>Core: LLY, NEE. Wave: ISRG, CLPT. FWB: None in this sleeve.</td><td><span class="pill watch">Thin</span></td><td>Diversification exists, but it is not the portfolio&#x27;s center of gravity.</td></tr></tbody>
-          </table>
-        </div>
+    <div class="ref-card">
+      <div class="ref-hdr"><span style="font-size:14px">⟳</span><span class="ref-title">What's Drifting</span></div>
+      <div class="ref-body">
+        <div class="ri ri-warn"><strong>Wave layer drift is structural.</strong> Silicon Stack 20pt underweight, AI Infrastructure 23pt overweight. The portfolio doesn't reflect the Wave doctrine Catcha defines. Layer rebalance is Wave's primary task.</div>
+        <div class="ri ri-warn"><strong>NOW −15.9% in Wave.</strong> Single position in an already-underweight AI Software layer. Two problems at once — Catcha needs a status call.</div>
+        <div class="ri ri-warn"><strong>FWB cash at 44%.</strong> Appropriate post-W3 — but rotation must happen next week or the pause becomes avoidance.</div>
       </div>
     </div>
 
-    <div class="section-heading" id="behavior-audit"><h2 class="section-title">Behavior Audit</h2><a class="back-top" href="#top">↑ Top</a></div>
-    <div class="grid">
-      <div class="card span-6">
-        <h2>What Is Working</h2>
-        <div class="note-list">
-          <div class="note">The three-bucket structure remains visible. This preserves Nixon's ability to audit role integrity.</div>
-          <div class="note">Core activity is not random. The buys are concentrated in established compounder or platform names.</div>
-          <div class="note">FWB is 7.3% versus its 5% mission size. That is above mandate and raises total-portfolio execution risk.</div>
-          <div class="note">Wave and FWB both lean into high-beta technology and speculative growth. This creates cross-bucket correlation.</div>
-          <div class="note">Frequent FWB buying across many tickers risks turning execution capital into a scattered watchlist with money attached.</div>
-          <div class="note">Core is below target, Wave is near target, and FWB is above target. The capital map is workable, but still needs sleeve discipline.</div>
-        </div>
+    <div class="ref-card">
+      <div class="ref-hdr"><span style="font-size:14px">↑</span><span class="ref-title">What's Improving</span></div>
+      <div class="ref-body">
+        <div class="ri ri-fwb"><strong>FWB execution maturity.</strong> W1 high-conviction, W2 steady, W3 a test. Total P&L still positive and structural disciplines are holding.</div>
+        <div class="ri ri-core"><strong>Core concentration is by performance, not by accident.</strong> GOOGL and TSM at the top — both in profit. The portfolio is self-sorting correctly.</div>
       </div>
     </div>
 
-    <div class="section-heading" id="review-queue"><h2 class="section-title">Review Queue</h2><a class="back-top" href="#top">↑ Top</a></div>
-    <div class="grid">
-      <div class="card span-12">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Priority</th><th>Bucket</th><th>Nixon Question</th><th>Why It Matters</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><span class="pill bad">P1</span></td><td>FWB</td><td>Should FWB stay above its 5% sleeve?</td><td>At 8.6%, tactical mistakes matter more than the doctrine allows.</td></tr>
-              <tr><td><span class="pill bad">P1</span></td><td>FWB</td><td>Which current FWB names are still active trades, and which are trapped leftovers?</td><td>FWB edge is execution, not attachment. Dead tactical capital must rotate.</td></tr>
-              <tr><td><span class="pill bad">P1</span></td><td>All</td><td>How much total portfolio exposure is really one AI/semiconductor bet?</td><td>The same factor appears in Core, Wave, and FWB. That can be conviction, but it must be conscious.</td></tr>
-              <tr><td><span class="pill watch">P2</span></td><td>Wave</td><td>Which Wave positions have improved validation since entry?</td><td>Catch a Wave provides a strong map, but broad unrealized losses require evidence review by theme and ticker.</td></tr>
-              <tr><td><span class="pill watch">P2</span></td><td>Core</td><td>Is AI/platform concentration inside Core still intentional?</td><td>Core is quality-first, but concentration needs thesis clarity.</td></tr>
-              <tr><td><span class="pill watch">P2</span></td><td>All</td><td>Should new cash or freed cash first restore Core toward 70% before expanding tactical sleeves?</td><td>Doctrine first means ballast before opportunism unless Jay formally changes doctrine.</td></tr>
-              <tr><td><span class="pill good">P3</span></td><td>Wave</td><td>Which side pockets still deserve capital?</td><td>Medtech and Fintech sit outside core Wave and need separate conviction.</td></tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="ref-card">
+      <div class="ref-hdr"><span style="font-size:14px">◎</span><span class="ref-title">What Needs a Decision</span></div>
+      <div class="ref-body">
+        <div class="ri ri-warn"><strong>SNPS and PLTR (Core)</strong> — negative as of Jun 12. Nixon raises the question. Jay answers: thesis intact or not?</div>
+        <div class="ri ri-wave"><strong>Wave Silicon Stack deployment</strong> — 20pt below target. Catcha needs a rebalance plan, not just an observation.</div>
+        <div class="ri ri-wave"><strong>CLPT (Wave, +41.9%)</strong> — off-doctrine layer. Take profit and rotate to on-target layer, or document why Medtech belongs. Either is fine — silence is not.</div>
+        <div class="ri ri-wave"><strong>Defense &amp; Drones empty (0% vs 5%)</strong> — intentional or forgotten? If intentional, document it. If overlooked, a watchlist at minimum.</div>
       </div>
     </div>
 
-    <div class="section-heading" id="conclusion"><h2 class="section-title">Operating Conclusion</h2><a class="back-top" href="#top">↑ Top</a></div>
-    <div class="grid">
-      <div class="card span-12">
-        <h2>Portfolio Read</h2>
-        <div class="note-list">
-          <div class="note"><strong>Core:</strong> quality anchor remains below doctrine. It is not broken, but it is not carrying the intended 70% ballast.</div>
-          <div class="note"><strong>Wave:</strong> close to mandate, with the real issue inside the sleeve: silicon and memory exposure dominate the risk conversation.</div>
-          <div class="note"><strong>FWB:</strong> above tactical size. Treat it as execution capital, not a second Wave sleeve.</div>
-          <div class="note"><strong>Total portfolio:</strong> AI, semiconductors, data center infrastructure, and future-tech optionality appear across all sleeves; the exposure is intentional only if Jay still wants one dominant future factor.</div>
-        </div>
-      </div>
-    </div>
-  </main>
-  <script>
-    const sectionLinks = [...document.querySelectorAll(".section-nav a")];
-    const observedSections = sectionLinks
-      .map(link => document.querySelector(link.getAttribute("href")))
-      .filter(Boolean);
+  </div>
+</section>
 
-    const sectionObserver = new IntersectionObserver(entries => {
-      const visible = entries
-        .filter(entry => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      sectionLinks.forEach(link => {
-        link.classList.toggle("active", link.getAttribute("href") === `#${visible.target.id}`);
-      });
-    }, { rootMargin: "-20% 0px -65% 0px", threshold: [0.01, 0.2, 0.5] });
+</div><!-- /body -->
 
-    observedSections.forEach(section => sectionObserver.observe(section));
-  </script>
+<footer class="footer">
+  <span>Nixon · US Portfolio Auditor & Reflection Companion · EisenTower</span>
+  <span id="footer-ts">Week 24 · June 2026 · Data: 12 Jun</span>
+</footer>
+
+<script>
+
+function dive(id,btn){
+  document.querySelectorAll('.dpanel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.dtab').forEach(b=>b.className='dtab');
+  document.getElementById('dp-'+id).classList.add('active');
+  btn.classList.add('ac-'+id);
+}
+</script>
 </body>
 </html>
