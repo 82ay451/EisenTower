@@ -152,7 +152,7 @@
     <div class="wrap">
       <h1>EisenTower</h1>
       <p class="sub">A personal decision system for Jay. Direct from EisenTower Cockpit by Jay's crew.</p>
-      <p class="source">Last updated 2026-06-13 16:22 +07 · Data source: EisenTower local workspace</p>
+      <p class="source">Last updated <span id="last-updated">loading</span> · Data source: EisenTower local workspace</p>
     </div>
   </header>
 
@@ -219,5 +219,20 @@
       </a>
     </section>
   </main>
+  <script>
+    const updated = new Date(document.lastModified);
+    const target = document.getElementById("last-updated");
+    if (target && !Number.isNaN(updated.getTime())) {
+      target.textContent = updated.toLocaleString("sv-SE", {
+        timeZone: "Asia/Bangkok",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).replace(" ", " ") + " +07";
+    }
+  </script>
 </body>
 </html>
