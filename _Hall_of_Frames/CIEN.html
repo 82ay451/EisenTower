@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CIEN — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --cien-orange: #FF6B00;
+      --cien-dark:   #0A1929;
+      --cien-navy:   #003087;
+      --cien-blue:   #0070C8;
+      --cien-orange-soft: #fff3e8;
+      --cien-navy-soft:   #e0eaff;
+      --accent:      var(--cien-orange);
+      --accent-soft: var(--cien-orange-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--cien-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--cien-orange) 30%, var(--cien-blue) 30% 60%, var(--cien-navy) 60% 80%, var(--cien-dark) 80%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-cien { color: #FF9940; }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--cien-dark); border-bottom: 1px solid #0e2a3e; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(255,107,0,0.2); color: var(--cien-orange); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--cien-orange); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--cien-orange-soft); color: var(--cien-orange); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.orange { border-left: 3px solid var(--cien-orange); }
+    .stat-card.navy  { border-left: 3px solid var(--cien-navy); }
+    .stat-card.green { border-left: 3px solid var(--green); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.orange { background: var(--cien-orange-soft); border-color: var(--cien-orange); }
+    .callout.navy   { background: var(--cien-navy-soft);   border-color: var(--cien-navy); }
+    .callout.green  { background: var(--green-soft);       border-color: var(--green); }
+    .callout.red    { background: var(--red-soft);         border-color: var(--red); }
+    .callout.yellow { background: var(--yellow-soft);      border-color: var(--yellow); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--cien-orange), var(--cien-navy)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--cien-orange); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cien-orange); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--cien-orange-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #155c38; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);        color: var(--green); }
+    .comp-pos.challenger { background: var(--cien-orange-soft);  color: #cc4400; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--cien-orange); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.orange { background: var(--cien-orange-soft); border-color: var(--cien-orange); color: #7a3200; }
+    .comp-verdict.green  { background: var(--green-soft);       border-color: var(--green);        color: #155c38; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: #f0eeff; border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #2a1a4e; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .exit-box { background: #fce8e8; border: 1px solid #f0b8b8; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .exit-box h4 { font-size: 15px; font-weight: 700; color: #b71c1c; margin-bottom: 10px; }
+    .exit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--cien-orange); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(255,107,0,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--cien-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .cien-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .cien-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-cien">CIEN</span> — Ciena Corporation</h1>
+    <div class="doc-subtitle">Understanding Ciena as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NYSE: CIEN</span>
+      <span>🏛 Founded 1992 · Hanover, Maryland</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Ciena คือ <strong>ผู้นำระดับโลกในด้าน high-speed optical networking</strong> — สร้าง hardware และ software สำหรับส่งข้อมูลด้วยความเร็วสูงผ่าน fiber optic networks ทั่วโลก ลูกค้าหลักคือ cloud hyperscalers (AWS, Microsoft, Google), telecom carriers, และ government networks</p>
+      <p>FY2025 (สิ้นสุด November 1, 2025) revenue <strong>$4.77B (+18.8% YoY)</strong> — Q4 FY2025 เป็น record quarter ที่ $1.35B CEO Gary Smith บอกว่า "position ของ Ciena ในฐานะ global leader ใน high-speed connectivity กับ expanding role ใน AI ecosystem" บ่งบอก thesis ชัดเจน: <strong>AI ต้องการ bandwidth — bandwidth ต้องการ Ciena</strong></p>
+      <div class="stat-grid">
+        <div class="stat-card orange">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$4.77B</div>
+          <div class="stat-sub">+18.8% YoY · Record full year</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">GAAP Net Income</div>
+          <div class="stat-value">$123M</div>
+          <div class="stat-sub">$0.85 diluted EPS</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-label">Non-GAAP Net Income</div>
+          <div class="stat-value">$384M</div>
+          <div class="stat-sub">$2.64 diluted EPS (+45% YoY)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Adjusted EBITDA</div>
+          <div class="stat-value">$637M</div>
+          <div class="stat-sub">+32% YoY from $481M</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">OCF</div>
+          <div class="stat-value">$806M</div>
+          <div class="stat-sub">+57% YoY from $515M</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">FY2026 Guidance</div>
+          <div class="stat-value">$5.7–6.1B</div>
+          <div class="stat-sub">+20–28% YoY</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1992</div>
+          <div class="tl-text"><strong>ก่อตั้งในฐานะ DWDM pioneer:</strong> Ciena ก่อตั้งใน Linthicum, Maryland เพื่อพัฒนา Dense Wavelength Division Multiplexing (DWDM) — technology ที่ส่งข้อมูลหลาย wavelength ผ่าน single fiber เพิ่ม capacity โดยไม่ต้องวาง fiber ใหม่</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1997</div>
+          <div class="tl-text"><strong>IPO และ Telecom Boom:</strong> Ciena เข้าตลาดหุ้นช่วง Dot-com boom ราคาพุ่งสูง Gary Smith join ในฐานะ VP International Sales</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2001–2002</div>
+          <div class="tl-text"><strong>Telecom Bust — Ciena เกือบล่มสลาย:</strong> Dot-com crash ทำให้ telecom capex พังทั้ง industry Ciena revenue ร่วงจากกว่า $1.5B ลงมาต่ำกว่า $200M Gary Smith รับตำแหน่ง CEO พาบริษัทรอดจากวิกฤต telecom bubble</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2010–2019</div>
+          <div class="tl-text"><strong>Rebuild + Acquisition spree:</strong> Ciena ขยาย portfolio ผ่าน acquisition (Nortel Ethernet line, Cyan Software ปี 2015 สำหรับ Blue Planet automation platform) กลายจาก hardware-only สู่ software+services company</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2021–2023</div>
+          <div class="tl-text"><strong>Supply chain crisis:</strong> COVID supply chain เป็น major drag — component shortages ทำให้ Ciena ไม่สามารถ fulfill orders ได้ทั้งหมด backlog สะสม ราคาหุ้นถูกกด แม้ demand underlying จะ strong</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024–2025</div>
+          <div class="tl-text"><strong>AI-driven bandwidth supercycle:</strong> Supply chain normalize + AI capex ระเบิด hyperscalers ลงทุนใน network infrastructure ทำให้ Ciena เข้าสู่ growth cycle ใหม่ FY2025 record $4.77B, FY2026 guidance $5.7–6.1B บอกว่า cycle นี้ยาวกว่าที่คาด</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <table class="track-table">
+        <thead>
+          <tr><th>ปีการเงิน (FY ends Oct/Nov)</th><th>Revenue</th><th>YoY Growth</th><th>GAAP Net Income</th><th>Non-GAAP EPS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>FY2021</td><td>$3.53B</td><td>+5%</td><td>$160M</td><td>$1.09</td></tr>
+          <tr><td>FY2022</td><td>$3.63B</td><td>+3%</td><td>$23M</td><td>$1.23</td></tr>
+          <tr><td>FY2023</td><td>$4.14B</td><td>+14%</td><td>$139M</td><td>$1.95</td></tr>
+          <tr><td>FY2024</td><td>$4.01B</td><td>−3%</td><td>$84M</td><td>$1.82</td></tr>
+          <tr class="highlight"><td>FY2025 ✦</td><td>$4.77B</td><td>+19%</td><td>$123M</td><td>$2.64</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: Ciena FY2025 Year-End Financial Results Press Release (December 11, 2025) · Fiscal year ends in late October/early November</p>
+      <div class="callout yellow">
+        <p><strong>สังเกต Pattern:</strong> Revenue Ciena ไม่ได้ smooth — FY2024 ลด 3% เพราะ customer order normalization หลังจาก supply chain overordering FY2022-23 นี่คือ characteristic ของ equipment cycle business ที่ต้องเข้าใจก่อนลงทุน — แต่ long-term trend คือ bandwidth demand เพิ่มแบบ exponential ซึ่ง underpin Ciena's secular growth</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Gary B. Smith</div>
+          <div class="boss-title">President &amp; CEO (ตั้งแต่ May 2001)</div>
+          <div>
+            <div class="boss-fact"><span class="label">สัญชาติ</span><span>British-American · เกิดที่ Birmingham, UK</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>MBA, Ashridge Management College (Hult International)</span></div>
+            <div class="boss-fact"><span class="label">ก่อน Ciena</span><span>VP Sales &amp; Marketing, Intelsat (1995–1997)</span></div>
+            <div class="boss-fact"><span class="label">Join Ciena</span><span>November 1997 ในฐานะ VP International Sales</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>May 2001 (25+ ปี)</span></div>
+            <div class="boss-fact"><span class="label">Public Service</span><span>Obama appointee ใน NSTAC 2011–2023</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Gary Smith เป็น <strong>CEO ที่อยู่กับบริษัทมา 25+ ปีผ่าน telecom bust ปี 2001 มาจนถึง AI era ปี 2025</strong> — เขาเริ่มต้นไม่ใช่นักวิศวกร แต่เป็น sales person ที่เล่นโทรศัพท์ตั้งแต่อายุ 16 ปีในลอนดอน สัญชาตญาณ commercial เป็น core strength ของ Gary</p>
+          <p style="margin-top:12px">ที่น่าประทับใจที่สุดคือ Gary ไม่หนีออกจาก Ciena ในช่วงที่บริษัท nearly bankrupt ปี 2001–2002 เขาเลือก rebuild อย่างทุลักทุเล ค่อยๆ diversify portfolio จาก pure DWDM hardware สู่ software+services platform ทำให้ Ciena อยู่รอดและเติบโตมาเป็น global leader ปัจจุบัน Smith เป็น longest-tenured CEO ใน telecom industry</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Ciena builds the plumbing of the internet</strong> — hardware (optical systems, routers, switches) และ software (Blue Planet automation platform) ที่ทำให้ข้อมูลวิ่งเร็วขึ้น ไกลขึ้น ถูกลง บน fiber optic networks ทั่วโลก</p>
+      <div class="callout orange">
+        <p><strong>Optical Networking (68% of revenue):</strong> Ciena's core — WaveLogic chipset เป็นเทคโนโลยีที่ encode/decode ข้อมูลบน optical wavelengths WaveLogic 6 (Gen 6) รองรับ 1.6 Terabits/sec บน single wavelength ซึ่งเป็น record ทำให้ hyperscaler สามารถส่งข้อมูลมากขึ้น 2x บน infrastructure เดิม</p>
+      </div>
+      <div class="callout navy">
+        <p><strong>Routing &amp; Switching (9% of revenue):</strong> Ciena ขยายจาก long-haul optical สู่ metro routing และ switching hardware สำหรับ data center interconnect (DCI) และ edge networking — growing 8% QoQ ใน Q4 FY2025</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Blue Planet Automation Software (2.4%):</strong> AI-driven network orchestration ที่ช่วย telecom operator manage networks automatically ยังเล็กแต่ strategic — หาก Blue Planet adoption เพิ่มขึ้น จะทำให้ Ciena มี software recurring revenue stream ที่ margin สูงกว่า hardware</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $4.77B แบ่งตาม Segment</h3>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">💡 Optical Networking</div><div class="rev-numbers"><strong>$3.25B</strong> · 68%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:68%;background:var(--cien-orange)"></div></div>
+          <div class="rev-note">WaveLogic-based optical systems สำหรับ long-haul และ submarine cables — core product, growing +23% YoY</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">🔀 Routing &amp; Switching</div><div class="rev-numbers"><strong>$430M</strong> · 9%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:9%;background:var(--cien-navy)"></div></div>
+          <div class="rev-note">Packet networking hardware สำหรับ metro, edge, DCI — growing +8% YoY</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">⚙️ Platform Software &amp; Services</div><div class="rev-numbers"><strong>$364M</strong> · 7.6%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:7.6%;background:var(--cien-blue)"></div></div>
+          <div class="rev-note">Software licenses และ support สำหรับ Ciena's platforms</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">🤖 Blue Planet Automation</div><div class="rev-numbers"><strong>$116M</strong> · 2.4%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:2.4%;background:#7c3aed"></div></div>
+          <div class="rev-note">AI-driven network orchestration software — growing +49% YoY, highest growth segment</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">🛠 Global Services</div><div class="rev-numbers"><strong>$614M</strong> · 12.9%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:12.9%;background:#059669"></div></div>
+          <div class="rev-note">Maintenance, implementation, consulting — recurring, higher margin than hardware</div>
+        </div>
+      </div>
+      <p><strong>Key insight:</strong> Ciena ยังเป็น hardware company เป็นหลัก (~77% ของ revenue จาก Networking Platforms) ทำให้ gross margin ต่ำกว่า software companies (~42-43%) แต่ Blue Planet และ services กำลัง shift mix ไปทิศทางที่ margin ดีขึ้น</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="callout orange">
+        <p><strong>WaveLogic Generational Moat:</strong> Ciena เป็น vertical integrator ที่ design WaveLogic DSP chips เอง — ทำให้มี technology advantage หลาย generations ล่วงหน้าจาก competitors ที่ depend on merchant silicon WaveLogic 6 (1.6T baud) เป็น world record ใน coherent optical ทำให้ hyperscalers เลือก Ciena เพราะ performance/cost ที่ดีกว่า</p>
+      </div>
+      <div class="callout navy">
+        <p><strong>AI Bandwidth Supercycle — Secular Tailwind:</strong> AI inference และ training ต้องการ bandwidth ระหว่าง GPU clusters, data centers, และ users อย่างมหาศาล hyperscalers กำลัง spend capex ระดับ $50–100B+ ต่อปีใน infrastructure ที่ significant portion ไปที่ optical networking — Ciena เป็น pick-and-shovel play ที่ชัดเจน</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Inside-the-DC Expansion:</strong> นอกจาก long-haul และ metro Ciena กำลัง expand เข้า "inside the data center" interconnect ผ่าน acquisition ของ Nubis Communications (Q4 FY2025 $231M) ซึ่งเชี่ยวชาญด้าน co-packaged optics สำหรับ AI GPU-to-GPU interconnect — เป็น NEW market ที่ใหญ่มากและ Ciena กำลัง position</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>FY2026 guidance $5.7–6.1B — management confident in multi-year growth</h4>
+        <p>Guidance กว้างแต่ midpoint +24% YoY ซึ่ง exceptional สำหรับ hardware company Non-GAAP operating margin target 17% ±1% สำหรับ FY2026 (+570bps vs FY2025 11.2%) แสดงว่า operating leverage กำลัง kick in</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Nubis acquisition — เปิด AI inside-DC market</h4>
+        <p>Nubis Communications deal ($231M) ซื้อ expertise ใน co-packaged optics (CPO) สำหรับ AI GPU clusters inside data center ซึ่งเป็น market ที่จะใหญ่มากใน 2-3 ปีข้างหน้า Ciena เข้า positioning ก่อน market mature</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Customer concentration — 2 customers คิดเป็น 28.4% ของ revenue</h4>
+        <p>FY2025 สองลูกค้า >10% รวมกัน 28.4% ของ revenue (น่าจะเป็น AT&amp;T และ hyperscaler) ถ้า hyperscaler ใดหยุด order หรือ build-in-house network Ciena จะ feeling pain ทันที</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Equipment cycle — demand อาจ lumpy</h4>
+        <p>FY2024 revenue ลด 3% หลังจาก hyperscaler "digestion period" ใน FY2022–23 pattern นี้สามารถเกิดซ้ำได้ถ้า AI capex slowdown หรือ customers over-order ปัจจุบัน Q4 FY2025 backlog Q1 FY2026 guidance ดูเหมือนว่า cycle ยังไม่หมด</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">💡</div>
+          <div>
+            <div class="comp-segment">Coherent Optical Networking Equipment</div>
+            <div class="comp-pos dominant">Market Leader — ~30-35% global share</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Ciena (CIEN) — WaveLogic vertical integration</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:33%;background:var(--cien-orange)"></div></div>
+            <div class="comp-detail">~30-35% global optical networking market share ความได้เปรียบหลักคือ WaveLogic DSP chip ที่ design เอง ทำให้ประสิทธิภาพและ update cycle เร็วกว่า vendor ที่ใช้ merchant silicon</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Nokia (NOK) — Photonic Service Engine</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:#1e40af"></div></div>
+            <div class="comp-detail">Nokia Optical Networks เป็น strong #2 — PSE chipset ใกล้เคียง WaveLogic แต่ Nokia ยัง integrate กับ Nokia larger networking portfolio ซึ่งทั้ง advantage และ distraction</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Infinera (กำลัง merge กับ Nokia)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:10%;background:#7c3aed"></div></div>
+            <div class="comp-detail">Infinera ถูก Nokia acquire ปี 2024 รวม optical networking assets เข้ากัน ทำให้ Nokia/Infinera combined เป็น serious competitor ต่อ Ciena</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Huawei (non-US markets only)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#c00"></div></div>
+            <div class="comp-detail">Huawei dominant ในตลาด China และ emerging markets แต่ถูก block จาก US, UK, EU, Australia สำหรับ critical infrastructure ทำให้ Ciena ได้ประโยชน์ใน western markets ที่ shift away from Huawei</div>
+          </div>
+        </div>
+        <div class="comp-verdict orange">Ciena เป็น #1 ใน western optical networking markets WaveLogic DSP advantage ทำให้ maintain market share ได้ แม้ Nokia+Infinera combined จะเป็น #2 ที่แข็งแกร่งขึ้น Huawei exclusion จาก US/EU เป็น structural tailwind ที่ชัดเจน</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Mission: Capture re-rating before consensus. 50–100% upside in 2–3 years. Enter early, exit when thesis plays out or fails. High conviction, high velocity.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">CIEN เป็น Wave เพราะ <strong>thesis ชัดเจน: AI capex supercycle → bandwidth explosion → optical networking spending spike ใน 2-3 ปีข้างหน้า</strong> แต่หลังจาก cycle หมด revenue จะ normalize ลงอีกครั้ง ไม่ใช่ compounding machine แบบ Core — เป็น re-rating play ที่ต้องเข้าก่อนและออกตรงเวลา</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">🌊</div>
+              <div class="trait-name">AI Bandwidth Wave</div>
+              <div class="trait-desc">hyperscaler AI capex → optical networking spend Ciena เป็นเส้นทางตรงไปยัง AI infrastructure theme โดยไม่ต้องเล่น NVIDIA ที่ valuations สูง</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🔧</div>
+              <div class="trait-name">WaveLogic Technology Moat</div>
+              <div class="trait-desc">DSP chip ที่ design เอง ทำให้ Ciena lead performance curve และ hyperscalers prefer Ciena ในช่วง bandwidth demand spike</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">📊</div>
+              <div class="trait-name">Re-rating Thesis</div>
+              <div class="trait-desc">ตลาดเพิ่งเริ่ม price in AI bandwidth demand FY2026 guidance ดีกว่าที่ตลาดคาด ถ้า earnings beat ราคาหุ้นจะ re-rate</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🚫</div>
+              <div class="trait-name">Huawei Structural Tailwind</div>
+              <div class="trait-desc">EU/US ban บน Huawei telecom gear ทำให้ Ciena ได้ market share ใน western deployments ที่ถาวร — structural, ไม่ใช่แค่ cyclical</div>
+            </div>
+          </div>
+          <div class="exit-box">
+            <h4>🚪 Exit Thesis — ออกเมื่อ:</h4>
+            <p>AI capex slowdown + hyperscaler network orders pause ลง · ถ้า revenue guidance FY2027 ลดลงจาก FY2026 peak บอกว่า cycle หมดแล้ว · ถ้า Nokia/Infinera เริ่ม take meaningful share จาก Ciena ใน hyperscaler accounts · ถ้า hyperscalers เริ่ม build in-house optical ขนาดใหญ่แทนที่จะซื้อ Ciena</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — CIEN / Ciena Corporation · Source: Ciena FY2025 Year-End Financial Results (December 11, 2025)</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="cien-dot">
+      <span style="background:var(--cien-dark)"></span>
+      <span style="background:var(--cien-orange)"></span>
+      <span style="background:var(--cien-blue)"></span>
+      <span style="background:var(--cien-navy)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

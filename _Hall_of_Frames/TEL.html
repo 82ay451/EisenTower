@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEL — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --tel-blue:      #0055A5;
+      --tel-dark:      #00336B;
+      --tel-light:     #4D8FD4;
+      --tel-blue-soft: #E5EFF8;
+      --accent:         #0055A5;
+      --accent-soft:    #E5EFF8;
+      --green:          #34A853;
+      --green-soft:     #e6f4ea;
+      --red:            #EA4335;
+      --red-soft:       #fce8e6;
+      --yellow:         #FBBC04;
+      --yellow-soft:    #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg); color: var(--text-primary);
+      line-height: 1.7; font-size: 16px;
+    }
+    .doc-header {
+      background: var(--surface);
+      border-bottom: 3px solid transparent;
+      border-image: linear-gradient(90deg,
+        var(--tel-blue) 25%, var(--tel-light) 25% 50%,
+        var(--tel-dark) 50% 75%, var(--tel-blue-soft) 75%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); background: var(--tag-bg);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--tel-blue); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%;
+      font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      text-decoration: none; transition: all 0.15s; margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; user-select: none;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon {
+      flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+      background: var(--tag-bg); display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary);
+    }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-transport { background: var(--tel-blue); }
+    .bar-industrial { background: var(--tel-light); }
+    .bar-comms      { background: #34A853; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--tel-blue-soft); border-color: var(--tel-blue); }
+    .callout.green  { background: var(--green-soft);    border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);   border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);      border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--tel-blue), var(--tel-light)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--tel-blue); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--tel-blue); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--tel-blue-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);     color: var(--green); }
+    .comp-pos.challenger { background: var(--tel-blue-soft);  color: var(--tel-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);    color: #8a6000; }
+    .comp-pos.trailing   { background: var(--red-soft);       color: #b71c1c; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--tel-blue); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--tel-blue-soft); border-color: var(--tel-blue); color: var(--tel-dark); }
+    .comp-verdict.green  { background: var(--green-soft);    border-color: var(--green);    color: #1e6e3a; }
+    .comp-verdict.yellow { background: var(--yellow-soft);   border-color: var(--yellow);   color: #8a6000; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--tel-blue-soft); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: var(--tel-dark); margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-core { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .tel-fit { background: var(--green-soft); border: 1px solid #c3e6cb; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .tel-fit h4 { font-size: 15px; font-weight: 700; color: #1e6e3a; margin-bottom: 10px; }
+    .tel-fit p { font-size: 15px; }
+    #back-to-top {
+      position: fixed; bottom: 32px; right: 32px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--tel-blue); color: white;
+      border: none; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,85,165,0.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s; z-index: 200;
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--tel-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">TEL</span> — TE Connectivity Ltd.</h1>
+    <div class="doc-subtitle">Understanding TE Connectivity as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NYSE: TEL</span>
+      <span>🏛 Founded 2007 (Tyco spin-off)</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TE Connectivity คือ <strong>ผู้นำโลกด้าน connectivity และ sensor solutions</strong> — บริษัทที่ทำ connectors, cables, sensors และ antenna สำหรับอุตสาหกรรมหลักๆ ทั่วโลก ไม่ว่าจะเป็น รถยนต์ (โดยเฉพาะ EV), ระบบอุตสาหกรรม, data center, aerospace และ defense</p>
+      <p>TE Connectivity เป็น "hidden enabler" — ทุกคนรู้จัก Tesla, Boeing, Siemens แต่ไม่รู้ว่า TE Connectivity คือผู้ผลิต connectors, sensors และ wiring harnesses ที่อยู่ใน products เหล่านั้น เป็น <strong>industrial B2B company ที่ไม่ consumer-facing แต่ irreplaceable</strong> ในห่วงโซ่การผลิต</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2024</div>
+          <div class="stat-value">$15.8B</div>
+          <div class="stat-sub">ปีงบ ก.ย. 2024</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Adj. EBITDA Margin</div>
+          <div class="stat-value">~20%</div>
+          <div class="stat-sub">Consistent margin ทุกปี</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Adj. EPS FY2024</div>
+          <div class="stat-value">$7.30</div>
+          <div class="stat-sub">Non-GAAP — stable growth</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">FCF Conversion</div>
+          <div class="stat-value">&gt;100%</div>
+          <div class="stat-sub">ของ Net Income — สม่ำเสมอ</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Dividend</div>
+          <div class="stat-value">$2.52</div>
+          <div class="stat-sub">/share annualized (FY2024)</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">89,000</div>
+          <div class="stat-sub">ทั่วโลก 150+ ประเทศ</div>
+        </div>
+      </div>
+      <p>สิ่งที่ทำให้ TEL น่าสนใจในฐานะ Core holding คือ <strong>ความสม่ำเสมอ</strong> — margin ไม่แกว่ง, FCF conversion สูง, dividend grow ทุกปี และ exposure ไปยัง megatrends ที่สำคัญ (EV, AI infrastructure, industrial automation) โดยไม่มี binary risk แบบ pure-play</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TE Connectivity ไม่ได้ก่อตั้งขึ้นมาใหม่ แต่เป็น heritage ของ AMP Incorporated — บริษัท connector ที่เก่าแก่ที่สุดในโลก และ evolution ผ่าน M&A หลายรอบ</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1941</div>
+          <div class="tl-text"><strong>AMP Incorporated ก่อตั้ง:</strong> Aircraft Marine Products ก่อตั้งเพื่อผลิต electrical connectors สำหรับ aviation และ military ในช่วง WW2 นี่คือ heritage ของ TE Connectivity ที่มีอายุกว่า 80 ปี</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1999</div>
+          <div class="tl-text"><strong>AMP ถูก Tyco International Acquire:</strong> Tyco ซื้อ AMP ด้วยมูลค่า $11B เพื่อ create electronics conglomerate รวมกับธุรกิจ security, healthcare, fire protection ของ Tyco</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2007</div>
+          <div class="tl-text"><strong>Tyco Electronics Spin-off — TE Connectivity เกิด:</strong> Tyco International แยกธุรกิจออกเป็น 3 บริษัท Tyco Electronics (ต่อมาเปลี่ยนชื่อเป็น TE Connectivity ในปี 2011) เป็นหนึ่งในนั้น List บน NYSE ด้วยตัวเอง</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2011</div>
+          <div class="tl-text"><strong>เปลี่ยนชื่อเป็น TE Connectivity:</strong> Rebranding เพื่อสะท้อน mission ที่ชัดขึ้น — "connecting our world" ย้าย HQ legal domicile ไป Schaffhausen, Switzerland (ข้อได้เปรียบด้านภาษี) แต่ operational HQ ยังอยู่ Pennsylvania</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2011–2020</div>
+          <div class="tl-text"><strong>Era of Portfolio Rationalization:</strong> Terrence Curtin ขึ้นเป็น CEO ในปี 2017 focus ขาย business ที่ไม่ใช่ core (network solutions, telecom, subsea) เพื่อ concentrate ใน Transportation, Industrial และ Communications</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2020–2024</div>
+          <div class="tl-text"><strong>EV Revolution + AI Data Center Boom:</strong> TE เป็น prime beneficiary ของทั้งสองกระแส — EV ต้องการ connectors 4x มากกว่า ICE vehicle, AI data centers ต้องการ high-speed cables และ connectors ที่ TE dominate ใน high-end segment</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>Revenue สู่ $16B+ + AI Tailwind ชัดขึ้น:</strong> Communications Solutions segment grow เร็วมากจาก AI data center demand ขณะที่ automotive connector content per EV ยังเพิ่มขึ้น TEL trade ที่ premium ใน industrial sector</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>TE Connectivity มีความสม่ำเสมอที่หายาก</strong> — ไม่ใช่ hypergrowth แต่เป็น reliable compounder ที่เติบโต mid-single digit ถึง low-double digit ทุกปี พร้อม margin expansion ต่อเนื่อง และ FCF generation สูง</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปีงบ (ก.ย.)</th>
+            <th>Revenue</th>
+            <th>YoY</th>
+            <th>Adj. EBITDA Margin</th>
+            <th>Adj. EPS</th>
+            <th>Dividend/Share</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>FY2019</td><td>$13.9B</td><td>-5%</td><td>19.8%</td><td>$5.82</td><td>$1.76</td></tr>
+          <tr><td>FY2020</td><td>$12.2B</td><td>-12%</td><td>19.2%</td><td>$4.79</td><td>$1.84</td></tr>
+          <tr><td>FY2021</td><td>$14.9B</td><td>+22%</td><td>20.7%</td><td>$6.53</td><td>$2.00</td></tr>
+          <tr><td>FY2022</td><td>$15.9B</td><td>+7%</td><td>21.2%</td><td>$7.57</td><td>$2.20</td></tr>
+          <tr><td>FY2023</td><td>$15.7B</td><td>-1%</td><td>20.4%</td><td>$7.05</td><td>$2.40</td></tr>
+          <tr class="highlight"><td>FY2024 ✦</td><td>$15.8B</td><td>+1%</td><td>~20.5%</td><td>$7.30</td><td>$2.52</td></tr>
+        </tbody>
+      </table>
+      <p>แม้ revenue ทรงตัวในช่วง FY2023-2024 (เพราะ auto market slowdown และ inventory correction ในภาคอุตสาหกรรม) <strong>margin ยังคงสม่ำเสมอมากที่ 20%+ และ EPS ยังเติบโต</strong> เพราะ share buyback และ cost discipline การจ่าย dividend ต่อเนื่องทุกปีสะท้อน financial discipline ที่แท้จริง</p>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Dividend Growth</div>
+          <div class="stat-value">+43%</div>
+          <div class="stat-sub">FY2019 → FY2024 (5 ปี)</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Adj. EPS Growth</div>
+          <div class="stat-value">+25%</div>
+          <div class="stat-sub">FY2019 → FY2024</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Margin Stability</div>
+          <div class="stat-value">20%+</div>
+          <div class="stat-sub">EBITDA margin ทุก 6 ปีที่ผ่านมา</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Terrence Curtin</div>
+          <div class="boss-title">CEO, TE Connectivity Ltd. (ตั้งแต่ มีนาคม 2017)</div>
+          <div>
+            <div class="boss-fact"><span class="label">เริ่มงาน TE</span><span>2001 (กว่า 23 ปี)</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>มีนาคม 2017</span></div>
+            <div class="boss-fact"><span class="label">Background</span><span>Finance / CFO roles ภายใน TE</span></div>
+            <div class="boss-fact"><span class="label">เชี่ยวชาญ</span><span>Capital allocation, Portfolio mgmt</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Terrence Curtin ไม่ใช่ rock-star CEO แต่เป็น <strong>disciplined capital allocator ที่ excellent</strong> — เข้า TE ในปี 2001 เคยเป็น CFO ก่อนขึ้นเป็น CEO เขาเข้าใจธุรกิจ deep และรู้ว่าเงินแต่ละดอลลาร์ควรไปอยู่ที่ไหน</p>
+          <p style="margin-top:12px">ตั้งแต่ Curtin เป็น CEO สิ่งที่ชัดเจนมากคือ <strong>portfolio rationalization</strong> — ขาย non-core businesses ออกอย่างต่อเนื่อง เพื่อ concentrate ใน high-margin, high-growth segments เช่น EV connectors, AI data center และ defense/aerospace</p>
+          <p style="margin-top:12px">Curtin มักพูดว่า "content per vehicle" ใน EV จะเพิ่มขึ้น 4x จาก ICE vehicle — TE เป็นผู้นำใน EV connector content นี่คือ long-cycle tailwind ที่เขา position TE ไว้รับประโยชน์ชัดเจนมาก</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>TE Connectivity ทำ connectors, sensors และ cables</strong> — ฟังดู simple แต่ products เหล่านี้คือ critical components ที่ทุกอุตสาหกรรมต้องการ TE เป็น one of few companies ที่มี engineering depth และ scale ในการผลิต specialty connectors ที่มีพัน SKU และ qualification ใช้หลายปี</p>
+      <div class="callout blue">
+        <p><strong>Transportation Solutions (55%):</strong> Connectors, sensors, wiring harnesses ใน automotive โดยเฉพาะ EV ที่ใช้ TE products มากกว่า ICE รถธรรมดา 4x — high-voltage connectors, charging systems, battery management sensors ทุก OEM ใหญ่ใช้ TE</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Industrial Solutions (26%):</strong> Connectors สำหรับ factory automation, robots, energy systems, HVAC, medical devices ตลาดนี้ benefit จาก industrial automation wave ที่กำลัง accelerate ทั่วโลก</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Communications Solutions (19%):</strong> High-speed cables, fiber connectors, antennas สำหรับ data centers, telecom, cloud infrastructure นี่คือ segment ที่ grow เร็วที่สุดตอนนี้เพราะ AI data center demand กระโดดขึ้น</p>
+      </div>
+      <p>TE Connectivity ไม่ใช่ software company — เป็น <strong>deep engineering + manufacturing company</strong> ที่ competitive moat มาจาก customer qualification cycle ที่ยาว (3-7 ปี), engineering customization ที่ deep, และ global manufacturing footprint ที่ลูกค้า global จำเป็นต้องใช้</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>TE ขาย engineered components ให้ OEMs และ system integrators</strong> — ราคาต่อ unit อาจไม่สูง แต่ volume มหาศาล และ margin ดีเพราะ engineering IP และ sole-source positions ใน critical applications</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2024 — $15.8B แบ่งตาม Segment</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🚗 Transportation Solutions</div>
+            <div class="rev-numbers"><strong>$8.7B</strong> · 55%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-transport" style="width:55%"></div></div>
+          <div class="rev-note">Automotive connectors, sensors, harnesses · EV content เพิ่มขึ้นต่อเนื่อง 4x vs ICE · ลูกค้าทุก auto OEM ใหญ่ · Adj. EBIT margin ~20%</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🏭 Industrial Solutions</div>
+            <div class="rev-numbers"><strong>$4.1B</strong> · 26%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-industrial" style="width:26%"></div></div>
+          <div class="rev-note">Factory automation, energy systems, medical, aerospace & defense · Diversified customers ทั่วโลก · เติบโต mid-single digit สม่ำเสมอ</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">📡 Communications Solutions</div>
+            <div class="rev-numbers"><strong>$3.0B</strong> · 19%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-comms" style="width:19%"></div></div>
+          <div class="rev-note">AI data center connectivity, telecom fiber, antenna systems · Fastest growing segment FY2025 เนื่องจาก hyperscaler capex surge · 400G/800G high-speed connectors demand</div>
+        </div>
+      </div>
+      <p>โมเดลธุรกิจ TE อยู่ที่ <strong>"content per unit"</strong> — ทุก EV ที่ออกมาในโลกมี TE connector มากขึ้น ทุก data center ที่ build มี TE cables มากขึ้น volume เพิ่มขึ้นตาม unit shipped โดยที่ engineering team ไม่ต้องทำงานมากขึ้น — นี่คือ operating leverage ที่แท้จริง</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TE Connectivity compound ผ่าน <strong>"content per unit increasing over time"</strong> — ไม่ใช่ hypergrowth แต่เป็น steady compounding ที่มีหลาย levers</p>
+      <div class="callout blue">
+        <p><strong>EV Content Growth:</strong> รถ ICE ทั่วไปมี TE content ~$60-80 ต่อคัน รถ EV มี TE content ~$250-300 ต่อคัน — เพิ่มขึ้น 4x ทุกครั้งที่ market shift จาก ICE → EV TE ได้รับ upside โดยอัตโนมัติ ไม่ต้องทำอะไรพิเศษ</p>
+      </div>
+      <div class="callout green">
+        <p><strong>AI Data Center Tailwind:</strong> ทุก GPU cluster ที่ build ต้องมี high-speed interconnects TE เป็นผู้นำใน 400G/800G copper connectors และ active optical cables สำหรับ data centers data center capex ที่เพิ่มขึ้นสู่ $300B+ ทั่วโลก TE ได้ประโยชน์โดยตรง</p>
+      </div>
+      <div class="callout blue">
+        <p><strong>Capital Return Program:</strong> TE buyback หุ้นสม่ำเสมอ + dividend ที่เพิ่มทุกปี ทำให้ EPS growth เร็วกว่า revenue growth โดยธรรมชาติ บวกกับ operating leverage ทำให้ long-term shareholder return ดีกว่าที่ revenue growth rate บอก</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Buyback + Div</div>
+          <div class="stat-value">~$2B+</div>
+          <div class="stat-sub">Capital return ต่อปี</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">EV Content/Car</div>
+          <div class="stat-value">4x</div>
+          <div class="stat-sub">vs ICE vehicles — structural tailwind</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">FCF Margin</div>
+          <div class="stat-value">~15%</div>
+          <div class="stat-sub">ของ revenue — strong conversion</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TE อยู่ใน <strong>strong positioning</strong> — หลังผ่านช่วง inventory correction ในปี 2023-2024 กำลัง recover ขณะที่ AI data center tailwind เพิ่งเริ่มต้น</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>AI Data Center Connector Demand — Accelerating</h4>
+        <p>Communications Solutions segment กำลัง accelerate เพราะ hyperscaler AI buildout ที่ scale ขึ้นอย่างรวดเร็ว TE มี sole-source positions ใน many 400G/800G connector products ที่ไม่มีใครอื่นทำได้ในระดับ quality เดียวกัน</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>EV Content Structural Growth ยังอยู่</h4>
+        <p>แม้ EV adoption slower กว่าที่ market คาดในบางภูมิภาค แต่ TE ยังได้ประโยชน์ทุกครั้งที่ EV market share เพิ่มขึ้น ไม่ว่าจะช้าหรือเร็ว เพราะ content per car สูงกว่า ICE 4x อย่างสม่ำเสมอ</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Industrial Automation Recovery</h4>
+        <p>หลังช่วง inventory destocking ในปี 2023-2024 ตลาด industrial automation กำลัง recover ทั่วโลก TE เป็น key supplier ให้ automation equipment makers ทั้ง Rockwell, Siemens, ABB</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Automotive Market ยังมีความไม่แน่นอน</h4>
+        <p>Transportation segment เป็น 55% ของ revenue แต่ auto market มี headwinds จาก interest rates สูง, EV adoption เร็วน้อยกว่าคาดในบาง market, และ geopolitical tariff risks ที่ supply chain ยานยนต์ global ได้รับผลกระทบ</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>FX Risk — European Operations ใหญ่</h4>
+        <p>TE มี operation ใหญ่ในยุโรปและ reporting ใน USD ทำให้ EUR/USD movement กระทบ revenue และ EPS อย่างมีนัยสำคัญ ใน FY2023-2024 FX headwind กระทบ revenue ประมาณ $200-300M</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>TE แข่งในตลาด connectivity components ซึ่งมี few global players ที่มี scale และ engineering depth เพียงพอที่จะเป็น tier-1 supplier ให้ automotive OEMs และ hyperscalers</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🔌</div>
+          <div>
+            <div class="comp-segment">Global Connector &amp; Sensor Leaders</div>
+            <div class="comp-pos dominant">Market Leader — #1 หรือ #2 ทุก segment</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">TE Connectivity (TEL)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:28%;background:var(--tel-blue)"></div></div>
+            <div class="comp-detail">~28% global connector market share · Largest connector company ในโลก by revenue · Strong in auto, industrial, AI data center · $15.8B revenue</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Amphenol (APH)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:24%;background:#E07B00"></div></div>
+            <div class="comp-detail">~24% market share · Direct competitor ใน almost every segment · VC management model · เติบโตเร็วกว่า TEL แต่ valuation premium สูงกว่ามาก</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Molex (Koch Industries)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:12%;background:#2E86AB"></div></div>
+            <div class="comp-detail">Private (Koch) · Strong in consumer electronics และ data center · Not listed แต่ significant competitor</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Aptiv (APTV)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:10%;background:#CE2939"></div></div>
+            <div class="comp-detail">Automotive wiring harness specialist · Pure-play automotive · TEL compete โดยตรงใน auto connector แต่ TEL มีระดับ diversity มากกว่า</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">TEL และ Amphenol เป็น dominant duopoly ใน high-end connectivity TE เป็น #1 by revenue แต่ APH มี higher growth rate และ higher valuation multiple ทั้งคู่ benefit จาก megatrends เดียวกัน</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, var(--tel-blue) 0%, var(--tel-dark) 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Core คือ compounders ที่พิสูจน์แล้ว — business ที่ดี, moat แข็ง, FCF สม่ำเสมอ, grow ไปพร้อมกับ economy. TE Connectivity เป็น definition ของ Core.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">TEL เป็น <strong>Core ที่สมบูรณ์แบบ</strong> — ไม่ exciting แต่ compounder ที่ reliable มาก margin สม่ำเสมอ dividend grow ทุกปี และมี exposure ไปยัง megatrends ที่ใหญ่ (EV, AI infra, industrial automation) โดยไม่มี binary risk</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🔌</div>
+              <div class="trait-name">Irreplaceable B2B Supplier</div>
+              <div class="trait-desc">Connector qualification cycle 3-7 ปี — เมื่อ TE เป็น supplier แล้วยากมากที่จะถูกแทนที่ ทำให้ revenue sticky และ predictable</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">📈</div>
+              <div class="trait-name">EV + AI Tailwind โดยอัตโนมัติ</div>
+              <div class="trait-desc">ทุก EV ที่ผลิตเพิ่ม = TE content เพิ่ม 4x ทุก GPU cluster ที่ build = TE high-speed connectors เพิ่ม growth ฝังอยู่ใน macro trends</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">FCF &gt;100% Conversion</div>
+              <div class="trait-desc">ทำ FCF ได้มากกว่า Net Income ทุกปี — disciplined capital allocation buyback + dividend growth ทุกปีโดยไม่ขาด</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🌍</div>
+              <div class="trait-name">Global Scale Moat</div>
+              <div class="trait-desc">Operations ใน 150+ ประเทศ ทำให้ serve global OEMs ได้ทุกที่ที่ they build competitors สร้าง scale นี้ไม่ได้ง่ายๆ</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Core ≠ อะไร</strong></p>
+          <div class="not-core">
+            <span class="not-tag">✗ ไม่ใช่ hypergrowth — mid-single digit organic growth</span>
+            <span class="not-tag">✗ ไม่ใช่ software margin — 20% EBITDA ไม่ใช่ 40%+</span>
+            <span class="not-tag">✗ ไม่ใช่ consumer brand</span>
+          </div>
+          <div class="tel-fit">
+            <h4>✅ Verdict: TEL → Core</h4>
+            <p>TEL เป็น Core ที่ดีเยี่ยม — เป็น reliable compounder ที่ generate FCF สม่ำเสมอ grow dividend ทุกปี และ benefit จาก EV + AI megatrends โดยไม่ต้อง take binary risk เหมือน pure EV หรือ pure AI plays valuation ปัจจุบัน (~18-20x forward P/E) สมเหตุสมผลสำหรับ quality ที่ได้ ถือระยะยาวและ collect dividend ไปพร้อมกัน</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — TEL / TE Connectivity Ltd. · Source: FY2024 Annual Report (Nov 2024) · Investor Presentations · Public Sources</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--tel-blue)"></span>
+      <span style="background:var(--tel-light)"></span>
+      <span style="background:var(--tel-dark)"></span>
+      <span style="background:var(--tel-blue-soft)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

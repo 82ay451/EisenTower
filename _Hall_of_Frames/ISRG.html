@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ISRG — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --isrg-teal:  #009BA5;
+      --isrg-dark:  #0A1E2E;
+      --isrg-navy:  #00305C;
+      --isrg-green: #00796B;
+      --isrg-teal-soft:  #e0f6f7;
+      --isrg-navy-soft:  #e0eaff;
+      --accent:      var(--isrg-teal);
+      --accent-soft: var(--isrg-teal-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--isrg-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--isrg-teal) 30%, var(--isrg-green) 30% 60%, var(--isrg-navy) 60% 80%, var(--isrg-dark) 80%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-isrg { color: #4dd4da; }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--isrg-dark); border-bottom: 1px solid #0e2a3e; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(0,155,165,0.2); color: var(--isrg-teal); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--isrg-teal); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--isrg-teal-soft); color: var(--isrg-teal); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.teal  { border-left: 3px solid var(--isrg-teal); }
+    .stat-card.navy  { border-left: 3px solid var(--isrg-navy); }
+    .stat-card.green { border-left: 3px solid var(--green); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.teal  { background: var(--isrg-teal-soft); border-color: var(--isrg-teal); }
+    .callout.navy  { background: var(--isrg-navy-soft); border-color: var(--isrg-navy); }
+    .callout.green { background: var(--green-soft);     border-color: var(--green); }
+    .callout.dark  { background: #e8edf5;               border-color: var(--isrg-dark); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--isrg-teal), var(--isrg-navy)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--isrg-teal); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--isrg-teal); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--isrg-teal-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #155c38; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--isrg-teal-soft); color: var(--isrg-teal); }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--isrg-teal); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.teal { background: var(--isrg-teal-soft); border-color: var(--isrg-teal); color: #005860; }
+    .comp-verdict.green { background: var(--green-soft); border-color: var(--green); color: #155c38; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--isrg-dark) 0%, #0d2d42 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--isrg-teal-soft); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: #005860; margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .fit-box { background: var(--green-soft); border: 1px solid #a8d8bc; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #155c38; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--isrg-teal); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,155,165,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--isrg-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .isrg-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .isrg-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-isrg">ISRG</span> — Intuitive Surgical, Inc.</h1>
+    <div class="doc-subtitle">Understanding Intuitive Surgical as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NASDAQ: ISRG</span>
+      <span>🏛 Founded 1995 · Sunnyvale, California</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Intuitive Surgical คือ <strong>ผู้สร้างระบบผ่าตัดหุ่นยนต์ที่ dominant ที่สุดในโลก</strong> — ผ่าน da Vinci Surgical System ซึ่งเป็น robotic surgery platform ที่ surgeon ใช้ควบคุมจาก console ขณะที่ robot arms ทำการผ่าตัด minimally invasive ความแม่นยำสูงกว่า human hand อย่างมีนัยสำคัญ</p>
+      <p>FY2025 revenue <strong>$10.065B (+20.5% YoY)</strong> procedures grew 19% — และ <strong>installed base ขยายเป็น 11,106 ระบบทั่วโลก (+12% YoY)</strong> business model เป็น classic razor-blade: ขาย system ครั้งเดียว แต่ทำเงินจาก instruments/accessories ทุก procedure ตลอดชีวิตของ system</p>
+      <div class="stat-grid">
+        <div class="stat-card teal">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$10.1B</div>
+          <div class="stat-sub">+20.5% YoY</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">GAAP Net Income</div>
+          <div class="stat-value">$2.86B</div>
+          <div class="stat-sub">Net margin ~28%</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-label">Installed Base</div>
+          <div class="stat-value">11,106</div>
+          <div class="stat-sub">da Vinci systems · +12% YoY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Procedure Growth</div>
+          <div class="stat-value">+19%</div>
+          <div class="stat-sub">da Vinci + Ion combined</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">da Vinci 5 Placed FY2025</div>
+          <div class="stat-value">870</div>
+          <div class="stat-sub">147→180→240→303 per quarter</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">~67%</div>
+          <div class="stat-sub">Non-GAAP FY2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1995</div>
+          <div class="tl-text"><strong>ก่อตั้งจาก SRI International technology:</strong> Intuitive Surgical ก่อตั้งโดย Frederic Moll, Robert Younge และ John Freund โดยใช้ foundational robotic surgery technology จาก SRI International (Stanford Research Institute) ที่พัฒนาสำหรับ military/remote surgery applications</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1999</div>
+          <div class="tl-text"><strong>IPO + da Vinci ได้รับ FDA approval:</strong> Intuitive เข้าตลาดหุ้นและ FDA approve da Vinci Surgical System สำหรับ laparoscopic surgery — เป็น first robotic surgery system ที่ FDA approve สำหรับ general laparoscopic procedures</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2000s</div>
+          <div class="tl-text"><strong>Prostatectomy adoption:</strong> Robotic-assisted radical prostatectomy (RARP) กลายเป็น standard of care — surgeon เลิกทำ open prostatectomy หัน robotic แทนเกือบ 100% ใน US ทำให้ installed base growth ขึ้นอย่างรวดเร็ว</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2010</div>
+          <div class="tl-text"><strong>Gary Guthart ขึ้นเป็น CEO:</strong> Guthart (join 1996, วิศวกรคนแรก) ขึ้นเป็น CEO — นำ Intuitive ขยายจาก urology สู่ gynecology, colorectal, thoracic surgery</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019</div>
+          <div class="tl-text"><strong>Ion bronchoscopy launch:</strong> Intuitive launch Ion endoluminal system สำหรับ lung biopsy — robot-guided catheter เข้าไปใน lung airways ทำ biopsy ด้วยความแม่นยำสูง เป็นการ expand จาก laparoscopic สู่ endoluminal surgery</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>da Vinci 5 launch — next generation:</strong> da Vinci 5 เป็น significant upgrade จาก da Vinci Xi ด้วย force feedback (haptic sensation), สูงกว่า compute power, better imaging FY2025 placement 870 ระบบ growing quarter over quarter</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">July 2025</div>
+          <div class="tl-text"><strong>Dave Rosa กลายเป็น CEO:</strong> Gary Guthart ขึ้นเป็น Executive Chair Dave Rosa (engineer, founder ของ endoluminal groups, hold multiple patents) รับตำแหน่ง CEO ต่อ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <table class="track-table">
+        <thead>
+          <tr><th>ปี</th><th>Revenue</th><th>Procedure Growth</th><th>GAAP Net Income</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2021</td><td>$5.71B</td><td>+28%</td><td>$1.70B</td></tr>
+          <tr><td>2022</td><td>$6.22B</td><td>+18%</td><td>$1.32B</td></tr>
+          <tr><td>2023</td><td>$7.12B</td><td>+22%</td><td>$1.80B</td></tr>
+          <tr><td>2024</td><td>$8.35B</td><td>+17%</td><td>$2.26B</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$10.07B</td><td>+19%</td><td>$2.86B</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: Intuitive Surgical FY2025 Full Year Results (January 2026) · Procedure growth = worldwide da Vinci + Ion combined</p>
+      <div class="stat-grid">
+        <div class="stat-card teal">
+          <div class="stat-label">Revenue CAGR 2021–2025</div>
+          <div class="stat-value">~15%</div>
+          <div class="stat-sub">$5.7B → $10.1B</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Net Income CAGR</div>
+          <div class="stat-value">~14%</div>
+          <div class="stat-sub">$1.70B → $2.86B</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">Procedure Growth Avg</div>
+          <div class="stat-value">~21%</div>
+          <div class="stat-sub">5-year average annual growth</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Dave Rosa</div>
+          <div class="boss-title">Chief Executive Officer (ตั้งแต่ July 1, 2025)</div>
+          <div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>Engineer by training · Multiple patents in robotic surgery and endoluminal systems</span></div>
+            <div class="boss-fact"><span class="label">ก่อน CEO</span><span>Founder ของ Intuitive's clinical engineering and endoluminal groups · Led da Vinci Single Port + Ion development</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>July 1, 2025</span></div>
+          </div>
+          <div style="margin-top:20px">
+            <div class="boss-name" style="font-size:16px">Gary S. Guthart, PhD</div>
+            <div class="boss-title">Executive Chair (former CEO 2010–2025)</div>
+            <div>
+              <div class="boss-fact"><span class="label">การศึกษา</span><span>BS Engineering, UC Berkeley · MS &amp; PhD Engineering Science, Caltech</span></div>
+              <div class="boss-fact"><span class="label">อยู่กับ ISRG</span><span>ตั้งแต่ 1996 · CEO 2010–June 2025</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Dave Rosa เป็น <strong>product architect ที่สร้าง Ion และ da Vinci SP</strong> — เขาเป็น engineer ที่อยู่เบื้องหลัง endoluminal surgery expansion ทำให้ Intuitive เติบโตจาก pure laparoscopic สู่ bronchoscopy การที่ Rosa ขึ้นเป็น CEO บอกว่า Intuitive กำลัง bet ใน product innovation และ new surgery categories ไม่ใช่แค่ execution ของ da Vinci existing platform</p>
+          <p style="margin-top:12px">Gary Guthart สร้าง ISRG จากบริษัท single-product (prostatectomy) สู่ surgical platform company ใน 15 ปี ที่ CEO procedure แต่ละ category ที่ Intuitive เข้าไปทำให้ installed base grow โดยไม่ต้องลด price: gynecology, colorectal, thoracic, lung biopsy (Ion), single-port หมดล้วนเป็น Guthart era decisions ที่ compound มา</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Intuitive Surgical ออกแบบ สร้าง และขาย robotic surgery systems, instruments, accessories และ services</strong> สำหรับ minimally invasive surgery</p>
+      <div class="callout teal">
+        <p><strong>da Vinci Surgical System:</strong> Robot ผ่าตัด 3-4 arm ที่ surgeon control จาก console ด้วย joystick/pedals ทำให้ hand tremor ลดลง, motion scaling (human movement ย่อส่วน), และ 3D magnified vision ช่วยให้ operate ใน tight space ที่ human hand เข้าไม่ถึง ใช้ใน gynecology, urology, colorectal, thoracic surgery<br><br>
+        da Vinci 5 (2024): เพิ่ม force feedback แรกในประวัติศาสตร์ ทำให้ surgeon "feel" tissue resistance ได้</p>
+      </div>
+      <div class="callout navy">
+        <p><strong>Ion Endoluminal System:</strong> Catheter robot ที่เล็กมากเข้าไปใน lung bronchial airways ทำ biopsy ของ lung nodules ที่ไม่เช่นนั้นต้องผ่าตัด open ผลลัพธ์ Ion procedure growth +51% ใน FY2025 แสดงว่า adoption เพิ่งเริ่มต้น</p>
+      </div>
+      <div class="callout dark">
+        <p><strong>Instruments &amp; Accessories (endowrist tools):</strong> ทุก procedure ต้องใช้ single-use instruments (forceps, scissors, needle drivers ที่ wrist-like joints) และมีจำนวน uses จำกัดก่อน ต้องทิ้ง ทำให้เกิด per-procedure recurring revenue ที่แน่นอน — นี่คือ "blade" ใน razor-blade model</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $10.07B แบ่งตาม Revenue Type</h3>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">🔧 Instruments &amp; Accessories (recurring)</div><div class="rev-numbers"><strong>~$6.5B</strong> · ~64%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:64%;background:var(--isrg-teal)"></div></div>
+          <div class="rev-note">Per-procedure revenue — ทุก surgery ต้องใช้ single-use instruments ใหม่ high margin, เติบโตตาม procedure volume</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">🤖 Systems (hardware)</div><div class="rev-numbers"><strong>~$2.2B</strong> · ~22%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:22%;background:var(--isrg-navy)"></div></div>
+          <div class="rev-note">da Vinci 5 + Ion system placement — 870 dV5 systems placed FY2025 + Ion installations</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">🛠 Services</div><div class="rev-numbers"><strong>~$1.4B</strong> · ~14%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:14%;background:var(--isrg-green)"></div></div>
+          <div class="rev-note">Annual service contracts สำหรับ maintenance/support — recurring, high renewal rate</div>
+        </div>
+      </div>
+      <p><strong>Razor-blade model คือ compound engine ของ ISRG:</strong> ยิ่ง install systems มาก ยิ่ง procedures มาก ยิ่ง instruments sold มาก revenue เพิ่มโดยอัตโนมัติ installed base 11,106 ระบบ ทำ procedure กว่า 2 million ครั้งต่อปี และ growing</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="callout teal">
+        <p><strong>Installed Base Flywheel — ยิ่งใหญ่ ยิ่ง Compound:</strong> Hospital ที่มี da Vinci ต้องเทรน surgeon, technician, support staff ใน robotic protocol ทำให้ switching cost สูงมาก เมื่อ install แล้ว hospital โดยปกติ upgrade รุ่นใหม่ (Xi → da Vinci 5) แทนที่จะ switch to competitor procedure volume per system เพิ่มขึ้นทุกปีเมื่อ surgeon proficiency สูงขึ้น</p>
+      </div>
+      <div class="callout navy">
+        <p><strong>Procedure Expansion — New Indications:</strong> Intuitive ยังอยู่ใน early stage ใน หลาย surgery types ที่ยังไม่ robotic: hernia, bariatric (weight loss surgery), thoracic surgery ต่างๆ, colorectal surgical expansion แต่ละ category ที่ robotic adoption เพิ่มขึ้นเป็น organic growth ที่ installed base drive</p>
+      </div>
+      <div class="callout green">
+        <p><strong>International Expansion — US Penetration High, OUS Low:</strong> US robotic surgery penetration ค่อนข้างสูงแล้วใน prostatectomy และ hysterectomy แต่ Europe, Asia, Latin America ยัง low adoption โดยเฉพาะ Japan, China ที่ healthcare system กำลัง invest ใน surgical robots — OUS เป็น long runway ที่สำคัญ</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>da Vinci 5 adoption accelerating — 303 units Q4 alone</h4>
+        <p>da Vinci 5 placement ramp ขึ้นทุกไตรมาส (147→180→240→303) บอกว่า hospital เชื่อใน next-gen system dV5 ทำให้ ASP สูงขึ้น (ราคาสูงกว่า dV Xi) และยังเพิ่ม per-procedure instruments revenue เพราะ clinical capability expand</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Ion procedures +51% — lung biopsy market just starting</h4>
+        <p>Ion growth 51% บอกว่า adoption ของ robotic lung biopsy ยังอยู่ใน early innings lung cancer diagnosis ต้องการ biopsy แม่นยำ Ion ทำได้ดีกว่า standard bronchoscopy traditional อย่างมีนัยสำคัญ market size lung biopsy ใหญ่มากและ under-roboted</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Competition เริ่มมา — Medtronic Hugo, J&J Ottava</h4>
+        <p>Medtronic Hugo ได้ CE mark ใน Europe แล้ว J&J Ottava กำลัง trial ใน US ยังไม่มีใครได้ FDA approval ใน US ที่จะ compete direct กับ dV แต่ 2026-2027 อาจเปลี่ยน Intuitive ยังมี moat ใหญ่มาก (installed base, surgeon training) แต่ต้อง monitor</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Tariff impact กด gross margin ~0.7%</h4>
+        <p>FY2025 gross margin guidance ลด ~70bps เพราะ tariff impact บน imported components ยังไม่ materialมาก แต่ถ้า tariff escalate margin อาจถูกกดต่อได้</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🤖</div>
+          <div>
+            <div class="comp-segment">Robotic Surgery Systems</div>
+            <div class="comp-pos dominant">Dominant — ~80%+ market share by installed base</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Intuitive Surgical — da Vinci (11,106 installed)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:80%;background:var(--isrg-teal)"></div></div>
+            <div class="comp-detail">~80%+ global robotic surgery market share (installed base) ใน soft tissue surgery — มี 25+ ปีของ clinical data, surgeon training ecosystem, hospital relationships ที่ไม่มีใครแซงได้ใน short term</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Medtronic Hugo</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:8%;background:#c00"></div></div>
+            <div class="comp-detail">CE mark ใน Europe แล้ว — still seeking US FDA approval ราคาต่ำกว่า da Vinci เพื่อ penetrate price-sensitive markets แต่ clinical data น้อยกว่า ISRG อย่างมาก</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">J&J Ottava (Ethicon)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:5%;background:#e87722"></div></div>
+            <div class="comp-detail">ยังอยู่ใน clinical trials สำหรับ US FDA — delayed หลายครั้ง J&J มี resources ใหญ่มากแต่ launch ใน US ยังไม่ clear timeline</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">CMR Surgical (UK), Asensus (ASXC)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:2%;background:#555"></div></div>
+            <div class="comp-detail">Smaller players ใน Europe/Asia — ยังไม่ material ต่อ Intuitive's market position</div>
+          </div>
+        </div>
+        <div class="comp-verdict teal">Intuitive ยังคือ monopoly ที่ effective ใน US robotic surgery แม้ competition จะมา network effect ของ surgeon training, clinical data, และ installed base ทำให้ switching cost สูงมาก</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding. Own durable businesses inside major global money-flow layers. Patient. Accepts volatility. Focuses on business quality. Target: ~15% annualized return over multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">ISRG เป็น Core เพราะ <strong>surgical robotics เป็น irreversible technology adoption — hospital ที่เปลี่ยนมา robotic surgery ไม่มีทางกลับไป open surgery</strong> Intuitive มี network moat ที่สร้างจาก 25+ ปี surgeon training, clinical evidence, installed base กว่า 11,000 systems ในกว่า 70 ประเทศ</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Razor-Blade Recurring Revenue</div>
+              <div class="trait-desc">~64% revenue จาก instruments/accessories ที่ทุก procedure ต้องใช้ ยิ่ง installed base โต ยิ่ง recurring revenue โตโดยอัตโนมัติ</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🏥</div>
+              <div class="trait-name">Switching Cost สูงมาก</div>
+              <div class="trait-desc">Hospital ที่มี da Vinci ต้อง retrain surgeon ทั้งหมดถ้า switch ไป competitor ทำให้ churn rate ของ installed base ต่ำมาก</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🌍</div>
+              <div class="trait-name">International Runway ยาว</div>
+              <div class="trait-desc">OUS adoption ยังต่ำกว่า US มาก — Europe, Asia เป็น growth driver ระยะยาวที่ ชัดเจน</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🫁</div>
+              <div class="trait-name">Ion = New Category</div>
+              <div class="trait-desc">Ion +51% procedure growth เปิด market ใหม่ (lung biopsy) ที่แยกออกจาก core da Vinci business ทำให้ runway เพิ่ม</div>
+            </div>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: ISRG → Core</h4>
+            <p>ISRG เป็น Core เพราะ surgical robotics เป็น durable technology trend, razor-blade model สร้าง compounding recurring revenue, switching cost สูงมาก และ Intuitive มี ~80% market share ที่คู่แข่งต้องใช้เวลาหลายปีกว่าจะ erode ได้อย่างมีนัยสำคัญ add เมื่อ market กังวล competition (Medtronic Hugo, J&J) หรือ procedure growth slowdown — ใช้เป็น entry ไม่ใช่ exit signal</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — ISRG / Intuitive Surgical, Inc. · Source: Intuitive Surgical FY2025 Q4 &amp; Full Year Results (January 2026)</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="isrg-dot">
+      <span style="background:var(--isrg-dark)"></span>
+      <span style="background:var(--isrg-teal)"></span>
+      <span style="background:var(--isrg-green)"></span>
+      <span style="background:var(--isrg-navy)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

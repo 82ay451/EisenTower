@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IREN — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --iren-teal:      #00B4B4;
+      --iren-dark:      #007A7A;
+      --iren-light:     #66D9D9;
+      --iren-teal-soft: #E0F7F7;
+      --accent:         #00B4B4;
+      --accent-soft:    #E0F7F7;
+      --green:          #34A853;
+      --green-soft:     #e6f4ea;
+      --red:            #EA4335;
+      --red-soft:       #fce8e6;
+      --yellow:         #FBBC04;
+      --yellow-soft:    #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg); color: var(--text-primary);
+      line-height: 1.7; font-size: 16px;
+    }
+    .doc-header {
+      background: var(--surface);
+      border-bottom: 3px solid transparent;
+      border-image: linear-gradient(90deg,
+        var(--iren-teal) 25%, var(--iren-light) 25% 50%,
+        var(--iren-dark) 50% 75%, var(--iren-teal-soft) 75%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); background: var(--tag-bg);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--iren-teal); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%;
+      font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      text-decoration: none; transition: all 0.15s; margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; user-select: none;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon {
+      flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+      background: var(--tag-bg); display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary);
+    }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-mining   { background: var(--iren-teal); }
+    .bar-ai       { background: #6B46C1; }
+    .bar-power    { background: #F59E0B; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--iren-teal-soft); border-color: var(--iren-teal); }
+    .callout.green  { background: var(--green-soft);     border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);    border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);       border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--iren-teal), var(--iren-light)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--iren-teal); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--iren-teal); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--iren-teal-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);      color: var(--green); }
+    .comp-pos.challenger { background: var(--iren-teal-soft);  color: var(--iren-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);     color: #8a6000; }
+    .comp-pos.trailing   { background: var(--red-soft);        color: #b71c1c; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--iren-teal); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--iren-teal-soft); border-color: var(--iren-teal); color: var(--iren-dark); }
+    .comp-verdict.green  { background: var(--green-soft);     border-color: var(--green);     color: #1e6e3a; }
+    .comp-verdict.yellow { background: var(--yellow-soft);    border-color: var(--yellow);    color: #8a6000; }
+    .comp-verdict.red    { background: var(--red-soft);       border-color: var(--red);       color: #b71c1c; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: rgba(138, 43, 226, 0.07); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #7b2fff; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-wave { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .bucket-fit { background: #f3eeff; border: 1px solid #c9b2ff; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .bucket-fit h4 { font-size: 15px; font-weight: 700; color: #7b2fff; margin-bottom: 10px; }
+    .bucket-fit p { font-size: 15px; }
+    #back-to-top {
+      position: fixed; bottom: 32px; right: 32px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--iren-teal); color: white;
+      border: none; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,180,180,0.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s; z-index: 200;
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--iren-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">IREN</span> — IREN Limited</h1>
+    <div class="doc-subtitle">Understanding IREN as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NASDAQ: IREN</span>
+      <span>🏛 Founded 2019</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>IREN Limited (เดิมชื่อ Iris Energy) คือ <strong>ผู้ดำเนินงาน Bitcoin mining และ AI cloud computing infrastructure</strong> จากออสเตรเลียที่ list อยู่บน NASDAQ บริษัทเน้นการใช้พลังงาน renewable energy 100% สำหรับทุก operation ซึ่งเป็น differentiator สำคัญในยุคที่ ESG concerns สูงมาก</p>
+      <p>IREN กำลัง pivot ตัวเองเป็น <strong>dual-business: Bitcoin Mining + AI Cloud</strong> — ใช้ infrastructure เดียวกัน (data centers, power, cooling) แต่สวิตช์ระหว่าง Bitcoin mining และ GPU cloud rental ตาม economics ที่ดีกว่าในแต่ละช่วงเวลา เป็น optionality ที่หายากมากในกลุ่ม Bitcoin miner</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Mining Capacity</div>
+          <div class="stat-value">30 EH/s</div>
+          <div class="stat-sub">Exahash/sec — FY2025 target</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Power Capacity</div>
+          <div class="stat-value">820 MW</div>
+          <div class="stat-sub">Operational + pipeline</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">AI GPU Capacity</div>
+          <div class="stat-value">2,048</div>
+          <div class="stat-sub">NVIDIA H100/H200 GPUs deployed</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Power Source</div>
+          <div class="stat-value">100%</div>
+          <div class="stat-sub">Renewable energy</div>
+        </div>
+      </div>
+      <p>FY2025 (ปีงบ June 2025): Revenue ~$288M จาก Bitcoin mining เป็นหลัก + เริ่มมี AI cloud revenue เข้ามา บริษัทอยู่ในช่วง heavy build-out สำหรับ AI data centers ซึ่งจะ ramp ขึ้น FY2026 เป็นต้นไป</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>จาก Bitcoin miner สีเขียวสู่การเป็น AI infrastructure provider — IREN เป็น story ของการ leverage power infrastructure ที่ build มาแล้วเพื่อ enter ตลาดใหม่ที่ใหญ่กว่า</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019</div>
+          <div class="tl-text"><strong>ก่อตั้ง Iris Energy ในออสเตรเลีย:</strong> Daniel Roberts และทีม ก่อตั้งบริษัทด้วย vision ชัดเจนว่าจะทำ Bitcoin mining ด้วย renewable energy เท่านั้น เริ่มต้น build data center ในบริติชโคลัมเบีย แคนาดา ซึ่งมี hydro power ราคาถูก</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2021</div>
+          <div class="tl-text"><strong>IPO บน NASDAQ:</strong> List ในชื่อ Iris Energy (IREN) ที่ระดับราคา $28/share ระดมทุนเพื่อ expand Bitcoin mining capacity ใน Canada และ Texas ยุคนี้ Bitcoin bull market ทำให้ mining business มี profitability สูง</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022–2023</div>
+          <div class="tl-text"><strong>Crypto Winter — Survive and Restructure:</strong> Bitcoin price collapse ทำให้ revenue และ stock price ร่วงหนัก IREN เป็นหนึ่งใน few miners ที่ survive โดยไม่ล้มละลาย เพราะมี lower power costs และ clean energy strategy ที่ operational cost ต่ำกว่า</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>Pivot สู่ AI Cloud — Strategic Decision:</strong> IREN ประกาศ strategy ใหม่: build GPU infrastructure สำหรับ AI cloud ควบคู่กับ Bitcoin mining ลงทุน NVIDIA H100 GPUs 2,048 ตัว และเริ่มให้บริการ AI cloud ใน data centers เดิม</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024 Q4</div>
+          <div class="tl-text"><strong>Bitcoin Halving + AI Revenue เริ่มต้น:</strong> April 2024 Bitcoin halving ลด mining revenue ลงครึ่ง — แต่ IREN ลด impact ด้วย AI cloud revenue ที่เริ่ม ramp ขึ้น ฐาน customers ใน AI cloud เริ่ม build ขณะที่ mining capacity ก็ยังเติบโต</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>820 MW Pipeline + 30 EH/s Mining:</strong> IREN announce 820 MW power capacity roadmap — ครึ่งหนึ่งจะเป็น AI data centers GPU cloud ครึ่งหนึ่งยังเป็น Bitcoin mining ตาม economics ที่ดีกว่าในแต่ละจังหวะ Q4 FY2025 AI revenue เติบโต 3x QoQ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>IREN track record คือการ survive ช่วงที่ยากที่สุดของ crypto และ pivot ได้สำเร็จ</strong> — เป็น one of very few Bitcoin miners ที่ไม่ได้ล้มละลายในปี 2022-2023 และยังสามารถ build AI capacity ได้ในปี 2024-2025</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปีงบ (Jun)</th>
+            <th>Revenue</th>
+            <th>Hashrate</th>
+            <th>Gross Profit</th>
+            <th>Net Income</th>
+            <th>Power Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>FY2022</td><td>$57M</td><td>~3 EH/s</td><td>$35M</td><td>-$52M</td><td>~$0.03/kWh</td></tr>
+          <tr><td>FY2023</td><td>$94M</td><td>~5 EH/s</td><td>$46M</td><td>-$48M</td><td>~$0.03/kWh</td></tr>
+          <tr><td>FY2024</td><td>$168M</td><td>~12 EH/s</td><td>$88M</td><td>-$71M</td><td>~$0.03/kWh</td></tr>
+          <tr class="highlight"><td>FY2025 ✦</td><td>~$288M</td><td>~22 EH/s</td><td>est. $150M</td><td>est. -$50M</td><td>~$0.03/kWh</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Key strength: power cost ~$0.03/kWh</strong> — ต่ำที่สุดในกลุ่ม Bitcoin miners listed ทำให้ IREN มี mining profitability แม้ในช่วง Bitcoin price ต่ำ renewable energy commitments ยังช่วยป้องกัน regulatory risk ที่เพิ่มขึ้นสำหรับ crypto mining</p>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Power Cost</div>
+          <div class="stat-value">$0.03</div>
+          <div class="stat-sub">/kWh — ต่ำสุดในกลุ่ม miners</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue Growth</div>
+          <div class="stat-value">+71%</div>
+          <div class="stat-sub">FY2025 vs FY2024 (est.)</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Still Unprofitable</div>
+          <div class="stat-value">-$50M</div>
+          <div class="stat-sub">GAAP Net Loss (est. FY2025)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Daniel Roberts</div>
+          <div class="boss-title">Co-CEO &amp; Co-founder, IREN Limited</div>
+          <div>
+            <div class="boss-fact"><span class="label">ก่อตั้ง</span><span>Iris Energy 2019</span></div>
+            <div class="boss-fact"><span class="label">Background</span><span>Finance / Real Estate / Infrastructure</span></div>
+            <div class="boss-fact"><span class="label">Co-CEO</span><span>William Roberts (brother)</span></div>
+            <div class="boss-fact"><span class="label">สัญชาติ</span><span>ออสเตรเลีย</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Daniel Roberts และ William Roberts เป็นพี่น้องที่ก่อตั้ง Iris Energy ร่วมกัน ทั้งคู่มาจาก investment banking และ infrastructure background ไม่ใช่ crypto native — ทำให้มองธุรกิจจาก capital markets perspective ว่า "power infrastructure ที่ถูกและสะอาดคือ moat ที่แท้จริง ไม่ใช่ crypto"</p>
+          <p style="margin-top:12px">Vision ที่ชัดเจนมากตั้งแต่ต้นคือ: <strong>renewable energy + cheap power = infrastructure business ที่ยืดหยุ่น</strong> ไม่ว่าจะเป็น Bitcoin mining หรือ AI cloud ก็ใช้ power ทั้งนั้น ถ้า power ถูกและสะอาด เราสามารถ switch workload ตาม economics ที่ดีที่สุดได้ตลอดเวลา</p>
+          <p style="margin-top:12px">การที่ IREN รอดจาก crypto winter 2022-2023 โดยไม่ล้มละลาย เป็นผลจากการตัดสินใจ financial prudent ของ Roberts brothers — ไม่ over-leverage และมี power cost ที่ต่ำมากจนยัง profitable ได้แม้ BTC ราคาต่ำ</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>IREN ทำสองอย่างจาก infrastructure เดียวกัน</strong> — Bitcoin mining และ AI cloud computing ทั้งคู่ต้องการ power และ cooling จำนวนมาก ซึ่ง IREN มีอยู่แล้วใน data centers ตัวเอง</p>
+      <div class="callout blue">
+        <p><strong>Bitcoin Mining:</strong> IREN run ASIC miners (Antminer S21 ฯลฯ) ด้วย renewable energy ใน data centers ที่ Canada, Texas, Washington State mining BTC แล้วขาย หรือ hold ตาม treasury policy รายได้มาจาก block rewards + transaction fees</p>
+      </div>
+      <div class="callout green">
+        <p><strong>AI Cloud (GPU Compute):</strong> IREN ลงทุน NVIDIA H100 และ H200 GPUs ให้บริการ AI compute cloud ให้ AI companies และ enterprises rent GPU clusters ใน data center เดียวกัน Revenue มาจากรายชั่วโมงหรือ long-term contracts</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Energy Advantage — 100% Renewable at $0.03/kWh:</strong> IREN build data centers ใกล้แหล่ง hydro power (Canada) และ wind/solar (Texas) ได้ power rate ต่ำมาก ทำให้ unit economics ของ mining ดีกว่า competitors และ AI cloud margin ก็ดีกว่าด้วย</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>IREN ยังทำเงินจาก Bitcoin mining เป็นหลัก</strong> — แต่ AI cloud กำลัง grow เร็วมาก และในอนาคตอาจ overtake mining ใน revenue mix ภายใน 2-3 ปี</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 (ปีงบ Jun 2025) — ~$288M โดยประมาณ</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">₿ Bitcoin Mining</div>
+            <div class="rev-numbers"><strong>~$245M</strong> · ~85%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-mining" style="width:85%"></div></div>
+          <div class="rev-note">BTC mined × BTC price ในช่วง mining · ขาย BTC ตาม treasury policy · ขึ้นอยู่กับ hashrate ที่เพิ่มขึ้นและ BTC price</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🤖 AI Cloud (GPU Compute)</div>
+            <div class="rev-numbers"><strong>~$38M</strong> · ~13%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-ai" style="width:13%"></div></div>
+          <div class="rev-note">Revenue จาก H100/H200 GPU rental · เพิ่งเริ่ม ramp · Q4 FY2025 เติบโต 3x QoQ · ยังเล็กแต่ trajectory ชันมาก</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">⚡ Power / Other</div>
+            <div class="rev-numbers"><strong>~$5M</strong> · ~2%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-power" style="width:2%"></div></div>
+          <div class="rev-note">Power resale, grid services, demand response programs ใน Texas</div>
+        </div>
+      </div>
+      <p>Key insight: <strong>ถ้า BTC price ลง IREN สามารถ shift power ไป AI cloud ได้</strong> — ไม่ต้อง sit idle รอ crypto recovery นี่คือ flexibility ที่ Bitcoin-only miners ไม่มี</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>IREN compound ผ่าน <strong>power infrastructure flywheel</strong> — ยิ่ง build power capacity มากขึ้น ยิ่งมี flexibility เลือก workload ที่ profitable ที่สุดระหว่าง BTC และ AI</p>
+      <div class="callout blue">
+        <p><strong>Dual Workload Optionality:</strong> Power infrastructure เดียวกันสามารถ run ได้ทั้ง BTC mining ASICs หรือ NVIDIA GPUs ขึ้นอยู่ว่าอะไรให้ return ดีกว่าในช่วงนั้น ในช่วง BTC bear market เปิด AI cloud ในช่วง BTC bull market ขย่าย mining ความยืดหยุ่นนี้ทำให้ income ไม่ขาดสาย</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Power Cost Moat ที่ยังดี:</strong> $0.03/kWh ที่ IREN มีต่ำกว่าค่าเฉลี่ยอุตสาหกรรมมาก ช่วยให้ทั้ง BTC mining margin และ AI cloud margin ดีกว่าคู่แข่งที่ power cost สูงกว่า</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">820 MW Pipeline</div>
+          <div class="stat-value">820 MW</div>
+          <div class="stat-sub">Power capacity roadmap ทั้งหมด</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">AI GPU Expansion</div>
+          <div class="stat-value">2,048+</div>
+          <div class="stat-sub">H100/H200 GPUs — กำลังเพิ่ม</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Capex Heavy</div>
+          <div class="stat-value">High</div>
+          <div class="stat-sub">Both BTC + AI infra build-out</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>IREN อยู่ใน <strong>transformation moment</strong> — from pure Bitcoin miner ไปเป็น dual AI + crypto infrastructure provider ที่ตลาดยัง value เหมือน crypto stock</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>AI Cloud Revenue เติบโต 3x QoQ ใน Q4 FY2025</h4>
+        <p>AI cloud segment ที่เพิ่งเริ่มต้น grow อย่างรวดเร็ว เมื่อ demand ชัดและ GPU utilization สูงขึ้น IREN จะสามารถ justify valuation ใหม่ที่ไม่ใช่แค่ crypto company อีกต่อไป</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Bitcoin Hashrate 22 EH/s + เพิ่มต่อ</h4>
+        <p>Mining hashrate เพิ่มขึ้นต่อเนื่อง ถ้า BTC price อยู่ระดับนี้หรือสูงขึ้น mining revenue จะ grow ตาม BTC allocation หลัง halving ปี 2024 เป็นผ่านไปแล้ว — ช่วง adaptation เสร็จแล้ว</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>AI Cloud Customer Build-out — ใครจะเช่า?</h4>
+        <p>IREN ต้องการ AI cloud customers ใน enterprise segment ที่จะเซ็น longer-term contracts เพื่อ give revenue visibility ตอนนี้ยังเป็น shorter-term มากกว่า ถ้า IREN ได้ enterprise AI customer ที่ significant valuation จะ re-rate</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Bitcoin Price Dependency ยังสูง</h4>
+        <p>85% ของ revenue ยังเป็น Bitcoin mining ถ้า BTC ร่วง -50% revenue IREN จะกระทบหนักมาก แม้ว่า AI cloud จะช่วย hedge ได้บางส่วน แต่ AI revenue ยัง ~13% เท่านั้น</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Regulatory Crypto Risk ยังมีในหลายรัฐ</h4>
+        <p>บาง states ใน U.S. กำลัง regulate crypto mining ด้านการใช้ power IREN ได้เปรียบจาก renewable energy แต่ถ้า regulation เปลี่ยนในรัฐที่ IREN มี operations อาจ impact ได้</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>IREN แข่งใน Bitcoin mining market กับ listed miners ด้วยกัน และใน AI cloud กับ specialists และ hyperscalers</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">₿</div>
+          <div>
+            <div class="comp-segment">Bitcoin Mining — Listed Pure-Play Miners</div>
+            <div class="comp-pos challenger">Top Tier ด้าน Efficiency</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">Marathon Digital (MARA)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:35%;background:#FF8C00"></div></div>
+            <div class="comp-detail">Largest BTC miner by hashrate ~35 EH/s+ · มี BTC treasury strategy · แต่ power cost สูงกว่า IREN</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">CleanSpark (CLSK)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#34A853"></div></div>
+            <div class="comp-detail">~20 EH/s · เน้น low-cost + clean energy คล้าย IREN · Competitor ที่ใกล้เคียงที่สุดใน positioning</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">IREN Limited</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:var(--iren-teal)"></div></div>
+            <div class="comp-detail">~22 EH/s hashrate · ดีที่สุดด้าน power cost $0.03/kWh · Unique: AI cloud dual business model ที่คนอื่นยังไม่มี</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Riot Platforms (RIOT)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:18%;background:#6B46C1"></div></div>
+            <div class="comp-detail">~28 EH/s · Texas focus · demand response revenue ใหญ่จาก ERCOT แต่ power cost สูงกว่า</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">IREN อยู่ใน top tier ของ efficient miners ด้วย power cost ต่ำสุดในกลุ่ม แต่ differentiator ใหญ่คือ AI cloud dual strategy ที่ผู้แข่งขันใน mining ยังไม่ execute ได้ในระดับเดียวกัน</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Wave captures re-rating before consensus. IREN อยู่ในช่วงที่ตลาด value เป็น crypto miner แต่ถ้า AI cloud thesis execute ได้ valuation multiple จะ re-rate ขึ้นมากจาก "mining company" สู่ "infrastructure + AI" company.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">IREN เป็น <strong>Wave ที่มี optionality สูง</strong> — ถ้า BTC bull market ต่อ mining upside ถ้า AI cloud grow rapid AI upside ถ้าทั้งคู่ดีพร้อมกัน re-rating จะใหญ่มาก ตลาดยังคิดว่า IREN เป็นแค่ crypto miner</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Dual Business Optionality</div>
+              <div class="trait-desc">Bitcoin mining + AI cloud จาก infrastructure เดียวกัน — ถ้า crypto ลงเปิด AI cloud ถ้า AI cloud oversupply ขย่าย BTC mining ความยืดหยุ่นนี้ unique ในกลุ่ม crypto miners</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">💚</div>
+              <div class="trait-name">100% Renewable — Regulatory Shield</div>
+              <div class="trait-desc">ในยุคที่ crypto mining ถูก attack จาก ESG angles IREN เป็น most defensible ด้วย 100% renewable power ลด regulatory risk ที่ competitors เผชิญ</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">⚡</div>
+              <div class="trait-name">Cheapest Power in Sector</div>
+              <div class="trait-desc">$0.03/kWh ต่ำสุดในกลุ่ม BTC miners — ทำให้ profitable ใน BTC price range ที่กว้างกว่า competitors และ AI cloud margin ดีกว่าด้วย</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">📈</div>
+              <div class="trait-name">AI Revenue Re-Rating Catalyst</div>
+              <div class="trait-desc">ทุก quarter ที่ AI cloud revenue เพิ่ม % ของ revenue total จะ push market ให้ value IREN ด้วย AI multiple แทน crypto multiple — valuation gap ที่อาจ close</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-wave">
+            <span class="not-tag">✗ ไม่ใช่ Core — BTC price dependency ยังสูง ยังขาดทุน GAAP</span>
+            <span class="not-tag">✗ ไม่ใช่ defensive holding</span>
+            <span class="not-tag">✗ ไม่ใช่ pure AI play</span>
+            <span class="not-tag">✗ ไม่ใช่ low-vol asset — crypto volatility สูง</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: IREN → Wave</h4>
+            <p>IREN เป็น high-asymmetry Wave — ถ้า BTC + AI thesis ดำเนินไปพร้อมกัน valuation re-rating จาก crypto multiple (~3-4x revenue) ไปสู่ AI infra multiple (~8-12x revenue) จะเป็น 2-3x upside ง่ายๆ Exit signal: AI cloud revenue ไม่ grow ออกจาก niche, BTC price crash ต่อเนื่อง, หรือ power contracts หมดอายุโดยไม่ได้ต่อ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — IREN / IREN Limited · Source: FY2025 Earnings Release · Investor Presentations · Public Sources</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--iren-teal)"></span>
+      <span style="background:var(--iren-light)"></span>
+      <span style="background:var(--iren-dark)"></span>
+      <span style="background:var(--iren-teal-soft)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

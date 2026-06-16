@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLY — Company File</title>
+  <style>
+    :root {
+      --bg: #f2f4f8;
+      --surface: #ffffff;
+      --border: #dde2ee;
+      --text-primary: #0f1629;
+      --text-secondary: #3d4f73;
+      --text-muted: #8a97b8;
+      --tag-bg: #e8ecf8;
+      --lly-red:    #CC0000;
+      --lly-dark:   #1A0510;
+      --lly-navy:   #003087;
+      --lly-crimson:#8B0000;
+      --lly-red-soft:  #fff0f0;
+      --lly-navy-soft: #e0eaff;
+      --accent:      var(--lly-red);
+      --accent-soft: var(--lly-red-soft);
+      --green:       #1a7a4a;
+      --green-soft:  #e6f5ed;
+      --red:         #c94b4b;
+      --red-soft:    #fce8e8;
+      --yellow:      #d4a017;
+      --yellow-soft: #fef8e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--lly-dark); border-bottom: 4px solid transparent; border-image: linear-gradient(90deg, var(--lly-red) 30%, var(--lly-navy) 30% 60%, var(--lly-crimson) 60% 80%, var(--lly-dark) 80%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8a97b8; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+    .ticker-lly { color: #ff6666; }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: #c0c8e0; }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: #8a97b8; display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--lly-dark); border-bottom: 1px solid #2a0a1a; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: #8a97b8; text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: rgba(204,0,0,0.2); color: #ff6666; }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--lly-red); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--lly-red-soft); color: var(--lly-red); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.red   { border-left: 3px solid var(--lly-red); }
+    .stat-card.navy  { border-left: 3px solid var(--lly-navy); }
+    .stat-card.green { border-left: 3px solid var(--green); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-mj   { background: var(--lly-red); }
+    .bar-zp   { background: #ff6600; }
+    .bar-vrz  { background: var(--lly-navy); }
+    .bar-other { background: #aaa; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.red   { background: var(--lly-red-soft);  border-color: var(--lly-red); }
+    .callout.navy  { background: var(--lly-navy-soft); border-color: var(--lly-navy); }
+    .callout.green { background: var(--green-soft);    border-color: var(--green); }
+    .callout.dark  { background: #e8edf5;              border-color: var(--lly-dark); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--lly-red), var(--lly-navy)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--lly-red); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--lly-red); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--lly-red-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #155c38; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft); color: var(--green); }
+    .comp-pos.challenger { background: var(--lly-red-soft); color: var(--lly-red); }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--lly-red); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.red  { background: var(--lly-red-soft); border-color: var(--lly-red); color: #7a0000; }
+    .comp-verdict.navy { background: var(--lly-navy-soft); border-color: var(--lly-navy); color: #001a50; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { background: linear-gradient(135deg, var(--lly-dark) 0%, #1a0820 100%); padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .core-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .core-trait { background: var(--lly-red-soft); border-radius: 10px; padding: 16px 18px; }
+    .core-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .core-trait .trait-name { font-size: 13px; font-weight: 700; color: #7a0000; margin-bottom: 4px; }
+    .core-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .fit-box { background: var(--green-soft); border: 1px solid #a8d8bc; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .fit-box h4 { font-size: 15px; font-weight: 700; color: #155c38; margin-bottom: 10px; }
+    .fit-box p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--lly-red); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(204,0,0,0.35); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--lly-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .lly-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .lly-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-lly">LLY</span> — Eli Lilly and Company</h1>
+    <div class="doc-subtitle">Understanding Eli Lilly as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NYSE: LLY</span>
+      <span>🏛 Founded 1876 · Indianapolis, Indiana</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Eli Lilly and Company คือ <strong>บริษัทยาที่มี market cap ใหญ่ที่สุดในโลก</strong> (ณ ปี 2025) — ก่อตั้งปี 1876 ใน Indianapolis โดย Colonel Eli Lilly แต่ที่ทำให้ Lilly กลายเป็น most valuable pharma บนโลกคือ <strong>tirzepatide</strong> โมเลกุลเดียวที่ Lilly ขายในสองรูปแบบ: Mounjaro สำหรับ Type 2 Diabetes และ Zepbound สำหรับโรคอ้วน (obesity)</p>
+      <p>FY2025 revenue <strong>$65.2B (+45% YoY)</strong> — Mounjaro ทำ $23.0B (+99%) และ Zepbound ทำ $13.5B (+175%) รวมกัน $36.5B คือ 56% ของ revenue ทั้งหมด Lilly กลายเป็น "world's best-selling drug" company ด้วย tirzepatide เพียงโมเลกุลเดียว — และยังมี pipeline ที่กว้างมาก</p>
+      <div class="stat-grid">
+        <div class="stat-card red">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$65.2B</div>
+          <div class="stat-sub">+45% YoY</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">EPS (diluted)</div>
+          <div class="stat-value">$24.21</div>
+          <div class="stat-sub">+86% YoY</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Mounjaro FY2025</div>
+          <div class="stat-value">$23.0B</div>
+          <div class="stat-sub">+99% YoY · tirzepatide T2D</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Zepbound FY2025</div>
+          <div class="stat-value">$13.5B</div>
+          <div class="stat-sub">+175% YoY · obesity</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">2026 Revenue Guidance</div>
+          <div class="stat-value">$81.5B</div>
+          <div class="stat-sub">$80–83B range · +25% mid</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">2026 EPS Guidance</div>
+          <div class="stat-value">$34.25</div>
+          <div class="stat-sub">$33.50–$35.00 range · +40%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1876</div>
+          <div class="tl-text"><strong>Colonel Eli Lilly ก่อตั้งบริษัท:</strong> Civil War veteran ที่เป็น pharmacist ก่อตั้ง Eli Lilly and Company ใน Indianapolis, Indiana ด้วยเงิน $1,400 จาก mission ที่ชัดเจน: "make medicines of the highest quality"</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1923</div>
+          <div class="tl-text"><strong>Insulin — ยาชีวิตแรก:</strong> Lilly เป็น first company ที่ mass-produce insulin commercial สำเร็จ ร่วมกับ University of Toronto ช่วยชีวิต diabetic patients จำนวนมาก insulin เป็น blueprint ของ Lilly ใน endocrinology มาจนปัจจุบัน</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1950s–1990s</div>
+          <div class="tl-text"><strong>Growth era:</strong> Lilly ขยาย portfolio ใน antibiotics, neuroscience, oncology คิดค้น Prozac (fluoxetine) ในปี 1988 — antidepressant ที่ดัง (blockbuster แรก), Zyprexa (antipsychotic), Evista (osteoporosis)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2000s–2010s</div>
+          <div class="tl-text"><strong>Patent cliff + Turnaround:</strong> Lilly เจอ "patent cliff" ของ Zyprexa และ Cymbalta ที่ expire ทำให้ revenue ลด Lilly ลงทุนหนักใน R&D หาโมเลกุลใหม่ ซื้อ ImClone (oncology), Loxo Oncology ($8B, 2019), Dermira, Prevail Therapeutics</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022</div>
+          <div class="tl-text"><strong>Mounjaro approved (tirzepatide) — Type 2 Diabetes:</strong> FDA อนุมัติ tirzepatide (GIP/GLP-1 dual agonist) สำหรับ T2D — mechanism ใหม่ที่ดีกว่า existing GLP-1 single agonists ของ Novo Nordisk ผลทดลองแสดงว่า weight loss สูงกว่า Ozempic อย่างมีนัยสำคัญ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2023</div>
+          <div class="tl-text"><strong>Zepbound approved — Obesity:</strong> FDA อนุมัติ tirzepatide สำหรับ obesity (BMI ≥30) ทำให้ Lilly มีสองช่องทางรายได้จากโมเลกุลเดียวกัน Zepbound vs Novo's Wegovy (semaglutide) — battle of the century ใน obesity drug market</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>Kisunla approved — Alzheimer's disease:</strong> FDA อนุมัติ donanemab (Kisunla) สำหรับ early Alzheimer's — เป็น amyloid-clearing antibody ที่ показ ชะลอ cognitive decline ได้ pipeline หลายตัวยังอยู่ใน Phase 3</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>Revenue $65.2B — world's largest pharma by revenue:</strong> Mounjaro + Zepbound = $36.5B combined ทำให้ Lilly แซง Pfizer, Roche, J&J ขึ้นเป็น largest pharma by revenue ปี 2026 guidance $80-83B บ่งชี้ว่า acceleration ยังไม่จบ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <table class="track-table">
+        <thead>
+          <tr><th>ปี</th><th>Revenue</th><th>Revenue Growth</th><th>Diluted EPS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2021</td><td>$28.32B</td><td>+15%</td><td>$7.66</td></tr>
+          <tr><td>2022</td><td>$28.54B</td><td>+1%</td><td>$7.93</td></tr>
+          <tr><td>2023</td><td>$34.12B</td><td>+20%</td><td>$5.80*</td></tr>
+          <tr><td>2024</td><td>$45.04B</td><td>+32%</td><td>$13.00</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$65.2B</td><td>+45%</td><td>$24.21</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-muted)">✦ Source: Eli Lilly Q4 &amp; Full Year 2025 Earnings Release · *2023 EPS impacted by acquired in-process R&D charges</p>
+      <div class="stat-grid">
+        <div class="stat-card red">
+          <div class="stat-label">Revenue CAGR 2021–2025</div>
+          <div class="stat-value">~23%</div>
+          <div class="stat-sub">$28B → $65B in 4 years</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">2025 EPS vs 2021</div>
+          <div class="stat-value">+216%</div>
+          <div class="stat-sub">$7.66 → $24.21</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-label">2026 Guidance EPS Growth</div>
+          <div class="stat-value">+40%+</div>
+          <div class="stat-sub">$24.21 → $33.50–$35.00</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">David A. Ricks</div>
+          <div class="boss-title">Chairman &amp; CEO, Eli Lilly and Company</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>1967</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>BS, Purdue University (1990) · MBA Marketing &amp; Finance, Indiana University Kelley (1996)</span></div>
+            <div class="boss-fact"><span class="label">ก่อน CEO</span><span>Lilly China GM (2008–2009) · Lilly Canada GM (2005–2008) · Lilly Bio-Medicines President (2012–2016)</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>2017 · อยู่กับ Lilly ตั้งแต่ 1996</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>David Ricks เป็น <strong>career Lilly man</strong> — อยู่กับบริษัทมาเกือบ 30 ปี ตั้งแต่ 1996 ผ่านงานทุก function: international operations, marketing, sales, P&L management ไม่ใช่ scientist แต่เป็น commercial operator ที่เก่งมาก เข้าใจ drug commercialization ในระดับ global</p>
+          <p style="margin-top:12px">สิ่งที่ Ricks ทำสำเร็จในช่วง CEO คือ <strong>bet ขนาดใหญ่ใน tirzepatide และ obesity market</strong> ในช่วง 2015-2020 ที่คนอื่นยังไม่แน่ใจว่า GLP-1/GIP class จะ blockbuster ได้ Ricks อนุมัติ investment ใน manufacturing ล่วงหน้า ทำให้ Lilly มี capacity พอ ramp ได้เร็วกว่า Novo Nordisk ที่ struggle กับ Wegovy shortage นอกจากนี้ยังลงทุนใน Alzheimer's pipeline ที่ Kisunla เป็น first mover approved</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Lilly research, develop, manufacture และ sell ยาสำหรับโรคเรื้อรัง</strong> — เน้น 5 therapeutic areas หลัก:</p>
+      <div class="callout red">
+        <p><strong>Cardiometabolic (Diabetes + Obesity) — ~70% of revenue:</strong><br>
+        • <strong>Mounjaro (tirzepatide)</strong>: GIP/GLP-1 dual agonist สำหรับ Type 2 Diabetes $23.0B FY2025 (+99%)<br>
+        • <strong>Zepbound (tirzepatide)</strong>: ตัวเดียวกัน แต่ indication สำหรับ obesity $13.5B FY2025 (+175%)<br>
+        • <strong>Jardiance (empagliflozin)</strong>: SGLT2 inhibitor สำหรับ T2D/heart failure — sold ร่วมกับ Boehringer Ingelheim<br>
+        • <strong>Trulicity (dulaglutide)</strong>: GLP-1 agonist รุ่นเก่า กำลัง decline เพราะ Mounjaro แทนที่</p>
+      </div>
+      <div class="callout navy">
+        <p><strong>Oncology — ~15% of revenue:</strong><br>
+        • <strong>Verzenio (abemaciclib)</strong>: CDK4/6 inhibitor สำหรับ breast cancer ~$5B FY2025<br>
+        • <strong>Jaypirca (pirtobrutinib)</strong>: BTK inhibitor สำหรับ blood cancers — growing<br>
+        • <strong>Retevmo (selpercatinib)</strong>: RET inhibitor สำหรับ thyroid/lung cancer</p>
+      </div>
+      <div class="callout dark">
+        <p><strong>Neuroscience &amp; Other:</strong><br>
+        • <strong>Kisunla (donanemab)</strong>: Anti-amyloid antibody สำหรับ early Alzheimer's — approved July 2024, ramp ยังเร็ว<br>
+        • <strong>Emgality (galcanezumab)</strong>: Anti-CGRP สำหรับ migraine<br>
+        • <strong>Taltz (ixekizumab)</strong>: IL-17A inhibitor สำหรับ psoriasis/PsA/AS</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $65.2B แบ่งตาม Product</h3>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">💉 Mounjaro (tirzepatide T2D)</div><div class="rev-numbers"><strong>$23.0B</strong> · 35% · +99%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-mj" style="width:35%"></div></div>
+          <div class="rev-note">World's best-selling drug FY2025 — tirzepatide GIP/GLP-1 dual agonist สำหรับ T2D</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">⚖️ Zepbound (tirzepatide Obesity)</div><div class="rev-numbers"><strong>$13.5B</strong> · 21% · +175%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-zp" style="width:21%"></div></div>
+          <div class="rev-note">Same molecule, obesity indication — fastest growing drug in Lilly history</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">🎗 Verzenio (abemaciclib, oncology)</div><div class="rev-numbers"><strong>~$5B</strong> · ~8%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-vrz" style="width:8%"></div></div>
+          <div class="rev-note">CDK4/6 inhibitor สำหรับ breast cancer — second largest contributor</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header"><div class="rev-name">📦 Other Products</div><div class="rev-numbers"><strong>~$23.7B</strong> · ~36%</div></div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-other" style="width:36%"></div></div>
+          <div class="rev-note">Jardiance, Taltz, Emgality, Kisunla (early ramp), Trulicity (declining), Basaglar, etc.</div>
+        </div>
+      </div>
+      <p><strong>โมเดลรายได้ของ Lilly คือ prescription drug sales ล้วนๆ</strong> — gross margin สูงมาก (~80%+ gross margin) เพราะ cost ของ drug manufacturing ต่ำมากเมื่อเทียบกับ price ที่ตั้ง แต่ R&D cost สูง ทำให้ net margin ต่ำกว่า gross (ประมาณ 25-30% net margin)</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="callout red">
+        <p><strong>Obesity Market เพิ่งเริ่ม:</strong> GLP-1/GIP obesity drug penetration ยังต่ำมาก (~3-4% ของ eligible patients ในสหรัฐ) market size obesity drug ประมาณการกัน $100B+ ระยะยาว ทุกปีที่ Zepbound ขยาย indication ใหม่ (sleep apnea, heart failure, liver disease) เป็น revenue เพิ่มจาก same molecule</p>
+      </div>
+      <div class="callout navy">
+        <p><strong>Tirzepatide Beyond Obesity — Cardiorenal Expansion:</strong> Mounjaro/Zepbound กำลัง trial ใน heart failure, NASH/MASH (liver disease), CKD (kidney disease), sleep apnea, addiction — แต่ละ indication approval = market ใหม่ จาก pipeline เดียวกัน expected revenue per indication อยู่ที่ $3-10B each</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Next-Gen Molecule — orforglipron + retatrutide:</strong> Lilly มี oral GLP-1 (orforglipron) ใน Phase 3 และ triple agonist retatrutide ที่ show 24% weight loss ใน Phase 2 (สูงกว่า tirzepatide) Pipeline depth เป็น competitive moat ที่ competitor สร้างตามยากมาก</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Zepbound penetration ยังต่ำ — market expansion continuing</h4>
+        <p>แม้ $13.5B ใน FY2025 ดูใหญ่ แต่ eligible obesity population ใน US มีกว่า 100 million คน penetration ยังต่ำกว่า 5% การ expand access (insurance coverage, compounding crackdown) และ approval ใน indication ใหม่จะ drive growth ต่อ</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Manufacturing capacity expansion — $27B+ capex program</h4>
+        <p>Lilly ลงทุน $27B+ ในการสร้าง manufacturing facilities ใหม่ทั่วโลก (US, Ireland, Germany) เพื่อ supply tirzepatide ที่ demand เกิน supply อยู่ถ้า supply bottleneck หาย revenue growth จะ accelerate ต่อ</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>IRA Drug Pricing — Medicare negotiation กระทบ Mounjaro</h4>
+        <p>Inflation Reduction Act ให้ Medicare negotiate drug prices โดยตรง Mounjaro เป็น one of the drugs ใน list tiered สำหรับ 2027 อาจกระทบ US Mounjaro price โดยตรง แต่ international ไม่ได้รับผล และ volume growth อาจ offset pricing pressure ได้</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Novo Nordisk / competition — semaglutide oral + amycretin</h4>
+        <p>Novo Nordisk กำลัง develop oral semaglutide และ amycretin (GLP-1/amylin dual) ที่ show weight loss ที่สูงกว่า tirzepatide ใน early data ถ้า Novo's next-gen molecule ดีกว่า Zepbound มาก จะกระทบ competitive positioning ใน 2027-2028 แต่ Lilly ก็มี retatrutide ที่ทำได้ดีกว่า</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">⚖️</div>
+          <div>
+            <div class="comp-segment">GLP-1 / Obesity Drug Market</div>
+            <div class="comp-pos dominant">Co-leader with Novo Nordisk</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Eli Lilly — Mounjaro + Zepbound (tirzepatide)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill bar-mj" style="width:45%"></div></div>
+            <div class="comp-detail">~40-45% GLP-1 market share (by revenue) ใน US — gaining vs Novo tirzepatide dual agonist (GIP+GLP-1) ทำ weight loss ดีกว่า semaglutide ใน head-to-head เฉลี่ย -20% vs -15%</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Novo Nordisk (Ozempic + Wegovy) — NVO</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:50%;background:#003f7c"></div></div>
+            <div class="comp-detail">~50-55% GLP-1 market pioneer — semaglutide (Ozempic/Wegovy) ครองตลาด แต่กำลัง lose share ให้ tirzepatide ใน obesity segment เพราะ Wegovy ยังขาด supply</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Others (AstraZeneca, Pfizer, Roche)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:5%;background:#aaa"></div></div>
+            <div class="comp-detail">ยังอยู่ใน Phase 2-3 ไม่มีใครใกล้จะ compete ได้ใน near-term market เป็น Lilly vs Novo ชัดเจน</div>
+          </div>
+        </div>
+        <div class="comp-verdict red">Lilly กับ Novo เป็น duopoly ที่ tight — แต่ Lilly กำลังได้ share เพราะ tirzepatide efficacy สูงกว่า สิ่งที่ต้องติดตามคือ Novo's next-gen molecule</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Core Portfolio (70%)</h3>
+          <p>Mission: Long-term compounding. Own durable businesses inside major global money-flow layers. Patient. Accepts volatility. Focuses on business quality. Target: ~15% annualized return over multi-year period.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">LLY เป็น Core เพราะ <strong>obesity และ diabetes เป็น secular trends ที่ไม่หาย</strong> — WHO ประมาณว่าคน overweight/obese ทั่วโลกมี 2.5 billion คน ยา GLP-1/GIP คือ most impactful medical breakthrough ในรอบหลายสิบปี Lilly เป็น co-leader ใน market นี้ด้วย best-in-class molecule และ pipeline ที่ลึกที่สุด</p>
+          <div class="core-traits">
+            <div class="core-trait">
+              <div class="trait-icon">🏥</div>
+              <div class="trait-name">Secular Disease Trend</div>
+              <div class="trait-desc">Obesity และ T2D เป็น global epidemic ที่ไม่ reverse drug treatment เป็น lifetime dependency ไม่ใช่ one-time</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🧬</div>
+              <div class="trait-name">Best-in-Class Molecule</div>
+              <div class="trait-desc">Tirzepatide เป็น dual agonist (GIP+GLP-1) ที่ weight loss superior vs semaglutide head-to-head ใน SURMOUNT trials</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🔬</div>
+              <div class="trait-name">Pipeline Depth</div>
+              <div class="trait-desc">Retatrutide (triple agonist), oral GLP-1, Alzheimer's, oncology — Lilly มี pipeline ที่กว้างที่สุดใน large cap pharma</div>
+            </div>
+            <div class="core-trait">
+              <div class="trait-icon">🏭</div>
+              <div class="trait-name">Manufacturing Moat</div>
+              <div class="trait-desc">$27B+ capex ใน manufacturing — ถ้า supply ไม่จำกัด revenue growth จะเร็วกว่า Novo ที่ยังมี Wegovy shortage</div>
+            </div>
+          </div>
+          <div class="fit-box">
+            <h4>✅ Verdict: LLY → Core</h4>
+            <p>LLY เป็น Core เพราะ secular obesity/diabetes trend, best-in-class molecule, pipeline depth และ manufacturing advantage add เมื่อ market กังวล IRA pricing, Novo competition หรือ clinical setback — เป็น entry opportunity ไม่ใช่ thesis failure watch: Novo next-gen data และ oral GLP-1 race ที่จะเปลี่ยน convenience factor สำหรับ patients</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — LLY / Eli Lilly and Company · Source: Eli Lilly Q4 &amp; FY2025 Earnings Release (February 2026)</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="lly-dot">
+      <span style="background:var(--lly-dark)"></span>
+      <span style="background:var(--lly-red)"></span>
+      <span style="background:var(--lly-navy)"></span>
+      <span style="background:var(--lly-crimson)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

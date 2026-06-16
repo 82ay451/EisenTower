@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COHR — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --cohr-teal:      #00A3C9;
+      --cohr-dark:      #006D87;
+      --cohr-light:     #4DC8E0;
+      --cohr-teal-soft: #E0F5FA;
+      --accent:         #00A3C9;
+      --accent-soft:    #E0F5FA;
+      --green:          #34A853;
+      --green-soft:     #e6f4ea;
+      --red:            #EA4335;
+      --red-soft:       #fce8e6;
+      --yellow:         #FBBC04;
+      --yellow-soft:    #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--surface); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, var(--cohr-teal) 25%, var(--cohr-light) 25% 50%, var(--cohr-dark) 50% 75%, var(--cohr-teal-soft) 75%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); background: var(--tag-bg); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--cohr-teal); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-networking { background: var(--cohr-teal); }
+    .bar-lasers     { background: #6B46C1; }
+    .bar-materials  { background: #F59E0B; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--cohr-teal-soft); border-color: var(--cohr-teal); }
+    .callout.green  { background: var(--green-soft);     border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);    border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);       border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--cohr-teal), var(--cohr-light)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--cohr-teal); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cohr-teal); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--cohr-teal-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);      color: var(--green); }
+    .comp-pos.challenger { background: var(--cohr-teal-soft);  color: var(--cohr-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);     color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--cohr-teal); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--cohr-teal-soft); border-color: var(--cohr-teal); color: var(--cohr-dark); }
+    .comp-verdict.yellow { background: var(--yellow-soft);    border-color: var(--yellow);    color: #8a6000; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: rgba(138, 43, 226, 0.07); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #7b2fff; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-wave { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .bucket-fit { background: #f3eeff; border: 1px solid #c9b2ff; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .bucket-fit h4 { font-size: 15px; font-weight: 700; color: #7b2fff; margin-bottom: 10px; }
+    .bucket-fit p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--cohr-teal); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,163,201,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--cohr-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">COHR</span> — Coherent Corp.</h1>
+    <div class="doc-subtitle">Understanding Coherent as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NYSE: COHR</span>
+      <span>🏛 Founded 1971 (II-VI) / 2022 as Coherent Corp</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Coherent Corp คือ <strong>ผู้นำด้าน photonics, optical transceivers, lasers และ compound semiconductors</strong> — บริษัทที่เกิดจากการ merger ระหว่าง II-VI Incorporated และ Coherent เดิม (ก่อตั้ง 1966) ในปี 2022 ทำให้ได้ portfolio ครอบคลุมทั้ง laser technology และ photonics สำหรับ data center, telecom, semiconductor manufacturing และ industrial</p>
+      <p>เรื่องที่ตลาด focus มากที่สุดในปัจจุบันคือ <strong>800G optical transceivers สำหรับ AI data centers</strong> — ทุก GPU cluster ที่ NVIDIA build ต้องการ optical interconnects จำนวนมหาศาล Coherent เป็นหนึ่งในไม่กี่บริษัทในโลกที่ manufacture 800G transceivers ที่ใช้ใน AI training clusters ได้ที่ scale</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2024 (Jun)</div>
+          <div class="stat-value">$4.67B</div>
+          <div class="stat-sub">ปีงบ สิ้นสุด Jun 2024</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Datacom Revenue</div>
+          <div class="stat-value">+70%+</div>
+          <div class="stat-sub">YoY growth ใน AI transceiver (FY2025 H1)</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">GAAP Net Loss</div>
+          <div class="stat-value">-$1.1B</div>
+          <div class="stat-sub">FY2024 — รวม goodwill impairment</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Non-GAAP EPS</div>
+          <div class="stat-value">$0.35+</div>
+          <div class="stat-sub">FY2024 — ปรับปรุง D&A merger</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Adj. EBITDA Margin</div>
+          <div class="stat-value">~17%</div>
+          <div class="stat-sub">FY2024 — recovering</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Long-term Debt</div>
+          <div class="stat-value">~$4.5B</div>
+          <div class="stat-sub">จาก merger leverage</div>
+        </div>
+      </div>
+      <p>Coherent อยู่ใน <strong>inflection point</strong> — ช่วงปี 2022-2023 เป็น transition period หลัง merger แต่ตั้งแต่ FY2025 เป็นต้นมา AI datacom transceiver demand เพิ่มขึ้นอย่างรวดเร็ว ทำให้ Networking segment กลับมา grow เร็วมาก ขณะที่ภาระหนี้จาก merger ยังเป็น overhang</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Coherent Corp เกิดจากการรวมกันของ tech companies ที่มี heritage ยาวนานสองราย — II-VI ที่เชี่ยวชาญ compound semiconductors และ laser optics กับ Coherent เดิมที่เชี่ยวชาญ industrial and scientific lasers</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1971</div>
+          <div class="tl-text"><strong>II-VI Incorporated ก่อตั้ง:</strong> ก่อตั้งใน Pittsburgh, PA เพื่อผลิต compound semiconductor materials สำหรับ infrared optics ชื่อ "II-VI" มาจาก periodic table groups II และ VI ที่ใช้ทำ compound semiconductors</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1966 / ทศวรรษ 1990s</div>
+          <div class="tl-text"><strong>Coherent เดิม (Coherent, Inc.) ก่อตั้ง:</strong> ก่อตั้งในปี 1966 ใน Santa Clara เป็นผู้นำด้าน industrial và scientific lasers grow เป็น บริษัทที่มีรายได้ ~$1.5B ก่อน merger</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019–2021</div>
+          <div class="tl-text"><strong>II-VI Acquires Finisar + เตรียม Merge:</strong> II-VI ซื้อ Finisar (optical transceivers) ในปี 2019 สำหรับ $3.2B และประกาศจะซื้อ Coherent, Inc. ในปี 2021 สำหรับ ~$6.3B เพื่อสร้าง vertically integrated photonics company</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">มกราคม 2022</div>
+          <div class="tl-text"><strong>Merger Complete — Coherent Corp เกิด:</strong> II-VI เปลี่ยนชื่อเป็น Coherent Corp หลังปิด merger กับ Coherent, Inc. เสร็จ รวม revenues ~$4.5-5B combined ติด debt ก้อนใหญ่จาก deal แต่ได้ technology portfolio ที่ครบเครื่องที่สุด</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022–2023</div>
+          <div class="tl-text"><strong>Post-Merger Integration Pain:</strong> Telecom cycle down + semiconductor inventory correction กดรายได้ ขณะที่ integration costs สูง GAAP losses ใหญ่จาก D&A และ goodwill amortization CEO change: Jim Anderson (จาก AMD) เข้ามาแทน Vincent Mattera ในต้นปี 2024</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024–2025</div>
+          <div class="tl-text"><strong>AI Datacom Transceiver Boom:</strong> 800G optical transceivers สำหรับ AI data centers demand พุ่งสูง Coherent เป็นหนึ่งใน key suppliers ให้ hyperscalers ผ่าน ODMs Networking segment กลับมา grow เร็วมาก ขณะที่ Jim Anderson restructure บริษัทให้ focus มากขึ้น</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Track record หลัง merger คือ pain แล้ว recovery</strong> — FY2022-2023 เป็นช่วงที่ยากที่สุดของ post-merger integration แต่ตั้งแต่ FY2024 เป็นต้นมา Networking segment (AI transceivers) เริ่ม inflect อย่างชัดเจน</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปีงบ (มิ.ย.)</th>
+            <th>Revenue</th>
+            <th>YoY</th>
+            <th>Adj. EBITDA Margin</th>
+            <th>Non-GAAP EPS</th>
+            <th>Net Income</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>FY2022</td><td>$3.32B</td><td>—</td><td>~16%</td><td>$1.45</td><td>-$0.4B</td></tr>
+          <tr><td>FY2023</td><td>$4.71B</td><td>+42%*</td><td>~14%</td><td>$0.60</td><td>-$1.6B</td></tr>
+          <tr><td>FY2024</td><td>$4.67B</td><td>-1%</td><td>~17%</td><td>~$0.35</td><td>-$1.1B</td></tr>
+          <tr class="highlight"><td>FY2025 (est.) ✦</td><td>~$5.5B+</td><td>+18%+</td><td>est. 20%+</td><td>est. $1.00+</td><td>est. -$0.5B</td></tr>
+        </tbody>
+      </table>
+      <p>*FY2023 YoY สูงเพราะนับรวม Coherent เต็มปีแรกหลัง merger, FY2022 มี Coherent เพียงครึ่งปี ตัวเลข FY2025 เป็นประมาณการจากผล Q1-Q2 FY2025 ที่ strong มาก จาก AI transceiver demand</p>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Datacom Revenue (FY2025)</div>
+          <div class="stat-value">+70%+</div>
+          <div class="stat-sub">AI transceiver demand surge</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">GAAP Losses — D&A</div>
+          <div class="stat-value">~$1B+</div>
+          <div class="stat-sub">ต่อปี จาก merger goodwill amort.</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Margin Recovery</div>
+          <div class="stat-value">17%→20%</div>
+          <div class="stat-sub">Adj. EBITDA FY2024→FY2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Jim Anderson</div>
+          <div class="boss-title">CEO, Coherent Corp (ตั้งแต่ มกราคม 2024)</div>
+          <div>
+            <div class="boss-fact"><span class="label">ก่อนหน้า</span><span>AMD (Corp VP) · Lattice Semiconductor (CEO)</span></div>
+            <div class="boss-fact"><span class="label">Background</span><span>Semiconductor / Engineering leadership</span></div>
+            <div class="boss-fact"><span class="label">เริ่มที่ COHR</span><span>มกราคม 2024</span></div>
+            <div class="boss-fact"><span class="label">Focus</span><span>AI datacom + portfolio simplification</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Jim Anderson เข้ามา Coherent ในช่วงเวลาที่บริษัทกำลัง struggle กับ post-merger complexity และ down cycle ใน telecom Anderson มาจาก semiconductor world ที่เข้าใจ product lifecycle ดี — เคยเป็น CEO ของ Lattice Semiconductor ที่เขา transform จาก legacy FPGA company เป็น low-power programmable logic innovator</p>
+          <p style="margin-top:12px">สิ่งที่ Anderson เน้นหนักที่สุดตั้งแต่เข้ามาคือ <strong>simplify and focus</strong> — ลด complexity ของ product portfolio, ขาย non-core businesses และ accelerate ใน AI datacom ซึ่งเป็น highest-growth opportunity เขาประกาศ divestiture ของ business หลายส่วนเพื่อ pay down debt</p>
+          <p style="margin-top:12px">Coherent ยังมี <strong>SiC power semiconductor business</strong> สำหรับ EV ซึ่งเป็น strategic asset อีกชิ้น Anderson ต้องตัดสินใจว่าจะ keep, sell หรือ IPO ส่วนนี้ — decision ที่อาจ unlock significant value</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Coherent ทำ "light-based" components</strong> — ทุกอย่างที่เกี่ยวกับ lasers, optics, photonics และ compound semiconductors ที่ใช้ในการส่งข้อมูล, ตัด metal, ผลิต semiconductors, และ power EV</p>
+      <div class="callout blue">
+        <p><strong>Networking (optical transceivers):</strong> 800G/400G optical transceivers สำหรับ AI data centers — components ที่แปลง electrical signal เป็น optical signal เพื่อส่งข้อมูล ใน speed สูงมากผ่านสาย fiber แต่ละ NVIDIA H100 cluster ต้องการ transceivers หลายหมื่นตัว</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Lasers (Industrial + Scientific):</strong> High-power lasers สำหรับ metal cutting, welding, semiconductor manufacturing (EUV lithography mirrors), medical devices นี่คือ legacy II-VI และ Coherent เดิม รายได้ stable แต่ growth ช้ากว่า</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Materials (SiC, Compound Semiconductors):</strong> Silicon Carbide (SiC) substrates สำหรับ power electronics ใน EV, GaAs และ InP compound semiconductors สำหรับ telecommunications เป็น upstream materials business ที่ strategic มาก</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Coherent มีรายได้สามธุรกิจหลัก</strong> — Networking กำลัง rocket, Lasers stable, Materials/SiC growing from EV demand. Portfolio ทำให้ไม่ overexpose ใน single end market</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2024 — $4.67B แบ่งตาม Segment (ประมาณการ)</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">📡 Networking (Datacom + Telecom)</div>
+            <div class="rev-numbers"><strong>~$2.5B</strong> · ~54%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-networking" style="width:54%"></div></div>
+          <div class="rev-note">Optical transceivers 400G/800G สำหรับ AI data centers, fiber telecom · Fastest growing segment · AI demand surge ทำให้ FY2025 growth +70%+ YoY</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔆 Lasers (Industrial + Scientific)</div>
+            <div class="rev-numbers"><strong>~$1.4B</strong> · ~30%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-lasers" style="width:30%"></div></div>
+          <div class="rev-note">High-power industrial lasers, EUV optics, medical, semiconductor mfg · Stable revenue base · margins ดีแต่ growth ช้ากว่า networking</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">⚡ Materials (SiC + Compound Semi)</div>
+            <div class="rev-numbers"><strong>~$0.77B</strong> · ~16%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-materials" style="width:16%"></div></div>
+          <div class="rev-note">SiC substrates สำหรับ EV power electronics, GaAs/InP สำหรับ telecom · EV cycle ชะลอกดรายได้ FY2024 แต่ long-term fundamental ยังดี</div>
+        </div>
+      </div>
+      <div class="callout blue">
+        <p><strong>Gross Margin ต่างกันมากตาม segment:</strong> Networking (transceivers) gross margin ~40-45% Lasers ~35-40% Materials ~25-30% เมื่อ Networking mix เพิ่มขึ้นจาก AI demand blended gross margin จะดีขึ้นต่อเนื่อง</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Coherent compound ผ่าน <strong>AI infrastructure cycle + technology moat ใน photonics</strong> — ไม่ใช่ software แต่เป็น technology barriers ที่สูงมากในการผลิต optical transceivers ที่ spec สูง</p>
+      <div class="callout blue">
+        <p><strong>800G → 1.6T Technology Leadership:</strong> Coherent เป็น R&D leader ในการ push optical transceiver speed จาก 400G → 800G → 1.6T ในอนาคต ยิ่ง AI cluster ใหญ่ขึ้น ยิ่งต้องการ speed สูงขึ้น Coherent compound ไปกับ AI capex cycle</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Vertical Integration ในทุก Layer:</strong> Coherent ทำ compound semiconductor materials เอง (InP, GaAs) → ทำ laser chips เอง → ทำ transceivers เอง ทำให้ cost advantage และ supply chain security ดีกว่าคู่แข่งที่ต้องซื้อ substrate จากข้างนอก</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Debt Paydown = Multiple Expansion:</strong> ถ้า COHR ใช้ cash flow ที่เพิ่มขึ้น pay down $4.5B debt ได้เร็ว interest expense ลด → EPS improve อย่างมาก → valuation multiple จะ expand เป็น double benefit</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Networking Growth</div>
+          <div class="stat-value">+70%+</div>
+          <div class="stat-sub">AI transceiver FY2025 YoY</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Debt to Pay Down</div>
+          <div class="stat-value">~$4.5B</div>
+          <div class="stat-sub">Long-term debt — merger legacy</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Margin Expansion</div>
+          <div class="stat-value">17%→20%+</div>
+          <div class="stat-sub">Adj. EBITDA improving fast</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Coherent อยู่ใน <strong>recovery + inflection</strong> — post-merger pain ผ่านไปแล้ว AI transceiver demand กำลัง accelerate แต่ debt ยังเป็น overhang ที่สำคัญ</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>800G Transceiver Demand Surge — AI Driving Upside</h4>
+        <p>Hyperscalers (Microsoft, Google, Meta, Amazon) กำลัง scale AI clusters ขนาดใหญ่อย่างรวดเร็ว แต่ละ cluster ต้องการ optical transceivers จำนวนมาก Coherent เป็นหนึ่งใน few suppliers ที่ produce 800G ที่ volume ที่พอกับ demand</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Jim Anderson — Focus และ Simplification</h4>
+        <p>CEO ใหม่กำลัง simplify portfolio — ขาย non-core businesses เพื่อ pay down debt และ focus resources ใน AI datacom + SiC ผลลัพธ์คือ operating leverage ที่ดีขึ้นและ balance sheet ที่ดีขึ้นพร้อมกัน</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>SiC EV Business — Sell หรือ Keep?</h4>
+        <p>SiC substrate business มีมูลค่าในฐานะ standalone แต่ EV adoption ชะลอลง COHR ต้องตัดสินใจว่าจะ strategic review, IPO หรือ sell SiC unit ออก decision นี้อาจ unlock $1-2B ใน hidden value</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>$4.5B Debt — Leverage ยังสูง</h4>
+        <p>Merger debt ยังเป็น significant overhang ถ้า AI transceiver demand ชะลอ หรือ margin ไม่ expand ตาม plan financial flexibility จะลดลงมาก interest expense กินกำไรมาก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Competition จาก Marvell/InPhi + อื่นๆ</h4>
+        <p>Marvell (ผ่าน InPhi DSP), Lumentum (LITE), Viavi, และ Chinese suppliers กำลัง invest heavy ใน optical transceiver capacity ถ้า supply เพิ่มเร็วกว่า demand ASPs (average selling prices) จะลด</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Coherent แข่งในสองสนามหลัก — optical transceivers สำหรับ AI data centers และ industrial lasers</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">💡</div>
+          <div>
+            <div class="comp-segment">Optical Transceivers — AI Data Center</div>
+            <div class="comp-pos challenger">Top 2 Player ใน 800G</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Coherent Corp (COHR)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:var(--cohr-teal)"></div></div>
+            <div class="comp-detail">~30% 800G market share (est.) · Vertically integrated จาก compound semi ถึง finished transceiver · Stronger in higher-end 800G DR/FR specifications</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Lumentum (LITE)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:#7B2FFF"></div></div>
+            <div class="comp-detail">~25% share · Strong in telecom DWDM + datacom · Also compete in EML lasers สำหรับ 800G transceivers · similar AI data center exposure</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">HGC + Innolight (Chinese)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#EA4335"></div></div>
+            <div class="comp-detail">~20% combined share · Aggressive pricing · Mainly serve Chinese hyperscalers แต่กำลัง expand global · Geopolitical risk ให้ US suppliers ถ้า US customers ลด China exposure</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Fabrinet + Others</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:#FBBC04"></div></div>
+            <div class="comp-detail">Contract manufacturers เช่น Fabrinet (FN) ที่ manufacture ให้ brand อื่น + Apple/Google บาง custom transceivers</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">Coherent และ Lumentum เป็น US-based leaders ใน 800G transceivers ทั้งคู่ benefit จาก potential geopolitical shift ที่ hyperscalers อาจ prefer US suppliers มากขึ้น competition ใน price จาก China ยังเป็น watch item</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Wave = find re-rating catalyst before consensus. COHR เป็น AI infrastructure play ที่ฝังอยู่ใน legacy photonics company ซึ่งตลาดยัง discount เพราะ debt + GAAP losses.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">COHR เป็น <strong>Wave ที่ซ่อนอยู่ใน industrial company</strong> — ตลาดมอง COHR เป็น leveraged photonics company แต่จริงๆ คือ critical AI infrastructure enabler ที่มี moat ใน 800G transceivers และ compound semiconductor materials</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">💡</div>
+              <div class="trait-name">800G AI Transceiver Leader</div>
+              <div class="trait-desc">ทุก AI cluster ขนาดใหญ่ต้องการ optical transceivers — COHR เป็นหนึ่งใน few suppliers ที่ produce ที่ volume นี้ เป็น pick-and-shovel play ใน AI infrastructure</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🔬</div>
+              <div class="trait-name">Vertical Integration Moat</div>
+              <div class="trait-desc">ทำ compound semiconductor materials เองตั้งแต่ substrate จนถึง finished transceiver ทำให้ cost structure ดีกว่าและ supply chain ที่ reliable กว่า</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">Debt Paydown = EPS Lever</div>
+              <div class="trait-desc">ทุก $500M debt ที่ pay down ลด interest expense ~$25-30M/yr = EPS improve โดยตรง เป็น compound lever ที่ market ยัง underprice</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">⚡</div>
+              <div class="trait-name">SiC Hidden Value</div>
+              <div class="trait-desc">SiC EV substrate business อาจมีมูลค่า $1-2B เป็น standalone ถ้า COHR ขายหรือ IPO จะ unlock value ที่ตลาดยังไม่ recognize</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-wave">
+            <span class="not-tag">✗ ไม่ใช่ Core — GAAP ขาดทุน, debt สูง, merger integration ยังไม่เสร็จ</span>
+            <span class="not-tag">✗ ไม่ใช่ low-risk holding</span>
+            <span class="not-tag">✗ ไม่ใช่ hypergrowth company โดยรวม</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: COHR → Wave</h4>
+            <p>COHR เป็น Wave ที่มี multiple catalysts — AI transceiver demand ที่ accelerating, debt paydown ที่ EPS lever, SiC potential unlock และ Jim Anderson ที่มี track record จาก Lattice ว่า simplify แล้ว re-rate ได้จริง ถ้า market re-values COHR จาก "leveraged photonics" เป็น "AI infrastructure enabler" 50-100% upside ไม่ใช่เรื่องผิดปกติ Exit signal: AI transceiver demand chills, debt ไม่ลดในอีก 2 ปี, หรือ SiC business ยังติดอยู่กับ EV downcycle ยาว</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — COHR / Coherent Corp. · Source: FY2024 Annual Report (Aug 2024) · Investor Day Presentations · Public Sources</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--cohr-teal)"></span>
+      <span style="background:var(--cohr-light)"></span>
+      <span style="background:var(--cohr-dark)"></span>
+      <span style="background:var(--cohr-teal-soft)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

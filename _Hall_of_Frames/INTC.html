@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTC — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --intc-blue:      #0068B5;
+      --intc-dark:      #003B6A;
+      --intc-light:     #00A9E0;
+      --intc-blue-soft: #E5F1FA;
+      --accent:         #0068B5;
+      --accent-soft:    #E5F1FA;
+      --green:          #34A853;
+      --green-soft:     #e6f4ea;
+      --red:            #EA4335;
+      --red-soft:       #fce8e6;
+      --yellow:         #FBBC04;
+      --yellow-soft:    #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: var(--surface);
+      border-bottom: 3px solid transparent;
+      border-image: linear-gradient(90deg,
+        var(--intc-blue) 25%, var(--intc-light) 25% 50%,
+        var(--intc-dark) 50% 75%, var(--intc-blue-soft) 75%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); background: var(--tag-bg);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--intc-blue); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+
+    /* ── Nav ── */
+    .toc {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* ── Body ── */
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+
+    /* ── Toggle Section ── */
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      cursor: pointer; user-select: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .section-h2 {
+      font-size: 24px; font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--text-primary); transition: color 0.15s;
+    }
+    .toggle-icon {
+      flex-shrink: 0; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--tag-bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.25s;
+      font-size: 16px; color: var(--text-secondary);
+    }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content {
+      overflow: hidden;
+      transition: max-height 0.35s ease, opacity 0.3s ease;
+      max-height: 9999px; opacity: 1;
+    }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-ccg      { background: var(--intc-blue); }
+    .bar-dcai     { background: var(--intc-light); }
+    .bar-foundry  { background: #FF8C00; }
+    .bar-other    { background: #9B59B6; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--intc-blue-soft); border-color: var(--intc-blue); }
+    .callout.green  { background: var(--green-soft);     border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);    border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);       border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+      width: 2px; background: linear-gradient(180deg, var(--intc-blue), var(--intc-light));
+    }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--intc-blue); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--intc-blue); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--intc-blue-soft); }
+
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);      color: var(--green); }
+    .comp-pos.challenger { background: var(--intc-blue-soft);  color: var(--intc-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);     color: #8a6000; }
+    .comp-pos.trailing   { background: var(--red-soft);        color: #b71c1c; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--intc-blue); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--intc-blue-soft); border-color: var(--intc-blue);  color: #003B6A; }
+    .comp-verdict.green  { background: var(--green-soft);     border-color: var(--green);      color: #1e6e3a; }
+    .comp-verdict.yellow { background: var(--yellow-soft);    border-color: var(--yellow);     color: #8a6000; }
+    .comp-verdict.red    { background: var(--red-soft);       border-color: var(--red);        color: #b71c1c; }
+
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: rgba(138, 43, 226, 0.07); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #7b2fff; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-wave { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .bucket-fit { background: #f3eeff; border: 1px solid #c9b2ff; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .bucket-fit h4 { font-size: 15px; font-weight: 700; color: #7b2fff; margin-bottom: 10px; }
+    .bucket-fit p { font-size: 15px; }
+
+    #back-to-top {
+      position: fixed; bottom: 32px; right: 32px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--intc-blue); color: white;
+      border: none; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,104,181,0.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s; z-index: 200;
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--intc-dark); }
+
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">INTC</span> — Intel Corporation</h1>
+    <div class="doc-subtitle">Understanding Intel as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NASDAQ: INTC</span>
+      <span>🏛 Founded 1968</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Intel Corporation คือบริษัทที่ <strong>ครองโลก PC processor มาหลายทศวรรษ</strong> — และตอนนี้กำลังพยายาม reinvent ตัวเองเป็น foundry สำหรับ chip manufacturing ให้บริษัทอื่น นี่คือ turnaround story ที่ใหญ่ที่สุดในวงการ semiconductor — จาก dominant PC chip maker สู่ "IDM 2.0" ที่ต้องการเป็น TSMC ของโลกตะวันตก</p>
+      <p>FY2025 เป็นปีแรกของ CEO Lip-Bu Tan ที่เข้ามาในเดือนมีนาคม 2025 หลัง Pat Gelsinger ลาออก รายได้ทรงตัว $52.9B (flat YoY) แต่ที่น่าสังเกตคือ GAAP Net Loss หดลงจาก -$18.8B ในปี 2024 เหลือ -$267M ในปี 2025 — ส่วนหนึ่งเพราะ extraordinary write-downs ในปี 2024 แต่ก็แสดงว่า business เริ่มเสถียรขึ้น</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$52.9B</div>
+          <div class="stat-sub">~flat YoY (-1%)</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Non-GAAP EPS FY2025</div>
+          <div class="stat-value">$0.42</div>
+          <div class="stat-sub">vs -$0.13 FY2024</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Foundry Op. Loss</div>
+          <div class="stat-value">-$10.3B</div>
+          <div class="stat-sub">Intel Foundry FY2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Cash + ST Investments</div>
+          <div class="stat-value">$37.4B</div>
+          <div class="stat-sub">ณ สิ้นปี 2025</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Long-Term Debt</div>
+          <div class="stat-value">$44.1B</div>
+          <div class="stat-sub">ยังหนักมาก</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">85,100</div>
+          <div class="stat-sub">จาก 108,900 (-21%)</div>
+        </div>
+      </div>
+      <p>Intel ไม่ใช่ turnaround ที่ง่าย — Foundry ยังขาดทุน -$10.3B ต่อปี debt สูง $44B และ competition จาก AMD, TSMC, NVIDIA ที่แข็งแกร่งขึ้นทุกปี แต่ถ้า Lip-Bu Tan execute ได้ 18A process node ที่ HVM ramp จะเป็น catalyst ที่ bake ยังไม่ price in</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>จากบริษัท DRAM ในปี 1968 สู่การ monopolize โลก PC processor — และตอนนี้อยู่ในวิกฤต identity ครั้งใหญ่ที่สุด</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1968</div>
+          <div class="tl-text"><strong>ก่อตั้งโดย Gordon Moore &amp; Robert Noyce:</strong> "The Fairchildren" ออกจาก Fairchild Semiconductor มาก่อตั้ง Intel ใน Santa Clara ชื่อมาจาก "Integrated Electronics" เริ่มต้นเป็นบริษัท DRAM memory</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1971</div>
+          <div class="tl-text"><strong>Intel 4004 — Microprocessor ตัวแรกของโลก:</strong> Intel ประดิษฐ์ microprocessor ซึ่งเปลี่ยนโลกไปตลอดกาล ตัดสินใจ pivot จาก memory ไป microprocessor ซึ่งเป็นการ pivot ที่ถูกต้องที่สุดในประวัติศาสตร์ tech</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1981</div>
+          <div class="tl-text"><strong>IBM PC ใช้ Intel 8088:</strong> IBM เลือก Intel เป็น CPU ของ Personal Computer ตัวแรก จุดนี้คือจุดเริ่มต้นของ Wintel monopoly ที่จะ dominate โลก computing อีก 30+ ปี</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1990s–2000s</div>
+          <div class="tl-text"><strong>ยุค Pentium ครอง PC:</strong> Pentium, Pentium Pro, Core 2 Duo Intel ครอง CPU market ด้วย Tick-Tock model — ทุกปีทำ process node ใหม่หรือ microarchitecture ใหม่ สลับกัน ทำให้ AMD ตามไม่ทัน</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2006</div>
+          <div class="tl-text"><strong>Core Architecture — Peak Intel:</strong> Core 2 Duo เอาชนะ AMD Athlon 64 x2 อย่างชัดเจน นี่คือจุดที่ Intel เป็น undisputed leader ทั้ง PC และ Server ตลาดรวม Intel มี market share เกิน 80% ใน x86</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2016–2021</div>
+          <div class="tl-text"><strong>10nm ล่าช้า — AMD ฟื้น:</strong> Intel ติดอยู่กับ 14nm นานผิดปกติ ในขณะที่ AMD ร่วมกับ TSMC ออก Ryzen ที่ใช้ 7nm — performance เท่ากับหรือดีกว่า Intel ในราคาถูกกว่า นี่คือ beginning of the fall</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2021</div>
+          <div class="tl-text"><strong>Pat Gelsinger เข้ามาเป็น CEO:</strong> ประกาศ IDM 2.0 strategy — Intel จะ manufacture chip ให้คนอื่นด้วย ลงทุน fab ใน Arizona และ Ohio หลายหมื่นล้าน เริ่มโครงการ Intel Foundry Services</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>วิกฤตและ Pat Gelsinger ลาออก:</strong> GAAP Net Loss $18.8B (รวม impairment charges), headcount ลด 15,000 คน, Altera แยกตัว 51% sold, Pat Gelsinger ลาออกเดือนธันวาคม board มองว่า progress เร็วไม่พอ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">มีนาคม 2025</div>
+          <div class="tl-text"><strong>Lip-Bu Tan เข้าเป็น CEO:</strong> อดีต CEO Cadence Design Systems (2009-2021) เข้ามา restructure Intel — ลดพนักงานเพิ่มอีก 8,800 คน, ปรับ R&D focus ใหม่, NVIDIA ซื้อหุ้น Intel $5B เป็น vote of confidence ส่วนหนึ่ง</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>18A Process Node เริ่ม HVM:</strong> High Volume Manufacturing สำหรับ 18A node เริ่มใน fabs ที่ Arizona และ Oregon, CHIPS Act Secure Enclave signed, Core Ultra Series 3 (Panther Lake) เปิดตัว มี 200+ OEM designs รอ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>ทศวรรษที่ผ่านมา Intel เป็นเรื่องของ stagnation และ decline</strong> — revenue ทรงตัวหรือลด margin ลดลง ในขณะที่ AMD, TSMC, NVIDIA โตเร็ว FY2025 เป็นปีแรกที่ EPS กลับมาเป็นบวก (Non-GAAP) หลังจากสองปีของ restructuring</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>Operating Income</th>
+            <th>Net Income</th>
+            <th>Non-GAAP EPS</th>
+            <th>Op. Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2019</td><td>$71.9B</td><td>$22.0B</td><td>$21.0B</td><td>$4.87</td><td>31%</td></tr>
+          <tr><td>2020</td><td>$77.9B</td><td>$23.7B</td><td>$20.9B</td><td>$4.94</td><td>30%</td></tr>
+          <tr><td>2021</td><td>$79.0B</td><td>$19.5B</td><td>$19.9B</td><td>$4.86</td><td>25%</td></tr>
+          <tr><td>2022</td><td>$63.1B</td><td>$2.3B</td><td>$8.0B</td><td>$1.84</td><td>4%</td></tr>
+          <tr><td>2023</td><td>$54.2B</td><td>-$1.6B</td><td>$1.7B</td><td>$1.05</td><td>-3%</td></tr>
+          <tr><td>2024</td><td>$53.1B</td><td>-$11.0B</td><td>-$18.8B</td><td>-$0.13</td><td>-21%</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$52.9B</td><td>-$1.3B</td><td>-$267M</td><td>$0.42</td><td>-2%</td></tr>
+        </tbody>
+      </table>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">EPS Recovery</div>
+          <div class="stat-value">$0.42</div>
+          <div class="stat-sub">Non-GAAP vs -$0.13 ปีที่แล้ว</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Revenue ลดลง</div>
+          <div class="stat-value">-26%</div>
+          <div class="stat-sub">จาก $71.9B (2019) → $52.9B (2025)</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Headcount ลดลง</div>
+          <div class="stat-value">-23,800</div>
+          <div class="stat-sub">จาก 108,900 → 85,100</div>
+        </div>
+      </div>
+      <p>สิ่งที่น่าสังเกตคือ <strong>2024 เป็น trough ทางการเงิน</strong> — $18.8B net loss มาจาก goodwill impairment และ restructuring charges เป็นหลัก ไม่ใช่ operating cash flow negative ทั้งหมด 2025 Net Loss $267M ดีกว่ามาก และ Non-GAAP EPS กลับมาเป็นบวก</p>
+      <p>Q1 2026 guide: $11.7-12.7B revenue (ลงจาก $12.7B Q1 2025 ~-10% YoY) Non-GAAP EPS: $0.00 — ยังไม่ฟื้นอย่างรวดเร็ว แต่ foundry pipeline กำลัง build</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Lip-Bu Tan</div>
+          <div class="boss-title">CEO, Intel Corporation (ตั้งแต่ มีนาคม 2025)</div>
+          <div>
+            <div class="boss-fact"><span class="label">เกิด</span><span>Malaysia</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>BS Nanyang · MS Physics MIT · MBA UC Berkeley Haas</span></div>
+            <div class="boss-fact"><span class="label">Cadence CEO</span><span>2009–2021 (12 ปี)</span></div>
+            <div class="boss-fact"><span class="label">Walden Intl.</span><span>Co-founder (Venture Capital)</span></div>
+            <div class="boss-fact"><span class="label">Intel CEO</span><span>มีนาคม 2025</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Lip-Bu Tan ไม่ใช่ outsider มองเข้ามา — เขาอยู่ใน Intel Board มาตั้งแต่ 2022 และรู้จัก Intel inside-out ก่อนที่จะรับตำแหน่ง CEO ที่ Cadence ซึ่งเป็น EDA software บริษัท เขา rebuild Cadence จาก struggling company เป็น premier EDA platform และนำ stock up ~20x ใน 12 ปีที่เป็น CEO</p>
+          <p style="margin-top:12px">สไตล์: <strong>ใจเย็น, มุ่งเน้น execution, ไม่ชอบ drama</strong> — ตรงข้ามกับ Pat Gelsinger ที่ charismatic แต่ overpromise สิ่งแรกที่ Tan ทำคือลดพนักงานเพิ่มอีก 8,800 คน ลด executive layer และ focus R&D ใหม่ให้ tight กว่าเดิม ความท้าทายสูงสุด: ทำให้ Intel Foundry 18A node ได้ external customers ที่มีนัยสำคัญ</p>
+          <p style="margin-top:12px">NVIDIA ซื้อหุ้น Intel มูลค่า $5B ในปี 2025 — ทั้งเป็น financial validation และ potential strategic partnership (NVIDIA อาจ manufacture บน Intel Foundry บางส่วน)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Intel ทำ chips — ทั้ง design และ manufacture เอง</strong> ซึ่งต่างจาก AMD ที่ design เท่านั้น หรือ TSMC ที่ manufacture เท่านั้น Intel เป็น "IDM" (Integrated Device Manufacturer) ที่ทำทั้งสองอย่างใน house</p>
+      <div class="callout blue">
+        <p><strong>Client Computing Group (CCG) — $32.2B:</strong> ธุรกิจ PC/laptop CPU ที่ทุกคนรู้จัก Core Ultra processors สำหรับ laptop, desktop และ workstation ยังเป็นส่วนที่ profitable ที่สุด (Op. Income $9.3B) แม้ว่า market share จะถูก AMD กิน</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Data Center and AI (DCAI) — $16.9B:</strong> Xeon server processors และ Gaudi AI accelerators สำหรับ data center ส่วนนี้กำลัง grow (+5%) แต่ competition จาก AMD EPYC และ NVIDIA GPU แข็งมาก Gaudi 3 เป็นความพยายาม compete กับ H100/H200 ตรงๆ</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Intel Foundry — $17.8B:</strong> Manufacture chip ให้บริษัทอื่น ยังขาดทุน -$10.3B แต่คือ bet ระยะยาวที่ใหญ่ที่สุดของ Intel 18A process node (เทียบเท่า TSMC N2) กำลัง ramp ใน Arizona &amp; Oregon CHIPS Act support $7.86B จากรัฐบาลสหรัฐฯ</p>
+      </div>
+      <p>Intel ยัง operate <strong>Mobileye</strong> (autonomous driving) ถือหุ้น ~88% หลัง IPO ในปี 2022 และ <strong>Altera</strong> (FPGAs) ซึ่งแยก 51% ออกมาแล้วใน September 2025 — ทั้งคู่ไม่ใช่ core ของ Intel story แต่มี value ที่ซ่อนอยู่</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Intel ยังทำเงินจาก PC และ Server CPU เป็นหลัก</strong> — ธุรกิจที่ mature แต่ยัง generate cash มหาศาล Foundry กำลังกิน resources แต่คือ future revenue stream ถ้า execute ได้</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $52.9B แบ่งตาม Segment</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">💻 Client Computing Group (CCG)</div>
+            <div class="rev-numbers"><strong>$32.2B</strong> · 61%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-ccg" style="width:61%"></div></div>
+          <div class="rev-note">PC/laptop CPU — cash cow ที่ยัง generate Op. Income $9.3B · market share ถูก AMD กิน แต่ Intel ยังมีอยู่กว่า 60% ใน x86 PC</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🖥️ Data Center and AI (DCAI)</div>
+            <div class="rev-numbers"><strong>$16.9B</strong> · 32%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-dcai" style="width:32%"></div></div>
+          <div class="rev-note">Xeon server processors + Gaudi AI accelerators · +5% YoY · Op. Income $3.4B · สู้กับ AMD EPYC + NVIDIA ใน data center</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🏭 Intel Foundry</div>
+            <div class="rev-numbers"><strong>$17.8B</strong> · 34%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-foundry" style="width:34%"></div></div>
+          <div class="rev-note">External foundry + internal wafer production · Op. Loss -$10.3B · Capex $17.7B · รายได้ส่วนนี้ large แต่ยังขาดทุนมาก รอ scale ก่อน break-even</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">📦 All Other (Mobileye, Altera, etc.)</div>
+            <div class="rev-numbers"><strong>$3.6B</strong> · 7%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-other" style="width:7%"></div></div>
+          <div class="rev-note">Mobileye (ADAS), Altera (FPGA หลัง partial divestiture) และ IFS other</div>
+        </div>
+      </div>
+      <p><strong>Note on Foundry P&L:</strong> Intel Foundry รายได้ $17.8B รวม internal transfer จาก CCG/DCAI ที่ใช้ Intel wafers ถ้านับเฉพาะ external customer revenue ยังน้อยมาก นี่คือ core challenge: ต้องได้ external customers ใหญ่ๆ ก่อนที่ Foundry จะ break-even</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Intel ไม่ได้ compound ตอนนี้ — กำลัง <strong>reinvest อย่างหนักเพื่อ rebuild competitive position</strong> ถ้า succeed จะมี flywheel ที่แข็งแกร่งมาก ถ้าไม่สำเร็จ capital destruction ต่อเนื่อง</p>
+      <div class="callout blue">
+        <p><strong>The Foundry Flywheel (ถ้า execute ได้):</strong> 18A node competitive กับ TSMC N2 → external customers เชื่อและสั่ง → volume เพิ่ม → yield ดีขึ้น → cost ลด → ราคาแข่งได้ → customer เพิ่ม → Foundry break-even → ลงทุน next node → compound ต่อ</p>
+      </div>
+      <p><strong>CHIPS Act Advantage:</strong> Intel ได้รับ $7.86B CHIPS Act incentive จาก U.S. government สำหรับ domestic semiconductor manufacturing นี่คือ structural advantage เหนือ TSMC และ Samsung ที่ไม่ใช่บริษัทอเมริกัน U.S. DoD ต้องการ domestic foundry เพื่อ national security</p>
+      <div class="callout yellow">
+        <p><strong>NVIDIA Partnership Potential:</strong> NVIDIA ซื้อหุ้น Intel $5B — ถ้า NVIDIA ตัดสินใจ diversify manufacture บางส่วนออกจาก TSMC มา Intel Foundry นั่นจะเป็น inflection point ที่เปลี่ยน narrative ของ Intel ทั้งหมด ยังไม่ confirmed แต่ possible</p>
+      </div>
+      <p style="margin-top:24px"><strong>Capital Structure — Investment Intensity:</strong></p>
+      <div class="stat-grid">
+        <div class="stat-card red">
+          <div class="stat-label">Gross Capex FY2025</div>
+          <div class="stat-value">$17.7B</div>
+          <div class="stat-sub">ลดจาก $25.1B FY2024</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Adj. FCF FY2025</div>
+          <div class="stat-value">-$1.6B</div>
+          <div class="stat-sub">ยังติดลบจาก heavy invest</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">R&D FY2025 (est.)</div>
+          <div class="stat-value">~$16B</div>
+          <div class="stat-sub">~30% of revenue — high intensity</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Long-term Debt</div>
+          <div class="stat-value">$44.1B</div>
+          <div class="stat-sub">ยังต้องจ่าย interest สูง</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Intel อยู่ใน <strong>make-or-break moment ที่สุดในประวัติศาสตร์ 50+ ปี</strong> — 18A node คือ bet ที่ทุกอย่างขึ้นอยู่กับมัน</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>18A Process Node เริ่ม HVM แล้ว</h4>
+        <p>Intel 18A High Volume Manufacturing เริ่มใน Arizona และ Oregon ปี 2025 Core Ultra Series 3 (Panther Lake) ที่ใช้ 18A มี 200+ OEM designs รอ การที่ node ถึง HVM stage ถือเป็น milestone สำคัญที่หลายคนไม่เชื่อว่า Intel จะทำได้ตามกำหนด</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>NVIDIA Investment + CHIPS Act Secured</h4>
+        <p>NVIDIA ซื้อหุ้น INTC $5B ในปี 2025 — validation จาก biggest semiconductor company ในโลก ว่า Intel ยังมีค่า CHIPS Act Secure Enclave signed = ความสัมพันธ์กับ U.S. government ใน national security chip supply chain แน่นขึ้น</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Restructuring ดำเนินต่อ — Cost Structure ดีขึ้น</h4>
+        <p>Headcount ลดจาก 108,900 → 85,100 (-21%) Gross Capex ลดจาก $25.1B → $17.7B (-29%) Non-GAAP EPS กลับมาเป็นบวก $0.42 แสดงว่า core P&amp;L กำลัง stabilize แม้ Foundry ยังขาดทุน</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>External Foundry Customers — จะมีใครใหญ่ไหม?</h4>
+        <p>Intel Foundry ต้องการ external customer ที่มีนัยสำคัญ (เช่น Amazon, Google, Microsoft, หรือแม้แต่ NVIDIA) เพื่อ justify $40B+ ที่ลงทุนไปใน fabs ตอนนี้ยังไม่มี public announcement ถ้า Intel ได้ hyperscaler ใหญ่มาเป็น foundry customer นั่นคือ catalyst ที่จะ re-rate หุ้นขึ้นอย่างมาก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Market Share Loss ยังดำเนินต่อ</h4>
+        <p>AMD ยังคง gain share ใน PC และ Server CPU NVIDIA ครอง AI accelerator market ที่ Intel พยายาม enter ด้วย Gaudi Qualcomm เพิ่งเอา Snapdragon X Elite เข้า Windows PC ตลาดที่ Intel เคย monopolize Q1 2026 revenue guide -10% YoY = topline ยังกดดัน</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Debt $44B + Foundry Loss -$10B = Financial Pressure</h4>
+        <p>Intel มีหนี้ $44.1B และ Foundry ขาดทุน -$10.3B ต่อปี แม้ cash $37.4B ยังพอ แต่ถ้า Foundry ไม่ได้ external customers ใหม่และ 18A yield ต่ำกว่าคาด financial pressure จะเพิ่มขึ้นมากในอีก 2-3 ปีข้างหน้า</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Intel แข่งในสองสนามพร้อมกัน — CPU market ที่กำลัง defend และ Foundry market ที่กำลัง enter ทั้งคู่มี competitive dynamics ที่ต่างกันโดยสิ้นเชิง</p>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">💻</div>
+          <div>
+            <div class="comp-segment">x86 CPU — PC &amp; Server</div>
+            <div class="comp-pos challenger">Defending — แต่ Share ลดลงต่อเนื่อง</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Intel (Core / Xeon)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:62%;background:var(--intc-blue)"></div></div>
+            <div class="comp-detail">~60-65% x86 market share รวม PC + Server · ลดลงจาก 80%+ เมื่อ 10 ปีที่แล้ว · Core Ultra Series 3 กำลัง launch · Xeon Scalable ยังครอง enterprise server</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">AMD (Ryzen / EPYC)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:35%;background:#E4001B"></div></div>
+            <div class="comp-detail">~30-35% x86 share · EPYC ใน server มากกว่า 30% แล้ว · Ryzen ใน PC ครอง gaming/enthusiast market · performance/watt ดีกว่าหลายรุ่น</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Qualcomm / Apple (ARM)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:8%;background:#3253DC"></div></div>
+            <div class="comp-detail">Snapdragon X Elite เข้า Windows PC · Apple M-series ครอง Mac อย่างสมบูรณ์ · ARM architecture กำลัง expand territory</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">Intel ยังครอง x86 majority แต่ trajectory ลง — AMD เป็น structural competitor ที่ไม่หายไปไหน การ defend ด้วย Core Ultra 18A จะสำคัญมากใน 2026-2027</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🏭</div>
+          <div>
+            <div class="comp-segment">Advanced Semiconductor Foundry</div>
+            <div class="comp-pos contender">New Entrant — ต้องพิสูจน์ตัวเอง</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">TSMC</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:62%;background:#E5001A"></div></div>
+            <div class="comp-detail">~62% global foundry market share · N3E, N2 nodes เป็น benchmark ของโลก · NVIDIA, AMD, Apple, Qualcomm ล้วนใช้ TSMC · ชั้น 1 ที่ Intel ต้องแซง</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Samsung Foundry</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:12%;background:#1428A0"></div></div>
+            <div class="comp-detail">~12% foundry share · 2nm GAA กำลัง ramp · แต่ yield ปัญหามาหลายปี ทำให้ customer บางส่วนย้ายกลับ TSMC</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Intel Foundry (18A)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:3%;background:var(--intc-blue)"></div></div>
+            <div class="comp-detail">External revenue ยังน้อยมาก · 18A HVM เพิ่งเริ่ม · CHIPS Act backing · ถ้าได้ external hyperscaler หรือ NVIDIA เป็น customer จะ re-rate ทันที</div>
+          </div>
+        </div>
+        <div class="comp-verdict yellow">ใน Foundry Intel เป็น distant third ที่ต้องพิสูจน์ 18A ให้ external customers เชื่อถือ TSMC dominance นั้นแข็งแกร่งมาก แต่ U.S. government incentive + geopolitical risk (Taiwan) ทำให้มี structural demand สำหรับ U.S.-based foundry</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Mission: Capture future re-rating before consensus recognizes it — find tomorrow's leaders before they're obvious. Wave is opportunistic. Wave accepts uncertainty. Requires validation. Target: 50–100% upside within 2–3 years.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Wave ถือหุ้นที่ <strong>consensus ยังไม่ fully price in turnaround potential</strong> — Intel เป็นชื่อที่ถูก market write-off ไปแล้ว แต่ถ้า 18A node succeed + external foundry customers มา re-rating จะ violent มาก</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Turnaround Play ที่ Not Priced In</div>
+              <div class="trait-desc">ตลาด price Intel เหมือน declining business ถาวร แต่ถ้า 18A รัน + external customer มา valuation re-rate จาก 10-12x forward P/E ขึ้นไป 18-20x ได้</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🏛️</div>
+              <div class="trait-name">Geopolitical Necessity</div>
+              <div class="trait-desc">U.S. ต้องการ domestic foundry เพื่อ national security — Intel เป็น only viable option ใน advanced node ในระยะสั้น CHIPS Act $7.86B เป็น subsidy ที่ competitors ไม่มี</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">💎</div>
+              <div class="trait-name">Hidden Assets ที่ยังไม่ Unlock</div>
+              <div class="trait-desc">Mobileye (88% held), Altera (49% หลัง partial sale), foundry fabs ราคาหลายหมื่น billion — NAV ของ Intel assets อาจสูงกว่า market cap</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">👤</div>
+              <div class="trait-name">Lip-Bu Tan — Proven Fixer</div>
+              <div class="trait-desc">Cadence stock up 20x ใน 12 ปีที่ Tan เป็น CEO เป็น signal ที่ดีว่า execution discipline กำลังกลับมา</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-wave">
+            <span class="not-tag">✗ ไม่ใช่ Core — ยังขาดทุน ยังไม่พิสูจน์ turnaround</span>
+            <span class="not-tag">✗ ไม่ใช่ dividend/income play</span>
+            <span class="not-tag">✗ ไม่ใช่ AI infrastructure play ระยะสั้น</span>
+            <span class="not-tag">✗ ไม่ใช่ guaranteed winner — high uncertainty</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: INTC → Wave</h4>
+            <p>INTC เป็น high-risk, high-reward Wave — consensus ได้ write-off Intel ไปแล้ว แต่ถ้า 18A node succeed ในการดึง external customers (โดยเฉพาะถ้า NVIDIA หรือ hyperscaler ใดสักรายมา) re-rating จะ 50-100%+ ในระยะสั้น thesis นี้ไม่ใช่ about PC CPU market share แต่เป็น about whether U.S. needs a domestic advanced foundry และ Intel can deliver it exit signal: 18A yield disappointing ต่อเนื่อง, external customer ใหญ่ไม่มีแม้แต่ announcement ใน 2026-2027, หรือ Foundry loss ไม่ narrow ลงตาม plan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — INTC / Intel Corporation · Source: Intel IR Q4 &amp; FY2025 Earnings Release (Jan 22, 2026) · SEC Filings · Public Sources</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--intc-blue)"></span>
+      <span style="background:var(--intc-light)"></span>
+      <span style="background:var(--intc-dark)"></span>
+      <span style="background:var(--intc-blue-soft)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

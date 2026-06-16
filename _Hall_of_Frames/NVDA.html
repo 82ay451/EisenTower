@@ -4,239 +4,931 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NVDA — Company File</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f6f8f3;
-      --surface: #fff;
-      --border: #dfe6d9;
-      --text: #151a12;
-      --muted: #66705f;
-      --tag: #edf3e7;
-      --green: #76b900;
-      --dark: #111;
-      --deep: #3d6b00;
-      --soft: #edf8dc;
-      --blue: #2f6f9f;
-      --blue-soft: #e7f2f8;
-      --yellow: #c48700;
-      --yellow-soft: #fff4cf;
-      --red: #b3261e;
-      --red-soft: #fde8e6;
+      --nvda-green:      #76B900;
+      --nvda-dark:       #1a1a1a;
+      --nvda-green-deep: #558B2F;
+      --nvda-gray:       #7D7D7D;
+      --nvda-green-soft: #edf5d8;
+      --nvda-dark-soft:  #e8e8e8;
+
+      --bg:      #f8f9fa;
+      --surface: #ffffff;
+      --border:  #e2e8e0;
+      --text-primary:   #1a1a1a;
+      --text-secondary: #4a5568;
+      --text-muted:     #718096;
+      --tag-bg:         #f0f4eb;
+
+      --accent:      var(--nvda-green);
+      --accent-soft: var(--nvda-green-soft);
+      --green:       var(--nvda-green);
+      --green-soft:  var(--nvda-green-soft);
+      --red:         #e53e3e;
+      --red-soft:    #fff5f5;
+      --yellow:      #d69e2e;
+      --yellow-soft: #fffff0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--text); font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: 0; }
-    .doc-header { background: var(--surface); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, var(--green) 0 35%, var(--dark) 35% 60%, #596167 60% 82%, var(--deep) 82%) 1; padding: 48px 0 36px; }
-    .container, .doc-body { max-width: 880px; margin: 0 auto; padding: 0 32px; }
-    .label-tag { display: inline-block; margin-bottom: 16px; padding: 3px 8px; border-radius: 4px; background: var(--tag); color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
-    h1 { font-size: 42px; line-height: 1.1; letter-spacing: 0; }
-    .ticker { color: var(--green); }
-    .doc-subtitle { margin-top: 10px; color: #4f5b49; font-size: 18px; }
-    .doc-meta { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 20px; color: var(--muted); font-size: 13px; }
-    .toc { position: sticky; top: 0; z-index: 10; background: var(--surface); border-bottom: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-    .toc-inner { max-width: 880px; margin: 0 auto; padding: 0 32px; display: flex; gap: 4px; overflow-x: auto; }
-    .toc a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex: 0 0 auto; margin: 8px 2px; border-radius: 50%; color: #4f5b49; text-decoration: none; font-size: 13px; font-weight: 800; }
-    .toc a:hover { background: var(--soft); color: var(--deep); }
-    .doc-body { padding-bottom: 80px; }
-    .section { padding-top: 52px; }
-    .section-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; margin-bottom: 28px; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
-    .section-num { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-    .section-h2 { font-size: 24px; font-weight: 850; line-height: 1.2; }
-    .toggle-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--tag); display: flex; align-items: center; justify-content: center; transition: transform .25s; }
+    body {
+      font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: var(--surface);
+      border-bottom: 4px solid transparent;
+      border-image: linear-gradient(90deg,
+        #76B900 25%, #1a1a1a 25% 50%,
+        #76B900 50% 75%, #558B2F 75%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); background: var(--tag-bg);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-n { color: var(--nvda-green); }
+    .ticker-v { color: var(--nvda-dark); }
+    .ticker-d { color: var(--nvda-green-deep); }
+    .ticker-a { color: var(--nvda-gray); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .doc-meta span::before { content: '·'; margin-right: 8px; }
+    .doc-meta span:first-child::before { content: none; }
+
+    /* ── Nav ── */
+    .toc {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: var(--nvda-green-soft); color: var(--nvda-green); }
+
+    /* ── Body ── */
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+
+    /* ── Section Toggle ── */
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      cursor: pointer; user-select: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--nvda-green); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .section-h2 {
+      font-size: 24px; font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--text-primary); transition: color 0.15s;
+    }
+    .toggle-icon {
+      flex-shrink: 0; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--tag-bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.25s;
+      font-size: 16px; color: var(--text-secondary);
+    }
+    .section-header:hover .toggle-icon { background: var(--nvda-green-soft); color: var(--nvda-green); }
     .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
-    .section-content { overflow: hidden; max-height: 9999px; opacity: 1; transition: max-height .35s ease, opacity .3s ease; }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
     .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
-    .section-divider { height: 1px; margin-top: 52px; background: var(--border); }
-    p { margin-bottom: 16px; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+
+    /* ── Prose ── */
+    p { color: var(--text-primary); margin-bottom: 16px; }
     p:last-child { margin-bottom: 0; }
-    strong { font-weight: 750; }
+    strong { font-weight: 600; }
+
+    /* ── Stat Cards ── */
     .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: 12px; padding: 18px 20px; }
-    .stat-card.blue { border-left-color: var(--blue); }
-    .stat-card.yellow { border-left-color: var(--yellow); }
-    .stat-label { color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
-    .stat-value { margin-top: 6px; font-size: 26px; font-weight: 850; line-height: 1.1; }
-    .stat-sub { margin-top: 4px; color: var(--muted); font-size: 12px; }
-    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
-    .timeline:before { content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(var(--green), var(--dark)); }
-    .tl-item { position: relative; margin-bottom: 24px; }
-    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--green); border: 2px solid var(--bg); }
-    .tl-year { color: var(--deep); font-size: 12px; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
-    .tl-text { color: #263020; font-size: 15px; line-height: 1.55; }
-    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
-    .track-table th { padding: 10px 12px; color: var(--muted); border-bottom: 2px solid var(--border); text-align: right; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
-    .track-table th:first-child, .track-table td:first-child { text-align: left; }
-    .track-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: right; }
-    .track-table tr.highlight { background: var(--soft); }
-    .callout, .sit-item, .comp-block, .portfolio-card, .boss-card, .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
-    .callout { margin: 20px 0; padding: 18px 22px; border-left: 4px solid var(--green); }
-    .callout.blue { background: var(--blue-soft); border-color: var(--blue); }
-    .callout.yellow { background: var(--yellow-soft); border-color: var(--yellow); }
-    .boss-card { display: grid; grid-template-columns: 1fr 2fr; gap: 28px; margin: 28px 0; padding: 28px; }
-    .boss-name { font-size: 22px; font-weight: 850; }
-    .boss-title, .boss-fact .label, .rev-note, .comp-note { color: var(--muted); }
-    .boss-fact { display: flex; gap: 8px; margin-top: 8px; font-size: 14px; }
-    .boss-fact .label { min-width: 88px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
-    .revenue-breakdown { margin: 28px 0; padding: 28px; }
-    .revenue-breakdown h3 { margin-bottom: 20px; color: var(--muted); font-size: 12px; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.green  { border-left: 3px solid var(--nvda-green); }
+    .stat-card.dark   { border-left: 3px solid var(--nvda-dark); }
+    .stat-card.deep   { border-left: 3px solid var(--nvda-green-deep); }
+    .stat-card.gray   { border-left: 3px solid var(--nvda-gray); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+
+    /* ── Revenue Bars ── */
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
     .rev-item { margin-bottom: 18px; }
-    .rev-header { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
-    .rev-name { font-weight: 800; }
-    .rev-numbers { color: #4f5b49; font-size: 13px; }
-    .rev-bar-bg { height: 8px; background: var(--tag); border-radius: 4px; overflow: hidden; }
-    .rev-bar-fill { height: 100%; background: var(--green); border-radius: 4px; }
-    .bar-edge { background: #596167; }
-    .sit-item { margin-bottom: 14px; padding: 20px 24px; }
-    .sit-tag { display: inline-block; margin-bottom: 8px; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
-    .tag-up { background: var(--soft); color: var(--deep); }
-    .tag-watch { background: var(--yellow-soft); color: #7a5300; }
-    .tag-risk { background: var(--red-soft); color: var(--red); }
-    .comp-block { margin-bottom: 20px; padding: 24px 28px; }
-    .comp-header { padding-bottom: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
-    .comp-segment { font-size: 16px; font-weight: 850; }
-    .comp-player { margin-top: 12px; padding-left: 12px; border-left: 3px solid var(--border); }
-    .comp-player.self { border-left-color: var(--green); }
-    .comp-name { font-weight: 850; }
-    .comp-detail { color: #4f5b49; font-size: 14px; }
-    .comp-verdict { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--soft); color: var(--deep); font-size: 14px; font-weight: 750; }
-    .portfolio-card { margin: 28px 0; padding: 26px; border-top: 4px solid var(--green); }
-    .trait-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 18px 0; }
-    .core-trait { background: var(--soft); border: 1px solid #cfe9ad; border-radius: 10px; padding: 12px; color: var(--deep); font-size: 14px; font-weight: 800; }
-    .not-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .not-tag { border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; background: #eef1ee; color: #4f5b49; font-size: 13px; font-weight: 750; }
-    .doc-footer { border-top: 1px solid var(--border); background: var(--surface); padding: 28px 32px 32px; color: var(--muted); text-align: center; font-size: 13px; }
-    .dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
-    .dot { width: 9px; height: 9px; border-radius: 50%; }
-    .to-top { position: fixed; right: 18px; bottom: 18px; width: 42px; height: 42px; border: 0; border-radius: 50%; background: var(--dark); color: #fff; font-size: 18px; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .2s; }
-    .to-top.show { opacity: 1; pointer-events: auto; }
-    @media (max-width: 640px) { .container, .doc-body { padding: 0 20px; } h1 { font-size: 34px; } .boss-card { grid-template-columns: 1fr; } .track-table { font-size: 12px; } .track-table th, .track-table td { padding: 8px 6px; } }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-dc      { background: var(--nvda-green); }
+    .bar-gaming  { background: var(--nvda-dark); }
+    .bar-proviz  { background: var(--nvda-green-deep); }
+    .bar-auto    { background: var(--nvda-gray); }
+    .bar-other   { background: #bdbdbd; }
+
+    /* ── Callout ── */
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.green  { background: var(--nvda-green-soft); border-color: var(--nvda-green); }
+    .callout.dark   { background: #f5f5f5; border-color: var(--nvda-dark); }
+    .callout.yellow { background: var(--yellow-soft); border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft); border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+      width: 2px; background: linear-gradient(180deg, var(--nvda-green), var(--nvda-green-deep));
+    }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--nvda-green); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--nvda-green); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+
+    /* ── Boss Card ── */
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+
+    /* ── Track Table ── */
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { text-align: right; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    .track-table td:first-child { text-align: left; font-weight: 700; color: var(--text-primary); }
+    .track-table tr.highlight { background: var(--nvda-green-soft); }
+    .track-table tr.highlight td { color: var(--text-primary); font-weight: 600; }
+    .track-table tr:hover { background: var(--bg); }
+
+    /* ── Situation Items ── */
+    .sit-item { padding: 16px 0; border-bottom: 1px solid var(--border); display: flex; gap: 14px; align-items: flex-start; }
+    .sit-item:last-child { border-bottom: none; }
+    .sit-tag { flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 20px; }
+    .tag-up   { background: var(--nvda-green-soft); color: var(--nvda-green-deep); }
+    .tag-watch { background: var(--yellow-soft); color: #92400e; }
+    .tag-risk  { background: var(--red-soft); color: #991b1b; }
+    .sit-body { font-size: 15px; line-height: 1.6; }
+
+    /* ── Competitor Blocks ── */
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .comp-block h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 18px; }
+    .comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .comp-player { border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+    .comp-player.self { border-color: var(--nvda-green); background: var(--nvda-green-soft); }
+    .comp-ticker { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-ticker.self { color: var(--nvda-green-deep); }
+    .comp-label { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+    .comp-share { font-size: 22px; font-weight: 800; color: var(--text-primary); }
+    .comp-share.self { color: var(--nvda-green); }
+    .comp-share-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .comp-verdict { font-size: 13px; color: var(--text-secondary); margin-top: 14px; line-height: 1.55; }
+
+    /* ── Portfolio Card (Section 10) ── */
+    .portfolio-card { background: var(--surface); border: 2px solid var(--nvda-green); border-radius: 16px; padding: 32px; margin: 28px 0; }
+    .portfolio-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--nvda-green); color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 16px; }
+    .portfolio-mission { font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; line-height: 1.4; }
+    .core-trait { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
+    .core-trait-icon { flex-shrink: 0; font-size: 16px; }
+    .not-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+    .not-tag { font-size: 12px; font-weight: 600; background: #f7fafc; border: 1px solid var(--border); color: var(--text-secondary); padding: 5px 12px; border-radius: 20px; }
+
+    /* ── Back to Top ── */
+    #back-top {
+      position: fixed; bottom: 28px; right: 28px; display: none;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--nvda-green); color: white;
+      font-size: 20px; font-weight: 700;
+      align-items: center; justify-content: center;
+      cursor: pointer; border: none;
+      box-shadow: 0 4px 14px rgba(118,185,0,0.35);
+      transition: opacity 0.2s;
+    }
+    #back-top:hover { opacity: 0.85; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 28px 0 20px;
+      margin-top: 60px;
+    }
+    .footer-text { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+    .footer-dots { display: flex; gap: 8px; margin-top: 16px; }
+    .footer-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    @media (max-width: 640px) {
+      .doc-header h1 { font-size: 32px; }
+      .toc-inner { padding: 0 16px; }
+      .doc-body { padding: 0 16px 60px; }
+      .container { padding: 0 16px; }
+    }
   </style>
 </head>
 <body>
-  <header class="doc-header" id="top">
-    <div class="container">
-      <div class="label-tag">EisenTower · Hall of Frames</div>
-      <h1><span class="ticker">NVDA</span> NVIDIA Corporation</h1>
-      <p class="doc-subtitle">A company file for understanding NVIDIA's business, money engine, leadership, and portfolio role.</p>
-      <div class="doc-meta"><span>Written June 14, 2026</span><span>NASDAQ: NVDA</span><span>Founded 1993</span></div>
+
+<!-- ── HEADER ── -->
+<header class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1>
+      <span class="ticker-n">N</span><span class="ticker-v">V</span><span class="ticker-d">D</span><span class="ticker-a">A</span>
+      &nbsp;— NVIDIA Corporation
+    </h1>
+    <p class="doc-subtitle">Company profile: what NVIDIA actually is, how it makes money, and why it matters.</p>
+    <div class="doc-meta">
+      <span>Written June 15, 2026</span>
+      <span>NASDAQ: NVDA</span>
+      <span>Founded 1993</span>
     </div>
-  </header>
-  <nav class="toc"><div class="toc-inner"><a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a><a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a></div></nav>
-  <main class="doc-body">
-    <section class="section" id="s1">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">01</div><h2 class="section-h2">Who are they?</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content">
-        <p><strong>NVIDIA คือ data center-scale AI infrastructure company</strong> ที่เริ่มจาก GPU สำหรับ graphics/gaming แล้วกลายเป็น backbone ของ accelerated computing: GPU, CPU, networking, systems, software stack, and developer ecosystem.</p>
-        <p>วันนี้ NVDA ไม่ใช่แค่ chip company แบบขาย silicon เป็นชิ้น ๆ. บริษัทขาย compute platform ทั้งชั้น: Blackwell GPU, Grace CPU, NVLink, InfiniBand, Spectrum-X Ethernet, CUDA, AI Enterprise, NIM, Omniverse, robotics and automotive stacks.</p>
-        <div class="stat-grid">
-          <div class="stat-card"><div class="stat-label">FY2026 Revenue</div><div class="stat-value">$215.9B</div><div class="stat-sub">+65% YoY</div></div>
-          <div class="stat-card"><div class="stat-label">FY2026 Net Income</div><div class="stat-value">$120.1B</div><div class="stat-sub">55.6% net margin</div></div>
-          <div class="stat-card blue"><div class="stat-label">FY2026 Operating Income</div><div class="stat-value">$130.4B</div><div class="stat-sub">60.4% operating margin</div></div>
-          <div class="stat-card yellow"><div class="stat-label">Employees</div><div class="stat-value">~42K</div><div class="stat-sub">31K in R&amp;D</div></div>
-          <div class="stat-card"><div class="stat-label">Cash</div><div class="stat-value">$10.6B</div><div class="stat-sub">cash and equivalents</div></div>
-          <div class="stat-card blue"><div class="stat-label">Q1 FY2027 Revenue</div><div class="stat-value">$81.6B</div><div class="stat-sub">Data Center: $75.2B</div></div>
+  </div>
+</header>
+
+<!-- ── NAV ── -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+
+<!-- ── BODY ── -->
+<main class="doc-body">
+
+  <!-- ─── SECTION 1 ─── -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">01</span>
+        <span class="section-h2">Who are they?</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <p>NVIDIA คือบริษัทชิปที่เปลี่ยนโลกสองครั้ง — ครั้งแรกด้วย GPU ที่ทำให้ 3D graphics เป็นเรื่องสำหรับทุกคน ครั้งที่สองด้วย CUDA platform ที่กลายเป็น <strong>โครงสร้างพื้นฐานของ AI ทั้งโลก</strong> ปัจจุบัน NVIDIA ไม่ใช่แค่บริษัทชิป — มันคือบริษัท accelerated computing ที่ supply chip, software stack, และ systems ให้กับทุก hyperscaler, startup AI, government lab ที่ต้องการ train model หรือ run inference</p>
+
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Revenue FY2026</div>
+          <div class="stat-value">$215.9B</div>
+          <div class="stat-sub">+65% YoY · สิ้นสุด Jan 2026</div>
         </div>
-        <p>One-line money engine: <strong>NVIDIA makes money by selling AI compute and networking infrastructure that lets customers train, serve, and scale modern AI workloads.</strong></p>
-      </div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s2">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">02</div><h2 class="section-h2">Journey</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content"><div class="timeline">
-        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1993</div><div class="tl-text">Founded by Jensen Huang, Chris Malachowsky, and Curtis Priem. Original wedge: graphics chips for PC gaming.</div></div>
-        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1999</div><div class="tl-text">NVIDIA launches GeForce 256 and popularizes the GPU as a category.</div></div>
-        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2006</div><div class="tl-text">CUDA opens the GPU to general-purpose parallel computing. จุดนี้คือ seed ของ AI moat.</div></div>
-        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2020</div><div class="tl-text">Mellanox acquisition adds networking, turning NVIDIA from chip seller into cluster/system supplier.</div></div>
-        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">FY2026</div><div class="tl-text">NVIDIA scales Blackwell Ultra, reaches $215.9B annual revenue, and reframes itself as a data center-scale AI infrastructure company.</div></div>
-      </div></div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s3">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">03</div><h2 class="section-h2">Track Record</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content">
-        <table class="track-table"><thead><tr><th>Fiscal Year</th><th>Revenue</th><th>Op. Income</th><th>Net Income</th><th>Diluted EPS</th><th>Op. Margin</th></tr></thead><tbody>
-          <tr><td>FY2020</td><td>$10.9B</td><td>$2.8B</td><td>$2.8B</td><td>$1.13*</td><td>26.1%</td></tr>
-          <tr><td>FY2021</td><td>$16.7B</td><td>$4.5B</td><td>$4.3B</td><td>$1.73*</td><td>27.2%</td></tr>
-          <tr><td>FY2022</td><td>$26.9B</td><td>$10.0B</td><td>$9.8B</td><td>$3.85</td><td>37.3%</td></tr>
-          <tr><td>FY2023</td><td>$27.0B</td><td>$4.2B</td><td>$4.4B</td><td>$0.17*</td><td>15.7%</td></tr>
-          <tr><td>FY2024</td><td>$60.9B</td><td>$33.0B</td><td>$29.8B</td><td>$1.19*</td><td>54.1%</td></tr>
-          <tr><td>FY2025</td><td>$130.5B</td><td>$81.5B</td><td>$72.9B</td><td>$2.94</td><td>62.4%</td></tr>
-          <tr class="highlight"><td>FY2026</td><td>$215.9B</td><td>$130.4B</td><td>$120.1B</td><td>$4.90</td><td>60.4%</td></tr>
-        </tbody></table>
-        <p>Revenue CAGR from FY2020 to FY2026 is roughly <strong>64%</strong>. This is not normal semiconductor cyclicality; this is the AI infrastructure buildout turning into revenue.</p>
-        <p>*Older EPS is affected by stock split presentation across filings. Recent comparable line: FY2024 to FY2026 EPS moved from <strong>$1.19 → $2.94 → $4.90</strong>.</p>
-      </div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s4">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">04</div><h2 class="section-h2">Know their Boss</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content"><div class="boss-card">
-        <div><div class="boss-name">Jensen Huang</div><div class="boss-title">Founder, President &amp; CEO</div><div class="boss-fact"><span class="label">Born</span><span>1963, Taipei, Taiwan</span></div><div class="boss-fact"><span class="label">Education</span><span>Oregon State BS, Stanford MS</span></div><div class="boss-fact"><span class="label">CEO Since</span><span>1993</span></div></div>
-        <div><p>Jensen built NVIDIA from graphics chip startup into the platform owner for AI compute. สิ่งที่เขาสร้างจริงไม่ใช่แค่ GPU แต่เป็น full-stack ecosystem: hardware roadmap, CUDA developer lock-in, networking, systems, software libraries, and relationships with every major cloud/AI buyer.</p><p>Leadership style: founder-led, technical, intense, long-horizon. Current challenge: keep supply, energy, export controls, customer concentration, and custom ASIC competition from turning scale into fragility.</p></div>
-      </div></div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s5">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">05</div><h2 class="section-h2">What do they Actually Do?</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content">
-        <div class="callout"><p><strong>AI Data Center Infrastructure.</strong> NVIDIA sells accelerated compute platforms: GPUs, CPUs, DPUs, NVLink, InfiniBand, Spectrum-X Ethernet, full rack systems, and software.</p></div>
-        <div class="callout blue"><p><strong>Edge Computing and Graphics.</strong> GeForce gaming, RTX workstations, robotics, automotive, AI PCs, game consoles, and visualization remain important. แต่ตอนนี้ these are smaller planets orbiting the data center sun.</p></div>
-        <div class="callout yellow"><p><strong>Software Layer.</strong> CUDA, AI Enterprise, NIM, Omniverse, Dynamo inference software, and domain libraries make NVIDIA harder to replace.</p></div>
-        <p>Big-picture frame: <strong>NVIDIA is the operating layer for accelerated computing infrastructure.</strong></p>
-      </div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s6">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">06</div><h2 class="section-h2">How they Make Money</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content">
-        <div class="revenue-breakdown"><h3>Q1 FY2027 Revenue by Market Platform</h3>
-          <div class="rev-item"><div class="rev-header"><span class="rev-name">Data Center</span><span class="rev-numbers">$75.2B · 92.2%</span></div><div class="rev-bar-bg"><div class="rev-bar-fill" style="width:92.2%"></div></div><div class="rev-note">Includes hyperscale and ACIE: AI clouds, industrial, enterprise, sovereign AI.</div></div>
-          <div class="rev-item"><div class="rev-header"><span class="rev-name">Edge Computing</span><span class="rev-numbers">$6.4B · 7.8%</span></div><div class="rev-bar-bg"><div class="rev-bar-fill bar-edge" style="width:7.8%"></div></div><div class="rev-note">PCs, gaming, workstations, robotics, automotive and other edge markets.</div></div>
+        <div class="stat-card dark">
+          <div class="stat-label">Net Income FY2026</div>
+          <div class="stat-value">$120.1B</div>
+          <div class="stat-sub">GAAP · Op margin 60.4%</div>
         </div>
-        <p>Core monetization mechanic: NVIDIA sells high-value compute systems into customers whose AI workloads are bottlenecked by performance, memory bandwidth, networking, and software maturity.</p>
-      </div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s7">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">07</div><h2 class="section-h2">How they Compound</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content">
-        <p>NVIDIA compounds through a brutal flywheel: better chips → more developers optimize for CUDA → more software libraries and models run best on NVIDIA → customers standardize clusters → NVIDIA gets more demand visibility → more R&amp;D and supply commitments → next architecture ships faster.</p>
-        <div class="stat-grid"><div class="stat-card"><div class="stat-label">R&amp;D</div><div class="stat-value">$18.5B</div><div class="stat-sub">FY2026</div></div><div class="stat-card blue"><div class="stat-label">Productive Assets</div><div class="stat-value">$6.0B</div><div class="stat-sub">FY2026 purchases</div></div><div class="stat-card yellow"><div class="stat-label">Buybacks</div><div class="stat-value">$40.1B</div><div class="stat-sub">FY2026 repurchases</div></div></div>
-        <p>Data moat here is not consumer data. It is performance feedback, developer adoption, kernel/library optimization, customer workload visibility, and system-level learning from deploying giant clusters.</p>
-      </div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s8">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">08</div><h2 class="section-h2">Current Situation &amp; Positioning</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content">
-        <div class="sit-item"><span class="sit-tag tag-up">Momentum</span><h4>Blackwell is now the center of shipments</h4><p>Q1 FY2027 revenue grew to <strong>$81.6B</strong>, and NVIDIA said Blackwell accounted for the majority of system shipments.</p></div>
-        <div class="sit-item"><span class="sit-tag tag-up">Momentum</span><h4>Data Center is almost the whole company</h4><p>Data Center was <strong>$75.2B</strong> in Q1 FY2027, more than 92% of total revenue by market platform.</p></div>
-        <div class="sit-item"><span class="sit-tag tag-watch">จับตา</span><h4>Customer concentration and capital availability</h4><p>NVIDIA warns that data centers, energy, and capital availability are crucial. ถ้า hyperscaler capex slows or power/buildout constraints bite, revenue timing can move.</p></div>
-        <div class="sit-item"><span class="sit-tag tag-risk">Risk</span><h4>China export controls</h4><p>At FY2026 year-end, NVIDIA said it was effectively foreclosed from competing in China's data center compute market. In Q1 FY2027 it had licenses for small H200 shipments, but no revenue under that program yet.</p></div>
-      </div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s9">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">09</div><h2 class="section-h2">Peers and Competitors</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content">
-        <div class="comp-block"><div class="comp-header"><div class="comp-segment">AI Accelerators and Training/Inference</div><div class="comp-note">The main battlefield is performance per dollar, supply, ecosystem, and software maturity.</div></div><div class="comp-player self"><div class="comp-name">NVIDIA</div><div class="comp-detail">Default platform for large AI clusters: GPU + networking + CUDA + systems + libraries.</div></div><div class="comp-player"><div class="comp-name">AMD</div><div class="comp-detail">Most visible merchant GPU alternative, especially where customers want second-source leverage.</div></div><div class="comp-player"><div class="comp-name">Google TPU, Amazon Trainium/Inferentia, Microsoft Maia</div><div class="comp-detail">Custom ASICs reduce dependence on NVIDIA for internal workloads.</div></div><div class="comp-verdict">Verdict: NVIDIA is still the reference architecture, but custom silicon is the serious long-term pressure point.</div></div>
-        <div class="comp-block"><div class="comp-header"><div class="comp-segment">AI Networking</div><div class="comp-note">Cluster performance increasingly depends on interconnect and networking.</div></div><div class="comp-player self"><div class="comp-name">NVIDIA InfiniBand, NVLink, Spectrum-X</div><div class="comp-detail">Mellanox made NVIDIA a system company.</div></div><div class="comp-player"><div class="comp-name">Broadcom, Marvell, Arista, Cisco</div><div class="comp-detail">Compete around Ethernet switching, custom silicon, and hyperscaler network designs.</div></div><div class="comp-verdict">Verdict: NVIDIA has structural advantage when customers buy complete rack-scale systems.</div></div>
-      </div><div class="section-divider"></div>
-    </section>
-    <section class="section" id="s10">
-      <div class="section-header" onclick="toggleSection(this)"><div><div class="section-num">10</div><h2 class="section-h2">Their Seat in Jay's Universe</h2></div><span class="toggle-icon">⌄</span></div>
-      <div class="section-content"><div class="portfolio-card">
-        <h3>Recommended Bucket: Core Portfolio</h3>
-        <p><strong>Mission from doctrine:</strong> Long-term compounding. Own durable businesses positioned inside major global money-flow layers.</p>
-        <p>Core means patient capital. ไม่ใช่ซื้อเพราะราคาวิ่งวันนี้ แต่ถือเพราะ business quality, real earnings, market leadership, and role inside a major money-flow layer are strong enough to compound over multi-year periods.</p>
-        <div class="trait-grid"><div class="core-trait">AI infrastructure</div><div class="core-trait">Semiconductor ecosystem</div><div class="core-trait">Data centers</div><div class="core-trait">Critical technology platform</div><div class="core-trait">Real earnings matter</div><div class="core-trait">Market leadership matters</div></div>
-        <div class="not-tags"><span class="not-tag">ไม่ใช่หุ้นซิ่ง</span><span class="not-tag">ไม่ใช่ pure Wave idea</span><span class="not-tag">ไม่ใช่ FWB rotation stock</span></div>
-        <p><strong>Why NVDA belongs here:</strong> NVDA fits Core because the business is already inside the largest AI money-flow layer: data center compute. FY2026 revenue was <strong>$215.9B</strong>, net income was <strong>$120.1B</strong>, operating margin was <strong>60.4%</strong>, and Q1 FY2027 Data Center revenue alone was <strong>$75.2B</strong>. This is market leadership with real earnings.</p>
-      </div></div><div class="section-divider"></div>
-    </section>
-  </main>
-  <footer class="doc-footer">EisenTower · Hall of Frames — NVDA / NVIDIA Corporation · Source: NVIDIA FY2026 Form 10-K and Q1 FY2027 Form 10-Q · Filed February 25, 2026 and May 20, 2026<br>Written June 14, 2026 · For informational purposes only. Not investment advice.<div class="dots"><span class="dot" style="background:#76b900"></span><span class="dot" style="background:#111"></span><span class="dot" style="background:#596167"></span><span class="dot" style="background:#3d6b00"></span></div></footer>
-  <button class="to-top" id="toTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="Back to top">↑</button>
-  <script>
-    function toggleSection(header) {
-      const content = header.nextElementSibling;
-      header.classList.toggle("collapsed");
-      content.classList.toggle("collapsed");
-    }
-    const toTop = document.querySelector("#toTop");
-    window.addEventListener("scroll", () => toTop.classList.toggle("show", window.scrollY > 300));
-  </script>
+        <div class="stat-card deep">
+          <div class="stat-label">Data Center Revenue</div>
+          <div class="stat-value">$193.7B</div>
+          <div class="stat-sub">89.7% of total · +68% YoY</div>
+        </div>
+        <div class="stat-card gray">
+          <div class="stat-label">Free Cash Flow</div>
+          <div class="stat-value">$96.6B</div>
+          <div class="stat-sub">FY2026 · Cash $62.6B</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">EPS (Diluted)</div>
+          <div class="stat-value">$4.90</div>
+          <div class="stat-sub">GAAP · +67% vs FY2025</div>
+        </div>
+        <div class="stat-card dark">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">~42,000</div>
+          <div class="stat-sub">Jan 2026 · 74% R&amp;D/Eng</div>
+        </div>
+      </div>
+
+      <div class="callout green">
+        <p><strong>One-liner:</strong> NVIDIA ขาย GPU + software ecosystem ที่กลายเป็น standard computing platform สำหรับ AI — ทั้ง training และ inference — โดยมี CUDA moat ที่สร้างมา 18 ปีปกป้อง pricing power ไว้</p>
+      </div>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 2 ─── -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">02</span>
+        <span class="section-h2">Journey</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <p>NVIDIA เริ่มต้นในร้าน Denny's — ไม่ใช่ Silicon Valley lore ทั่วไป แต่เป็นจุดที่ Jensen Huang นั่งคุยกับ Chris Malachowsky และ Curtis Priem แล้วตัดสินใจ all-in กับ 3D graphics ในปี 1993 ตอนที่โลกยังไม่แน่ใจว่า graphics card คือ industry หรือแค่ niche</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1993</div>
+          <div class="tl-text">Jensen Huang, Chris Malachowsky, Curtis Priem ก่อตั้ง NVIDIA ในวันที่ 5 เมษายน ที่ Denny's ใน San Jose เป้าหมายเดียว: dominate 3D graphics</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1995–1997</div>
+          <div class="tl-text">ออก NV1 (1995) — ล้มเหลว ใช้ quadratic rendering ที่โลกไม่ adopt แต่ Jensen พา team pivot สู่ polygon rendering กับ RIVA 128 (1997) ซึ่งขายดีจนรอด</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">1999</div>
+          <div class="tl-text">เปิดตัว GeForce 256 และบัญญัติศัพท์ "GPU" ขึ้นเป็นครั้งแรกในประวัติศาสตร์ · IPO บน NASDAQ ในปีเดียวกัน</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2006</div>
+          <div class="tl-text">ปล่อย <strong>CUDA</strong> (Compute Unified Device Architecture) — เปิดให้ developer เขียนโปรแกรมบน GPU ได้ ตัดสินใจที่เปลี่ยน NVIDIA จาก graphics company เป็น compute platform</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2012</div>
+          <div class="tl-text"><strong>AlexNet moment</strong> — Geoff Hinton's team ใช้ NVIDIA GPU ชนะ ImageNet competition ด้วย deep learning ครั้งแรก เริ่ม narrative ที่ NVIDIA จะ own AI compute</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2016–2020</div>
+          <div class="tl-text">Tesla V100 → A100 สำหรับ data center · Autonomous vehicle push กับ DRIVE platform · Crypto boom ทำให้ GPU shortage ครั้งแรก</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022–2023</div>
+          <div class="tl-text"><strong>ChatGPT ระเบิด</strong> → H100 demand พุ่ง hyperscalers แย่ง GPU จน waitlist ยาว 12+ เดือน · NVIDIA market cap ทะลุ $1T เป็นครั้งแรกในปี 2023</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text">เปิดตัว <strong>Blackwell</strong> architecture — GB200 NVLink systems · 10-for-1 stock split มิถุนายน 2024 · Market cap แตะ $3T+ ขณะเดียวกัน H20 export control ทำให้ China revenue ถูก cut</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025–2026</div>
+          <div class="tl-text">Blackwell ramp เต็มตัว — Q4 FY2026 Data Center $62.3B ใน 1 ไตรมาส · ประกาศ <strong>Vera Rubin</strong> เป็น next architecture · Agentic AI era เริ่ม — inference demand ขึ้น</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 3 ─── -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">03</span>
+        <span class="section-h2">Track Record</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <p>ตาราง 7 ปีนี้แสดง trajectory ที่ไม่มีบริษัทไหนในประวัติศาสตร์ทำได้ — ไปจากรายได้ $1 หมื่นล้านสู่ $2 แสนล้านในระยะเวลาไม่ถึง 7 ปี CAGR ของ Revenue อยู่ที่ ~58% ต่อปีตลอด FY2020–FY2026 EPS โตเร็วกว่า revenue เพราะ operating leverage + buybacks</p>
+
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>Fiscal Year</th>
+            <th>Revenue</th>
+            <th>Op. Income</th>
+            <th>Net Income</th>
+            <th>EPS (Diluted)*</th>
+            <th>Op. Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>FY2020</td>
+            <td>$10.9B</td>
+            <td>$2.8B</td>
+            <td>$2.8B</td>
+            <td>$0.11</td>
+            <td>25.7%</td>
+          </tr>
+          <tr>
+            <td>FY2021</td>
+            <td>$16.7B</td>
+            <td>$4.5B</td>
+            <td>$4.3B</td>
+            <td>$0.17</td>
+            <td>26.8%</td>
+          </tr>
+          <tr>
+            <td>FY2022</td>
+            <td>$26.9B</td>
+            <td>$10.0B</td>
+            <td>$9.8B</td>
+            <td>$0.39</td>
+            <td>37.3%</td>
+          </tr>
+          <tr>
+            <td>FY2023 ⚡</td>
+            <td>$27.0B</td>
+            <td>$4.2B</td>
+            <td>$4.4B</td>
+            <td>$0.17</td>
+            <td>15.6%</td>
+          </tr>
+          <tr>
+            <td>FY2024</td>
+            <td>$60.9B</td>
+            <td>$33.0B</td>
+            <td>$29.8B</td>
+            <td>$1.20</td>
+            <td>54.1%</td>
+          </tr>
+          <tr>
+            <td>FY2025</td>
+            <td>$130.5B</td>
+            <td>$81.5B</td>
+            <td>$72.9B</td>
+            <td>$2.94</td>
+            <td>62.4%</td>
+          </tr>
+          <tr class="highlight">
+            <td>FY2026 ✦</td>
+            <td>$215.9B</td>
+            <td>$130.4B</td>
+            <td>$120.1B</td>
+            <td>$4.90</td>
+            <td>60.4%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:13px; color:var(--text-muted);">* EPS ปรับ post-split 10:1 (มิถุนายน 2024) ตลอด · ⚡ FY2023 คือปีที่ gaming crash + inventory charges ทำให้ net income ตก · ✦ Latest year (ที่มา: NVIDIA Q4 FY2026 Earnings Release, 25 Feb 2026)</p>
+
+      <div class="callout green">
+        <p><strong>CAGR FY2020→FY2026:</strong> Revenue +57.8% ต่อปี · Net Income +90.2% ต่อปี · EPS โต faster กว่า revenue เพราะ buyback ($41.1B คืน shareholders ใน FY2026 เพียงปีเดียว) + operating leverage ที่ขยายจาก 25% สู่ 60% margin</p>
+      </div>
+
+      <p>FY2023 เป็น anomaly ที่ควรเข้าใจ: gaming ล้มจาก crypto hangover, inventory ล้น, gross margin กดดัน — แต่ data center ยังเติบโต ใครที่ hold ผ่านปีนั้นได้เห็น FY2024 เปิดตัว H100 era ที่ margin พุ่งกลับขึ้นมาเกิน 60%</p>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 4 ─── -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">04</span>
+        <span class="section-h2">Know their Boss</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Jensen Huang</div>
+          <div class="boss-title">Co-Founder, President &amp; CEO</div>
+          <div class="boss-fact"><span class="label">Born</span> Feb 17, 1963 · Taiwan</div>
+          <div class="boss-fact"><span class="label">Education</span> BS EE, Oregon State University; MS EE, Stanford University</div>
+          <div class="boss-fact"><span class="label">Joined</span> Co-founded 1993</div>
+          <div class="boss-fact"><span class="label">CEO Since</span> 1993 (33 years)</div>
+          <div class="boss-fact"><span class="label">Governance</span> No dual-class structure; Jensen holds ~3.5% stake</div>
+        </div>
+        <div class="boss-right">
+          <p>Jensen Huang สร้าง NVIDIA ขึ้นมาจากบริษัท graphics chip เล็กๆ ในปี 1993 ด้วยการเดิมพัน 3D polygon rendering ตอนที่ตลาดยังไม่แน่ใจ เขาผ่าน near-death moment ของ NV1 ในปี 1995 แล้ว pivot ทีม ออก RIVA 128 ที่รอด pivot อีกครั้งในปี 2006 ด้วยการทุ่ม resource สร้าง CUDA ทั้งที่ market ยังมองไม่เห็น use case ใน long run ทุก bet ใหญ่ที่ Jensen ทำได้ผลในระยะ 5–10 ปีถัดมา</p>
+          <p>ในเรื่อง leadership style — Jensen ไม่ชอบ org chart แบบ hierarchy เขาบอกว่ามี <strong>direct report 50+ คน</strong> เพื่อกำจัด information filter ทั้งหมด เขาเชื่อว่า "suffering is a gift" และบอก employee ตรงๆ เสมอว่าอะไรผิดพลาด ไม่มีวัฒนธรรม sugarcoat ที่ NVIDIA ปัจจุบัน biggest challenge ของ Jensen คือ scale ของ Blackwell production ให้ทัน demand ที่กำลัง explode พร้อมกัน ขณะเดียวกันก็ต้อง navigate US–China export control ที่ตัด China revenue ออกจาก outlook</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 5 ─── -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">05</span>
+        <span class="section-h2">What do they Actually Do?</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <div class="callout green">
+        <p><strong>Big picture:</strong> NVIDIA ไม่ใช่แค่ "GPU company" — มันคือ <strong>computing platform</strong> NVIDIA supply ทั้ง silicon (chip), system (GB200 NVLink rack), และ software stack (CUDA, cuDNN, TensorRT) ให้กับ AI ecosystem ทั้งโลก model หนึ่งตัวต้องการ GPU เป็นพัน NVIDIA ผลิต GPU นั้น, interconnect ระหว่าง GPU, และ software ที่ทำให้ทุกอย่าง work ด้วยกัน</p>
+      </div>
+
+      <div class="callout dark">
+        <p><strong>Zone 1 — Data Center (Compute):</strong> H100, H200, B100, B200, GB200, GB300 — chip รุ่นล่าสุดสำหรับ AI training และ inference ลูกค้าหลักคือ hyperscaler (Microsoft, Google, Meta, Amazon, Oracle) ที่ตั้ง cluster หลาย gigawatt สำหรับ training frontier model ปี FY2026 segment นี้ทำ $162.4B — คือ 75% ของ revenue ทั้งหมด</p>
+      </div>
+
+      <div class="callout dark">
+        <p><strong>Zone 2 — Data Center (Networking):</strong> InfiniBand และ Ethernet ที่ connect GPU ด้วยกัน รวมถึง NVLink fabric สำหรับ GB200 systems Networking revenue FY2026 = $31.4B (+142% YoY) — growing faster กว่า compute เพราะ GB200 ต้องการ NVLink ในการ connect GPU ภายใน rack</p>
+      </div>
+
+      <div class="callout dark">
+        <p><strong>Zone 3 — Gaming:</strong> GeForce RTX 40XX และ 50XX series สำหรับ PC gaming ยังคงเป็น brand ที่แข็งแกร่ง แต่ตอนนี้ทำได้ $16.0B (7.4% ของ total) เทียบกับอดีตที่เคยเป็น majority ของ business</p>
+      </div>
+
+      <div class="callout dark">
+        <p><strong>Zone 4 — Auto &amp; Professional Viz:</strong> NVIDIA DRIVE platform สำหรับ self-driving (กำลังเติบโต +39% YoY) และ RTX workstation สำหรับ designers, VFX, engineering simulation รวม $5.5B</p>
+      </div>
+
+      <p>NVIDIA ในปัจจุบันคืออะไรในหนึ่งประโยค: <strong>บริษัทที่ build โรงงานพลังงาน AI — ทั้ง hardware, interconnect, และ software ที่ทำให้ AI industrial revolution หมุนได้</strong></p>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 6 ─── -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">06</span>
+        <span class="section-h2">How they Make Money</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <div class="revenue-breakdown">
+        <h3>Revenue Breakdown — FY2026 ($215.9B Total)</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <span class="rev-name">Data Center — Compute</span>
+            <span class="rev-numbers">$162.4B · 75.2%</span>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-dc" style="width:75.2%"></div></div>
+          <div class="rev-note">H100, B200, GB200 GPU สำหรับ AI training / inference · +59% YoY</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <span class="rev-name">Data Center — Networking</span>
+            <span class="rev-numbers">$31.4B · 14.5%</span>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-dc" style="width:14.5%; opacity:0.65"></div></div>
+          <div class="rev-note">NVLink, InfiniBand, Ethernet · +142% YoY — fastest growing segment</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <span class="rev-name">Gaming</span>
+            <span class="rev-numbers">$16.0B · 7.4%</span>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-gaming" style="width:7.4%"></div></div>
+          <div class="rev-note">GeForce RTX · +41% YoY · เคย 50%+ ของ business ก่อน AI era</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <span class="rev-name">Professional Visualization</span>
+            <span class="rev-numbers">$3.2B · 1.5%</span>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-proviz" style="width:1.5%"></div></div>
+          <div class="rev-note">RTX workstation · Blackwell demand ทำให้ +70% YoY</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <span class="rev-name">Automotive</span>
+            <span class="rev-numbers">$2.3B · 1.1%</span>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-auto" style="width:1.1%"></div></div>
+          <div class="rev-note">DRIVE platform · +39% YoY · small now แต่ potential สูง</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <span class="rev-name">OEM &amp; Other</span>
+            <span class="rev-numbers">$0.6B · 0.3%</span>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-other" style="width:0.3%"></div></div>
+        </div>
+      </div>
+
+      <p>Core monetization mechanic ของ NVIDIA: <strong>design chip → sell to OEM/direct to hyperscaler → ราคา ASP สูงมากเพราะ moat จาก CUDA</strong> H100 ราคา market $25,000–$40,000 ต่อ chip ขณะที่ cost to produce อยู่ที่ไม่กี่พันดอลลาร์ — gross margin จึงอยู่ที่ 71–75% ซึ่งสูงมากสำหรับบริษัทที่ sell hardware</p>
+
+      <p>Hyperscaler (Microsoft, Google, Meta, Amazon, Oracle) คือ largest customer category — slightly over 50% ของ Data Center revenue FY2026 ที่เหลือคือ enterprise, government lab, AI startup ที่กำลัง diversify customer base ให้กว้างขึ้น</p>
+
+      <div class="callout yellow">
+        <p>⚠️ <strong>China situation:</strong> US export controls ตัด H20 (chip รุ่นที่ออกแบบสำหรับ China) ออกจากตลาด NVIDIA ไม่ได้ assume China revenue ใน Q1 FY2027 outlook ไปแล้ว แต่ demand จาก non-China market ยังแข็งพอที่จะ absorb loss นี้ได้</p>
+      </div>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 7 ─── -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">07</span>
+        <span class="section-h2">How they Compound</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <p>NVIDIA มี flywheel ที่ชัดเจนที่สุดในวงการ tech และมัน self-reinforcing มา 18 ปีแล้ว:</p>
+
+      <div class="callout green">
+        <p><strong>CUDA Flywheel:</strong> Developer เขียน code บน CUDA → Model และ framework (PyTorch, TensorFlow) build on top of CUDA → Research community train model บน NVIDIA GPU → Paper ใหม่ทุกชิ้น cite NVIDIA → บริษัทที่จะ reproduce result ต้องใช้ NVIDIA GPU → CUDA ecosystem ใหญ่ขึ้น → barrier to switch สูงขึ้น → NVIDIA ออก GPU รุ่นใหม่ที่ backward compatible กับ CUDA → Developer ไม่ต้องเปลี่ยน → cycle ต่อไป</p>
+      </div>
+
+      <p>ตัวเลขที่บอกว่า flywheel ทำงาน: <strong>CUDA มี developer กว่า 5 ล้านคน</strong> software library อย่าง cuDNN, TensorRT, NCCL ทำงานได้ดีที่สุดบน NVIDIA hardware เท่านั้น ถ้า company switch ไปใช้ AMD หรือ Google TPU ต้องลงทุน re-engineer workflow ทั้งหมด — cost ที่ส่วนใหญ่ไม่คุ้ม</p>
+
+      <div class="callout dark">
+        <p><strong>Data Moat:</strong> ยิ่งมี AI workload run บน NVIDIA GPU มาก NVIDIA ยิ่งเข้าใจ performance bottleneck ดีขึ้น → พัฒนา chip รุ่นถัดไปได้ตรงกว่า competitor → performance gap กว้างขึ้น</p>
+      </div>
+
+      <p><strong>Capital Allocation FY2026:</strong></p>
+
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">R&amp;D Spend</div>
+          <div class="stat-value">$14.8B</div>
+          <div class="stat-sub">6.9% of revenue · ออกแบบ GPU รุ่นถัดไป (Vera Rubin)</div>
+        </div>
+        <div class="stat-card dark">
+          <div class="stat-label">Share Buybacks</div>
+          <div class="stat-value">$40.1B</div>
+          <div class="stat-sub">FY2026 · reduce share count → EPS โตกว่า NI</div>
+        </div>
+        <div class="stat-card deep">
+          <div class="stat-label">Cash Dividends</div>
+          <div class="stat-value">$0.97B</div>
+          <div class="stat-sub">FY2026 · ยังเล็ก ไม่ใช่ focus หลัก</div>
+        </div>
+        <div class="stat-card gray">
+          <div class="stat-label">CapEx (PP&amp;E)</div>
+          <div class="stat-value">$6.0B</div>
+          <div class="stat-sub">FY2026 · fab-lite model ใช้ TSMC ผลิต</div>
+        </div>
+      </div>
+
+      <p>NVIDIA ใช้ <strong>fabless model</strong> — ไม่มี factory เป็นของตัวเอง ผลิต chip ผ่าน TSMC ดังนั้น CapEx ต่ำผิดปกติสำหรับบริษัทที่ทำ $215B revenue FCF จึงสูงมาก ($96.6B FY2026) ซึ่งทั้งหมดคืนกลับผ่าน buyback</p>
+
+      <p>Business ของ NVIDIA ไม่ใช่แค่โตขึ้น — มัน <strong>stronger ขึ้นทุกปี</strong> เพราะ CUDA ecosystem ใหญ่ขึ้น, product roadmap ชัดขึ้น (Hopper → Blackwell → Vera Rubin → ถัดไปทุก 1–2 ปี), และ switching cost สำหรับ hyperscaler สูงมากจนแทบไม่คุ้มที่จะ switch</p>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 8 ─── -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">08</span>
+        <span class="section-h2">Current Situation &amp; Positioning</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <div class="sit-item">
+        <span class="sit-tag tag-up">📈 Momentum</span>
+        <div class="sit-body"><strong>Blackwell ramp เต็มตัว:</strong> GB200 NVLink systems ส่งผลให้ Networking revenue +142% YoY ใน FY2026 Blackwell architecture มี compute:networking ratio ที่สูงขึ้น ทำให้ ASP per system สูงขึ้นอีก Q1 FY2027 outlook $78B (+14.5% QoQ) ยืนยันว่า demand ไม่ชะลอ</div>
+      </div>
+
+      <div class="sit-item">
+        <span class="sit-tag tag-up">📈 Momentum</span>
+        <div class="sit-body"><strong>Agentic AI era เริ่มต้น:</strong> Jensen Huang พูดว่า "agentic AI inflection point has arrived" inference demand กำลัง explode ต่างจาก training ที่ hyperscaler เป็น driver หลัก inference จะ distribute ไปทุก enterprise ที่ deploy AI agent — ขยาย TAM ของ NVIDIA ออกไปอีก</div>
+      </div>
+
+      <div class="sit-item">
+        <span class="sit-tag tag-up">📈 Momentum</span>
+        <div class="sit-body"><strong>Vera Rubin roadmap:</strong> ประกาศแล้ว ใช้ TSMC N3 process node Vera Rubin จะ extend performance lead เหนือ AMD และ Google TPU ออกไปอีก 2–3 ปี ในขณะที่ competitor ยังอยู่ในช่วง ramp Hopper equivalent ลูกค้าเริ่ม commit long-term capex ล่วงหน้าเพื่อ secure supply</div>
+      </div>
+
+      <div class="sit-item">
+        <span class="sit-tag tag-watch">👁 จับตา</span>
+        <div class="sit-body"><strong>Customer concentration + hyperscaler self-develop:</strong> Microsoft, Google, Meta รวมกันคือ 50%+ ของ Data Center revenue ทั้ง 3 รายกำลัง develop internal chip (Maia, TPU, MTIA) ยังไม่ถือเป็น threat ใหญ่ในปัจจุบัน แต่ถ้า hyperscaler ลด NVIDIA dependency ได้ใน 3–5 ปี revenue concentration risk จะชัดขึ้น</div>
+      </div>
+
+      <div class="sit-item">
+        <span class="sit-tag tag-watch">👁 จับตา</span>
+        <div class="sit-body"><strong>Supply chain TSMC dependency:</strong> ทุก high-end chip ผลิตที่ TSMC Taiwan geopolitical risk ยังอยู่ NVIDIA กำลัง diversify บางส่วน production ไปที่ TSMC Arizona แต่ advanced node ยังคง Taiwan เป็น primary site</div>
+      </div>
+
+      <div class="sit-item">
+        <span class="sit-tag tag-risk">⚠️ Risk</span>
+        <div class="sit-body"><strong>China export controls — ถาวรแล้ว:</strong> H20 ถูก restrict ตั้งแต่ April 2025 NVIDIA ระบุชัดใน Q1 FY2027 outlook ว่าไม่ assume China revenue เลย China เคยเป็น significant market (ประมาณ 15–20% ของ data center revenue ก่อน) revenue ส่วนนี้หายไปแล้ว แม้ demand จาก rest-of-world จะ offset ได้ แต่ถ้า US เพิ่ม restriction ใน chip generation ถัดไปจะกระทบมากขึ้น</div>
+      </div>
+
+      <div class="sit-item">
+        <span class="sit-tag tag-risk">⚠️ Risk</span>
+        <div class="sit-body"><strong>Valuation expectations ที่สูง:</strong> ณ market cap $3T+ NVIDIA ถูก price สำหรับ near-perfect execution ในหลายปีถัดไป ถ้า AI spending ชะลอ, hyperscaler cut capex, หรือ AMD/custom chip ทำได้ดีกว่าที่ตลาดคาด multiple compression จะหนักกว่าค่าเฉลี่ยของ market</div>
+      </div>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 9 ─── -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">09</span>
+        <span class="section-h2">Peers and Competitors</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <div class="comp-block">
+        <h3>AI Accelerator Market — Data Center GPU</h3>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-ticker self">NVDA</div>
+            <div class="comp-label">NVIDIA</div>
+            <div class="comp-share self">~85%</div>
+            <div class="comp-share-label">market share</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-ticker">AMD</div>
+            <div class="comp-label">Advanced Micro Devices</div>
+            <div class="comp-share">~10%</div>
+            <div class="comp-share-label">market share</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-ticker">GOOG</div>
+            <div class="comp-label">Google TPU (internal)</div>
+            <div class="comp-share">—</div>
+            <div class="comp-share-label">captive use</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-ticker">INTC</div>
+            <div class="comp-label">Intel Gaudi</div>
+            <div class="comp-share">&lt;3%</div>
+            <div class="comp-share-label">market share</div>
+          </div>
+        </div>
+        <div class="comp-verdict">NVIDIA dominates ด้วย ~85% share ใน AI accelerator ซึ่งแทบไม่เคยเห็น monopoly ระดับนี้ใน tech hardware มาก่อน AMD MI300X มา เพียงแต่ software ecosystem ยังอ่อนกว่า CUDA มาก — HIP (AMD equivalent ของ CUDA) ยังมี developer base น้อยกว่าหลายเท่า Google TPU ดีมากสำหรับ Google workload เองแต่ไม่ general purpose Intel Gaudi มาช้าและ ramp ยาก <strong>Verdict: NVIDIA ไม่มีท่าโดน displace ใน 2–3 ปีข้างหน้า</strong></div>
+      </div>
+
+      <div class="comp-block">
+        <h3>Gaming GPU</h3>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-ticker self">NVDA GeForce</div>
+            <div class="comp-label">NVIDIA</div>
+            <div class="comp-share self">~80%</div>
+            <div class="comp-share-label">discrete GPU share</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-ticker">AMD</div>
+            <div class="comp-label">Radeon RX</div>
+            <div class="comp-share">~20%</div>
+            <div class="comp-share-label">discrete GPU share</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-ticker">INTC</div>
+            <div class="comp-label">Intel Arc</div>
+            <div class="comp-share">&lt;2%</div>
+            <div class="comp-share-label">tiny presence</div>
+          </div>
+        </div>
+        <div class="comp-verdict">Gaming เป็น duopoly ระหว่าง NVIDIA และ AMD NVIDIA ชนะด้วย RTX ray-tracing, DLSS (AI upscaling), และ brand loyalty ที่สะสมมาหลายทศวรรษ แม้ Gaming ลดสัดส่วนใน revenue แต่ยังเป็น brand building channel และ profit generator ที่แข็งแกร่ง</div>
+      </div>
+
+      <div class="comp-block">
+        <h3>Networking / Interconnect (InfiniBand vs. Alternatives)</h3>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-ticker self">NVDA NVLink</div>
+            <div class="comp-label">NVIDIA / Mellanox</div>
+            <div class="comp-share self">~50%</div>
+            <div class="comp-share-label">HPC fabric</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-ticker">ANET</div>
+            <div class="comp-label">Arista (Ethernet)</div>
+            <div class="comp-share">growing</div>
+            <div class="comp-share-label">AI backend</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-ticker">CSCO</div>
+            <div class="comp-label">Cisco</div>
+            <div class="comp-share">—</div>
+            <div class="comp-share-label">Ethernet alt</div>
+          </div>
+        </div>
+        <div class="comp-verdict">NVIDIA dominates HPC/AI fabric ด้วย InfiniBand (acquired กับ Mellanox ปี 2020) และ NVLink สำหรับ GB200 system ระหว่าง GPU connectivity เป็น threat จาก Ultra Ethernet Consortium ที่พยายาม open standard แต่ NVLink ใน GB200 system เป็น captive — ลูกค้าที่ซื้อ GB200 ต้องใช้ NVLink อยู่ดี Networking +142% YoY ใน FY2026 แสดงว่า strategy นี้ work</div>
+      </div>
+
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ─── SECTION 10 ─── -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num">10</span>
+        <span class="section-h2">Their Seat in Jay's Universe</span>
+      </div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="section-content">
+
+      <div class="portfolio-card">
+        <div class="portfolio-badge">🏛 Core Portfolio</div>
+        <div class="portfolio-mission">Mission: Long-term compounding — own durable businesses inside major global money-flow layers</div>
+
+        <p>Core Portfolio คือ capital 70% ที่ Jay ตั้งใจ park ใน business คุณภาพสูงสำหรับ multi-year compounding ไม่ใช่ momentum play ไม่ใช่ event-driven bet — เป็นการ own ธุรกิจที่แข็งแกร่งขึ้นทุกปีและผ่าน cycle ได้ target ~15% annualized return ระยะยาว ลักษณะของ Core คือ patient, thesis-driven, low turnover, real earnings matter, market leadership matters</p>
+
+        <div style="margin-top:20px;">
+          <div class="core-trait"><span class="core-trait-icon">✓</span><div><strong>Durable earnings / real profits:</strong> NVIDIA ทำ net income $120B FY2026 จาก GAAP — ไม่ใช่ adjusted story ไม่ใช่ future hope gross margin 71% ยืนยัน pricing power ที่แท้จริง</div></div>
+          <div class="core-trait"><span class="core-trait-icon">✓</span><div><strong>Market leadership ชัดเจน:</strong> ~85% AI accelerator market share — ไม่ใช่ contestant แต่เป็น standard ที่ทั้ง ecosystem build on top of</div></div>
+          <div class="core-trait"><span class="core-trait-icon">✓</span><div><strong>Compounding mechanics:</strong> CUDA moat + product roadmap ที่ออก chip ใหม่ทุก 1–2 ปี + fabless model ที่ให้ FCF high → buyback ลด shares ทำให้ EPS โตกว่า NI ทุกปี</div></div>
+          <div class="core-trait"><span class="core-trait-icon">✓</span><div><strong>Inside major money-flow layer:</strong> AI infrastructure คือ layer ที่ capital ทั้งโลกกำลัง pour เข้า hyperscaler ตั้งใจ spend $300–500B/year ใน capex ช่วงปีนี้ถึง 2027 NVIDIA อยู่ตรงกลางของ spend ทั้งหมดนั้น</div></div>
+          <div class="core-trait"><span class="core-trait-icon">✓</span><div><strong>~15% annualized realistic:</strong> ถ้า AI capex cycle sustain, Vera Rubin ramp ปี 2026–2027 และ inference demand เติบโตตาม thesis อัตราการเติบโตของ EPS ที่ compound ได้ระยะยาวจะ support 15%+ return — แม้ multiple จะไม่ expand ต่อ</div></div>
+        </div>
+
+        <div class="not-tags">
+          <span class="not-tag">ไม่ใช่หุ้นซิ่ง</span>
+          <span class="not-tag">ไม่ใช่ momentum trade</span>
+          <span class="not-tag">ไม่ใช่ Wave bet</span>
+          <span class="not-tag">ไม่ใช่ FWB rotation</span>
+          <span class="not-tag">ไม่ใช่ turnaround story</span>
+        </div>
+
+        <p>NVDA ไม่ใช่ Wave เพราะ consensus รู้จักแล้ว — ไม่มี re-rating ที่ซ่อนอยู่อีก ไม่ใช่ FWB เพราะไม่มีใครซื้อ NVDA สำหรับ tactical rotation 2–3 สัปดาห์ NVDA คือ Core เพราะมันคือธุรกิจที่ compounding ผ่าน pricing power, CUDA moat, และ position ที่ล็อก NVIDIA ไว้ตรงกลาง AI industrial revolution ที่ยังอยู่ในช่วงแรก</p>
+
+        <p><strong>Why NVDA belongs here — in Jay's words:</strong> "ถ้าคุณเชื่อว่า AI compute demand จะโตต่อในอีก 5–10 ปี และคุณเชื่อว่า CUDA ecosystem จะยังเป็น standard — NVDA ไม่ใช่แค่ investment ใน tech company แต่เป็น investment ใน infrastructure ที่ทำให้ era นี้ทำงานได้" นี่คือนิยามของ Core ใน Jay's Universe</p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="doc-footer">
+  <div class="container">
+    <div class="footer-text">
+      EisenTower · Hall of Frames — NVDA / NVIDIA Corporation · Source: NVIDIA Q4 &amp; FY2026 Earnings Release (Feb 25, 2026) · SEC Form 8-K Filed Feb 25, 2026<br>
+      Written June 15, 2026 · For informational purposes only. Not investment advice.
+    </div>
+    <div class="footer-dots">
+      <div class="footer-dot" style="background:#76B900"></div>
+      <div class="footer-dot" style="background:#1a1a1a"></div>
+      <div class="footer-dot" style="background:#76B900"></div>
+      <div class="footer-dot" style="background:#558B2F"></div>
+    </div>
+  </div>
+</footer>
+
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  function toggleSection(header) {
+    header.classList.toggle('collapsed');
+    const content = header.nextElementSibling;
+    content.classList.toggle('collapsed');
+  }
+  window.addEventListener('scroll', function() {
+    const btn = document.getElementById('back-top');
+    btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  });
+</script>
 </body>
 </html>

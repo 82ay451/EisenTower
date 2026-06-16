@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRWV — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --crwv-purple:      #6B46C1;
+      --crwv-dark:        #4C2E9E;
+      --crwv-light:       #9B7FEA;
+      --crwv-purple-soft: #F0EBFF;
+      --accent:           #6B46C1;
+      --accent-soft:      #F0EBFF;
+      --green:            #34A853;
+      --green-soft:       #e6f4ea;
+      --red:              #EA4335;
+      --red-soft:         #fce8e6;
+      --yellow:           #FBBC04;
+      --yellow-soft:      #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    .doc-header {
+      background: var(--surface);
+      border-bottom: 3px solid transparent;
+      border-image: linear-gradient(90deg,
+        var(--crwv-purple) 25%, var(--crwv-light) 25% 50%,
+        var(--crwv-dark) 50% 75%, var(--crwv-purple-soft) 75%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); background: var(--tag-bg);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--crwv-purple); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      cursor: pointer; user-select: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon {
+      flex-shrink: 0; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--tag-bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.25s;
+      font-size: 16px; color: var(--text-secondary);
+    }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-cloud    { background: var(--crwv-purple); }
+    .bar-contract { background: var(--crwv-light); }
+    .bar-other    { background: #9B59B6; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--crwv-purple-soft); border-color: var(--crwv-purple); }
+    .callout.green  { background: var(--green-soft);       border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);      border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);         border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--crwv-purple), var(--crwv-light)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--crwv-purple); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--crwv-purple); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--crwv-purple-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);        color: var(--green); }
+    .comp-pos.challenger { background: var(--crwv-purple-soft);  color: var(--crwv-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);       color: #8a6000; }
+    .comp-pos.trailing   { background: var(--red-soft);          color: #b71c1c; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--crwv-purple); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--crwv-purple-soft); border-color: var(--crwv-purple); color: var(--crwv-dark); }
+    .comp-verdict.green  { background: var(--green-soft);       border-color: var(--green);       color: #1e6e3a; }
+    .comp-verdict.yellow { background: var(--yellow-soft);      border-color: var(--yellow);      color: #8a6000; }
+    .comp-verdict.red    { background: var(--red-soft);         border-color: var(--red);         color: #b71c1c; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: rgba(138, 43, 226, 0.07); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #7b2fff; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-wave { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .bucket-fit { background: #f3eeff; border: 1px solid #c9b2ff; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .bucket-fit h4 { font-size: 15px; font-weight: 700; color: #7b2fff; margin-bottom: 10px; }
+    .bucket-fit p { font-size: 15px; }
+    #back-to-top {
+      position: fixed; bottom: 32px; right: 32px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--crwv-purple); color: white;
+      border: none; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(107,70,193,0.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s; z-index: 200;
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--crwv-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">CRWV</span> — CoreWeave, Inc.</h1>
+    <div class="doc-subtitle">Understanding CoreWeave as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NASDAQ: CRWV</span>
+      <span>🏛 Founded 2017</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>CoreWeave คือ <strong>cloud computing provider ที่ build มาเพื่อ GPU workloads โดยเฉพาะ</strong> — ต่างจาก AWS, Azure, GCP ที่ลูกค้า GPU เป็นแค่ส่วนหนึ่ง CoreWeave เริ่มต้นเป็น Ethereum mining operation แล้ว pivot มาเป็น GPU cloud ในปี 2019 ก่อนที่ AI boom จะเริ่ม ทำให้ได้ head start ในการ build GPU infrastructure scale ที่ใหญ่</p>
+      <p>IPO เมื่อมีนาคม 2026 เป็น IPO ที่ได้รับความสนใจมากที่สุดในปีนั้น กิจการ FY2025 (ปีงบ 2025): <strong>Revenue $1.9B (+420% YoY)</strong> — growth ระดับ hypergrowth ที่หายากมาก แต่ยังขาดทุน GAAP สุทธิและมีหนี้สูงจากการลงทุน data center ก้อนใหญ่</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$1.9B</div>
+          <div class="stat-sub">+420% YoY จาก $365M</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">~74%</div>
+          <div class="stat-sub">Software-like เพราะ GPU leverage</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Net Loss (GAAP)</div>
+          <div class="stat-value">-$863M</div>
+          <div class="stat-sub">รวม D&A และ interest expense สูง</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Remaining Backlog</div>
+          <div class="stat-value">$15.1B</div>
+          <div class="stat-sub">Contracted revenue ahead</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">RPO (12M)</div>
+          <div class="stat-value">$4.6B</div>
+          <div class="stat-sub">Remaining Performance Obligation</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Total Debt</div>
+          <div class="stat-value">~$8B</div>
+          <div class="stat-sub">จาก data center build-out</div>
+        </div>
+      </div>
+      <p>สิ่งที่ทำให้ CoreWeave น่าสนใจคือ <strong>$15.1B contracted backlog</strong> — ลูกค้าเซ็นสัญญาล่วงหน้าหลายปี ซึ่งหมายความว่า revenue visibility สูงมาก ลูกค้าหลักคือ Microsoft (~65% of FY2024 revenue) และ OpenAI ซึ่งทั้งคู่ commit long-term</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>CoreWeave เริ่มจาก crypto mining แล้ว pivot มาจับตลาดที่ใหญ่กว่ามาก — เป็น story ของ right infrastructure at the right time</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2017</div>
+          <div class="tl-text"><strong>ก่อตั้งเพื่อ Ethereum Mining:</strong> Mike Intrator, Brian Venturo, Brannin McBee ก่อตั้ง CoreWeave ใน New Jersey เริ่มต้นเป็น hedge fund ที่ mine Ethereum ด้วย GPU farms ขนาดใหญ่</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019</div>
+          <div class="tl-text"><strong>Pivot สู่ GPU Cloud:</strong> ก่อน crypto winter ทีมผู้ก่อตั้งมองเห็นว่า GPU infrastructure จะมีมูลค่ามากกว่า mining พวกเขา pivot เป็น specialized GPU cloud service ให้บริการ Visual Effects และ Machine Learning workloads</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022</div>
+          <div class="tl-text"><strong>NVIDIA Investment + AI Thesis:</strong> NVIDIA ลงทุนใน CoreWeave ใน funding round ในช่วง ChatGPT ยังไม่ launch แต่ NVIDIA มองเห็น demand surge ที่จะมา CoreWeave เริ่ม build NVIDIA H100 clusters ขนาดใหญ่</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2023</div>
+          <div class="tl-text"><strong>Microsoft Deal + AI Boom Catches Up:</strong> Microsoft เซ็น multi-year contract ใหญ่ — CoreWeave จะให้ Microsoft ใช้ GPU compute สำหรับ Azure AI workloads ที่ต้องการ capacity เพิ่ม Revenue เริ่ม rocket</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>Revenue $365M — Build-out Accelerates:</strong> ลงทุน data centers ขนาดใหญ่ทั่ว U.S., UK, Europe Debt เพิ่มขึ้นตามการ build แต่ backlog ก็พุ่งขึ้นเป็น $15B+ Series C valuation $19B OpenAI เป็นลูกค้าสำคัญ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">มีนาคม 2026</div>
+          <div class="tl-text"><strong>IPO บน NASDAQ:</strong> IPO ที่ $40/share valuation ~$23B Revenue FY2025 รายงาน $1.9B (+420%) เป็น IPO ที่ hot ที่สุดในรอบหลายปี แต่ตลาด debate ระหว่าง "GPU cloud winner" vs "leverage play ที่เสี่ยง"</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>CoreWeave เป็น hypergrowth company ที่เพิ่งเป็น public</strong> — track record ในฐานะ public company สั้นมาก แต่ trajectory ของ revenue growth และ backlog ที่ build มาก่อน IPO แสดงให้เห็นว่า demand แท้จริง</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>YoY Growth</th>
+            <th>Gross Margin</th>
+            <th>Net Income</th>
+            <th>Backlog</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2022</td><td>~$30M</td><td>—</td><td>~60%</td><td>N/A</td><td>N/A</td></tr>
+          <tr><td>2023</td><td>~$191M</td><td>+537%</td><td>~70%</td><td>-$594M</td><td>$3.5B</td></tr>
+          <tr><td>2024</td><td>$1.92B</td><td>+420%</td><td>~74%</td><td>-$863M</td><td>$15.1B</td></tr>
+          <tr class="highlight"><td>2025 (FY) ✦</td><td>$1.9B (est.)</td><td>—</td><td>~74%</td><td>est. -$1B+</td><td>$15B+</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Note on financials:</strong> CoreWeave IPO เมื่อมีนาคม 2026 ดังนั้นข้อมูลที่ public เต็มๆ คือ FY2024 (ปีงบ Jan-Dec 2024) ที่ Revenue $1.92B ตัวเลข FY2025 ยังเป็น estimate เนื่องจาก public filing ยังไม่ครบ</p>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Revenue Growth</div>
+          <div class="stat-value">+420%</div>
+          <div class="stat-sub">FY2024 YoY — rare hypergrowth</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">74%</div>
+          <div class="stat-sub">Software-like margin สำหรับ infra</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">FCF ยังติดลบ</div>
+          <div class="stat-value">-$3B+</div>
+          <div class="stat-sub">จาก Capex build ยังสูงมาก</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Michael Intrator</div>
+          <div class="boss-title">CEO &amp; Co-founder, CoreWeave, Inc.</div>
+          <div>
+            <div class="boss-fact"><span class="label">ก่อตั้ง</span><span>CoreWeave 2017 (NJ)</span></div>
+            <div class="boss-fact"><span class="label">Background</span><span>Finance / Trading / Hedge Fund</span></div>
+            <div class="boss-fact"><span class="label">Co-founders</span><span>Brian Venturo (CTO), Brannin McBee (CCO)</span></div>
+            <div class="boss-fact"><span class="label">Sector</span><span>GPU Cloud / AI Infrastructure</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Mike Intrator มาจาก trading/finance background — ไม่ใช่ engineering background ทั่วไปของ tech founder แต่ทำให้เขามอง CoreWeave เป็น capital markets problem: "ถ้าเราสามารถ access capital ถูก build GPU infrastructure ก่อนคนอื่น และ lock in customers ระยะยาว เราจะ create enormous value"</p>
+          <p style="margin-top:12px">Vision ของ Intrator คือ CoreWeave จะเป็น <strong>"AWS สำหรับ AI"</strong> — specialized cloud infrastructure ที่ optimize สำหรับ GPU workloads โดยเฉพาะ เร็วกว่า flexible กว่า และในหลายกรณีถูกกว่า hyperscalers สำหรับ pure GPU tasks ที่ใหญ่</p>
+          <p style="margin-top:12px">ความเสี่ยงหลักที่ market กังวลคือ <strong>customer concentration</strong> — Microsoft เคยเป็น ~65% ของรายได้ ถ้า Microsoft ลด dependency บน CoreWeave หรือ build GPU capacity ของตัวเอง impact จะใหญ่มาก</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>CoreWeave เช่า GPU compute ให้ AI companies และ enterprises</strong> — แบบ on-demand และ reserved contracts CoreWeave build และ operate data centers เต็มไปด้วย NVIDIA H100, H200, Blackwell GPUs แล้วให้ลูกค้า access ผ่าน cloud API</p>
+      <div class="callout blue">
+        <p><strong>Core Service: GPU Cloud Infrastructure</strong> — ลูกค้า (AI labs, hyperscalers, enterprises) rent GPU clusters โดยไม่ต้องซื้อ hardware เอง CoreWeave manage hardware, networking, cooling, power ทั้งหมด ลูกค้าได้แค่ access ผ่าน Kubernetes API หรือ direct compute</p>
+      </div>
+      <div class="callout green">
+        <p><strong>NVIDIA Partnership — Privileged Access:</strong> CoreWeave เป็นหนึ่งใน preferred GPU cloud partners ของ NVIDIA ได้รับ allocation GPU ก่อน general market ในช่วง shortage ทำให้ scale ได้เร็วขณะที่ AWS/Azure รอ allocation ตามปกติ</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>CoreWeave Kubernetes Service (CKS):</strong> Platform layer บน GPU cloud ที่ช่วย ML teams deploy training และ inference workloads ได้ง่ายขึ้น จะเป็น stickiness layer ที่ทำให้ switching cost สูง ถ้า platform มี adoption</p>
+      </div>
+      <p>CoreWeave ให้บริการทั้ง <strong>on-demand</strong> (จ่ายตาม usage) และ <strong>reserved capacity contracts</strong> (เซ็นสัญญาล่วงหน้า 1-3 ปี) Backlog $15.1B ส่วนใหญ่มาจาก reserved contracts ซึ่งให้ revenue predictability สูงมาก</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>CoreWeave ทำเงินจาก GPU compute rental</strong> — ทั้งแบบ cloud consumption (on-demand) และ long-term capacity reservations Gross Margin ทรงตัวสูงที่ ~74% ทั้งที่เป็น infrastructure เพราะ hardware costs เป็น fixed cost ที่ depreciate ขณะที่ revenue scale ขึ้น</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2024 — $1.92B แบ่งตาม Type</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">☁️ Cloud Compute Services (GPU Rental)</div>
+            <div class="rev-numbers"><strong>~$1.8B</strong> · ~94%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-cloud" style="width:94%"></div></div>
+          <div class="rev-note">รายได้หลักจากการให้ลูกค้า rent GPU clusters — รวมทั้ง on-demand และ reserved contract ลูกค้าหลัก Microsoft (~65% est.), OpenAI, Cohere</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🤝 Professional Services &amp; Other</div>
+            <div class="rev-numbers"><strong>~$120M</strong> · ~6%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-contract" style="width:6%"></div></div>
+          <div class="rev-note">Implementation services, platform support, enterprise onboarding สำหรับลูกค้า large-scale deployments</div>
+        </div>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Customer Concentration Risk:</strong> ในปี 2023-2024 Microsoft คิดเป็น ~65% ของ revenue CoreWeave กำลัง diversify แต่ถ้า Microsoft ลดการใช้งาน impact จะ severe มาก นี่คือ risk หลักที่ bear case ชี้</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>CoreWeave compound ผ่าน <strong>infrastructure flywheel</strong> — ยิ่ง build มากขึ้น ยิ่งได้ customers ยิ่ง GPU utilization สูงขึ้น ยิ่ง margin ดีขึ้น ยิ่งสามารถ build อีก</p>
+      <div class="callout blue">
+        <p><strong>GPU Infrastructure Flywheel:</strong> Data center capacity เพิ่ม → more customers → higher utilization → better unit economics → cash flow fund more build-out → access to newer NVIDIA GPUs → attract larger customers → repeat</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Long-term Contracts = Revenue Certainty:</strong> Backlog $15.1B ส่วนใหญ่เป็น committed revenue หลายปีข้างหน้า — ทำให้ CoreWeave สามารถ borrow เงินด้วย cost ต่ำกว่าเพื่อ build infrastructure เพราะ lenders เห็น contracted cash flows</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Platform Stickiness ผ่าน CKS:</strong> ถ้า CoreWeave Kubernetes Service (CKS) กลายเป็น standard ของ team ML ที่ทำงานอยู่ switching cost ขึ้นสูง กลายเป็น recurring revenue ที่ sticky มากขึ้น</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Total Backlog</div>
+          <div class="stat-value">$15.1B</div>
+          <div class="stat-sub">Contracted revenue — 7.9x FY2024 revenue</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Total Debt</div>
+          <div class="stat-value">~$8B</div>
+          <div class="stat-sub">Debt-funded infra build — leverage play</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">74%</div>
+          <div class="stat-sub">Software-like — improves with scale</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>CoreWeave เพิ่ง IPO ในมีนาคม 2026 — อยู่ใน <strong>hypergrowth phase ที่ trade ระหว่าง AI infrastructure สำหรับระยะยาวกับ leverage risk ระยะสั้น</strong></p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>$15.1B Backlog — Revenue Visibility หายากมาก</h4>
+        <p>Contracted backlog เทียบเท่า 7.9x FY2024 revenue — ทำให้นักลงทุนมั่นใจว่า growth จะดำเนินต่อไปอีกหลายปี ไม่ใช่ spot demand ที่หายไปได้</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>NVIDIA Access + GPU Allocation Advantage</h4>
+        <p>CoreWeave เป็น Cloud Service Provider ที่ NVIDIA trust — ได้รับ Blackwell GPU allocation ก่อนคู่แข่ง ในตลาดที่ supply ยังตึงตัว นี่คือ competitive moat ที่ real</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Diversification จาก Microsoft</h4>
+        <p>OpenAI, Cohere, IBM, Mistral เป็น customers ใหม่ที่กำลัง grow แต่ Microsoft ยังใหญ่มาก ถ้า CoreWeave สามารถลด Microsoft concentration เหลือ &lt;40% ใน 2 ปี นั่นคือ de-risk ที่สำคัญ</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Leverage สูงมาก — $8B Debt ต้องชำระ</h4>
+        <p>Data center build-out ต้องใช้ capex massive ทำให้ debt pile ขึ้น ~$8B ถ้า GPU demand ชะลอหรือ backlog ไม่ renew financial stress จะสูงมาก Debt-to-revenue ratio ยังสูงกว่า mature infra plays</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Hyperscaler Self-Build Risk</h4>
+        <p>AWS, Azure, Google กำลัง build GPU capacity ของตัวเองอย่างหนัก ถ้า 2-3 ปีข้างหน้า hyperscalers มี GPU capacity เพียงพอ และไม่ต้องใช้ CoreWeave อีก long-term addressable market จะหดลงมาก</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>CoreWeave แข่งในสองระดับ — hyperscaler GPU cloud ขนาดใหญ่ และ GPU cloud specialists ด้วยกัน</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🖥️</div>
+          <div>
+            <div class="comp-segment">GPU Cloud — Specialized Players</div>
+            <div class="comp-pos challenger">Market Leader ใน Pure-Play GPU Cloud</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">CoreWeave (CRWV)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:45%;background:var(--crwv-purple)"></div></div>
+            <div class="comp-detail">Largest pure-play GPU cloud · $1.9B revenue · $15.1B backlog · NVIDIA preferred partner · Microsoft + OpenAI customers</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Lambda Labs</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#4A90E2"></div></div>
+            <div class="comp-detail">GPU cloud สำหรับ AI/ML teams ที่ price-competitive กว่า แต่ scale เล็กกว่ามาก ไม่มีหน้าตาใน enterprise contracts</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Vultr / Vast.ai</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:8%;background:#34A853"></div></div>
+            <div class="comp-detail">Spot GPU marketplace · ถูกกว่ามากแต่ ไม่มี SLA หรือ reliability ของ enterprise grade</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">CoreWeave คือ clear leader ใน pure-play GPU cloud ที่ enterprise-grade แต่ market share นิยาม "GPU cloud" ต่างกัน ถ้ารวม hyperscalers CoreWeave มีแค่ small fraction</div>
+      </div>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">☁️</div>
+          <div>
+            <div class="comp-segment">GPU Cloud — Hyperscalers</div>
+            <div class="comp-pos trailing">Niche Player vs. Giants</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">Microsoft Azure</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:35%;background:#00BCF2"></div></div>
+            <div class="comp-detail">~35% GPU cloud market share (est.) · ลูกค้าใหญ่สุดของ CoreWeave ด้วย — เป็นทั้ง customer และ competitor</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">AWS</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:#FF9900"></div></div>
+            <div class="comp-detail">~30% GPU cloud share · Trainium, Inferentia custom chips + H100 cluster · widest enterprise reach</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Google Cloud</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:15%;background:#4285F4"></div></div>
+            <div class="comp-detail">~15% share · TPU advantage ใน own models แต่ GPU offering เพิ่มขึ้นเร็ว</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">CoreWeave (CRWV)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:5%;background:var(--crwv-purple)"></div></div>
+            <div class="comp-detail">~5% GPU cloud share overall · แต่ เร็วกว่า deploy ได้เร็วกว่า และ enterprise SLA ดีกว่าในบาง config — นั่นคือ differentiation</div>
+          </div>
+        </div>
+        <div class="comp-verdict yellow">Hyperscalers มี advantages ด้าน scale, brand, ecosystem — CoreWeave ต้องอยู่บน speed, specialization, และ NVIDIA access ความเสี่ยงคือถ้า hyperscalers catch up ใน all three แล้ว CoreWeave จะ compete ยากขึ้น</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Wave คือ high-conviction, higher-uncertainty bets — จับ re-rating ก่อน consensus. CoreWeave เป็น binary bet: AI infrastructure demand ที่จริงแท้ vs leverage play ที่อาจพัง.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">CoreWeave เป็น <strong>perfect Wave candidate</strong> — hypergrowth จริง, backlog จริง, NVIDIA privilege จริง แต่ยังขาดทุน leverage สูง customer concentration เสี่ยง และ valuation ต้อง execute perfectly ถึงจะ justify</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">⚡</div>
+              <div class="trait-name">AI Infrastructure Timing</div>
+              <div class="trait-desc">CoreWeave arrive ก่อน AI boom และ build capacity ที่ hyperscalers ยังตาม CoreWeave ไม่ทัน — first mover ที่มีอยู่จริง</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">📋</div>
+              <div class="trait-name">$15B Backlog Visibility</div>
+              <div class="trait-desc">Contracted revenue 7.9x FY revenue — ทำให้ growth path มีความชัดเจน ไม่ใช่ speculation แต่ contracted commitment จาก big names</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🤝</div>
+              <div class="trait-name">NVIDIA Preferred Cloud</div>
+              <div class="trait-desc">NVIDIA invest ใน CoreWeave และ treat เป็น preferred GPU cloud partner — GPU allocation advantage ที่ competitors ไม่มี</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">Leverage = Amplified Returns</div>
+              <div class="trait-desc">$8B debt ถ้า thesis ถูกต้องจะทำให้ equity returns amplify สูงมาก — Wave accepts this asymmetric risk-reward</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-wave">
+            <span class="not-tag">✗ ไม่ใช่ Core — ยังขาดทุน GAAP leverage สูง</span>
+            <span class="not-tag">✗ ไม่ใช่ defensible moat business ตอนนี้</span>
+            <span class="not-tag">✗ ไม่ใช่ low-volatility holding</span>
+            <span class="not-tag">✗ ไม่ใช่ diverse revenue — depend Microsoft มาก</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: CRWV → Wave</h4>
+            <p>CRWV เป็น high-conviction Wave — ถ้า AI infrastructure demand sustain อีก 3-5 ปีและ CoreWeave สามารถ diversify จาก Microsoft + reduce leverage CoreWeave อาจเป็น infrastructure company มูลค่า $50B-100B+ thesis จะ break ถ้า AI winter มา, hyperscalers ทำให้ GPU supply เพิ่มเร็วเกินไป หรือ Microsoft ลด commitment Exit signal: customer diversification ไม่เกิด, backlog growth หยุด, หรือ NVIDIA เปลี่ยน preferred partner</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — CRWV / CoreWeave, Inc. · Source: CoreWeave S-1/IPO Prospectus (March 2026) · FY2024 Annual Report · Public Sources</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--crwv-purple)"></span>
+      <span style="background:var(--crwv-light)"></span>
+      <span style="background:var(--crwv-dark)"></span>
+      <span style="background:var(--crwv-purple-soft)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

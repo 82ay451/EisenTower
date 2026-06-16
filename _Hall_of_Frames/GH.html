@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GH — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --gh-teal:      #00B5AD;
+      --gh-dark:      #007A73;
+      --gh-teal-soft: #E0F5F4;
+      --gh-orange:    #F5A623;
+      --gh-orange-soft: #FEF3E0;
+      --gh-blue:      #4A90D9;
+      --gh-blue-soft: #E8F1FB;
+      --accent:       #00B5AD;
+      --accent-soft:  #E0F5F4;
+      --green:        #34A853;
+      --green-soft:   #e6f4ea;
+      --red:          #EA4335;
+      --red-soft:     #fce8e6;
+      --yellow:       #FBBC04;
+      --yellow-soft:  #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: var(--surface);
+      border-bottom: 3px solid transparent;
+      border-image: linear-gradient(90deg,
+        var(--gh-teal) 25%, var(--gh-dark) 25% 50%,
+        #00CFCA 50% 75%, var(--gh-teal-soft) 75%) 1;
+      padding: 48px 0 36px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); background: var(--tag-bg);
+      border-radius: 4px; padding: 3px 8px; margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--gh-teal); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+
+    /* ── Nav ── */
+    .toc {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .toc-inner {
+      max-width: 860px; margin: 0 auto; padding: 0 32px;
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      align-items: center; gap: 4px;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      margin: 8px 2px;
+    }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* ── Body ── */
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+
+    /* ── Toggle Section ── */
+    .section { padding: 52px 0 0; }
+    .section-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      cursor: pointer; user-select: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .section-h2 {
+      font-size: 24px; font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--text-primary); transition: color 0.15s;
+    }
+    .toggle-icon {
+      flex-shrink: 0; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--tag-bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.25s;
+      font-size: 16px; color: var(--text-secondary);
+    }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content {
+      overflow: hidden;
+      transition: max-height 0.35s ease, opacity 0.3s ease;
+      max-height: 9999px; opacity: 1;
+    }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+
+    /* ── Prose ── */
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+
+    /* ── Stat Cards ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+
+    /* ── Revenue Bars ── */
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-oncology  { background: var(--gh-teal); }
+    .bar-biopharma { background: var(--gh-blue); }
+    .bar-screening { background: var(--gh-orange); }
+    .bar-licensing { background: #9B59B6; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Callout ── */
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--gh-teal-soft); border-color: var(--gh-teal); }
+    .callout.green  { background: var(--green-soft);   border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);  border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);     border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+      width: 2px; background: linear-gradient(180deg, var(--gh-teal), var(--green));
+    }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--gh-teal); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gh-teal); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+
+    /* ── Boss Card ── */
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .boss-right p { font-size: 15px; }
+
+    /* ── Track Table ── */
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--gh-teal-soft); }
+
+    /* ── Situation Items ── */
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+
+    /* ── Competition ── */
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);  color: var(--green); }
+    .comp-pos.challenger { background: var(--gh-teal-soft); color: var(--gh-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft); color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--gh-teal); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--gh-teal-soft); border-color: var(--gh-teal);  color: #005C57; }
+    .comp-verdict.green  { background: var(--green-soft);   border-color: var(--green);    color: #1e6e3a; }
+    .comp-verdict.yellow { background: var(--yellow-soft);  border-color: var(--yellow);   color: #8a6000; }
+
+    /* ── Portfolio Card ── */
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: rgba(138, 43, 226, 0.07); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #7b2fff; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-wave { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .bucket-fit { background: #f3eeff; border: 1px solid #c9b2ff; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .bucket-fit h4 { font-size: 15px; font-weight: 700; color: #7b2fff; margin-bottom: 10px; }
+    .bucket-fit p { font-size: 15px; }
+
+    /* ── Back to Top ── */
+    #back-to-top {
+      position: fixed; bottom: 32px; right: 32px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--gh-teal); color: white;
+      border: none; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,181,173,0.4);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s; z-index: 200;
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--gh-dark); }
+
+    /* ── Footer ── */
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+
+<!-- Header -->
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">GH</span> — Guardant Health, Inc.</h1>
+    <div class="doc-subtitle">Understanding Guardant Health as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NASDAQ: GH</span>
+      <span>🏛 Founded 2012</span>
+    </div>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a>
+    <a href="#s2">2</a>
+    <a href="#s3">3</a>
+    <a href="#s4">4</a>
+    <a href="#s5">5</a>
+    <a href="#s6">6</a>
+    <a href="#s7">7</a>
+    <a href="#s8">8</a>
+    <a href="#s9">9</a>
+    <a href="#s10">10</a>
+  </div>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">01</div>
+        <div class="section-h2">Who are they?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Guardant Health คือบริษัทที่อยู่บนแนวหน้าของ <strong>liquid biopsy</strong> — การตรวจหา DNA ของมะเร็งจากตัวอย่างเลือด แทนที่จะต้องตัดชิ้นเนื้อ (tissue biopsy) วิธีนี้ไม่เพียงแค่ง่ายกว่า แต่ยังสามารถจับ mutation ที่กระจายอยู่ทั่วร่างกายของผู้ป่วยได้ดีกว่าในหลายกรณี</p>
+      <p>ผลิตภัณฑ์ flagship คือ <strong>Guardant360</strong> — blood test สำหรับผู้ป่วยมะเร็งระยะลุกลาม ใช้หาทิศทางการรักษาด้วย targeted therapy และล่าสุดคือ <strong>Shield</strong> — blood test สำหรับ screening มะเร็งลำไส้ใหญ่ (CRC) ในคนที่ยังไม่เป็นโรค ได้รับการอนุมัติจาก FDA ในเดือนกรกฎาคม 2024</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025</div>
+          <div class="stat-value">$982M</div>
+          <div class="stat-sub">+33% YoY</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">GAAP Net Loss FY2025</div>
+          <div class="stat-value">-$416M</div>
+          <div class="stat-sub">ขาดทุน — กำลัง invest</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Non-GAAP Gross Margin</div>
+          <div class="stat-value">66%</div>
+          <div class="stat-sub">FY2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Shield Tests FY2025</div>
+          <div class="stat-value">87,000</div>
+          <div class="stat-sub">เริ่ม ramp ปีแรก</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Cash + Securities</div>
+          <div class="stat-value">$1.3B</div>
+          <div class="stat-sub">ณ สิ้นปี 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">FY2026 Revenue Guide</div>
+          <div class="stat-value">$1.25–1.28B</div>
+          <div class="stat-sub">+27–30% growth</div>
+        </div>
+      </div>
+      <p>สรุปสั้นๆ: Guardant Health คือ <strong>บริษัทที่กำลัง build infrastructure การตรวจมะเร็งจากเลือด</strong> — โดยใช้ oncology testing เป็น revenue base ที่มั่นคง และ Shield เป็น growth driver ตัวใหม่ที่มีศักยภาพ TAM สูงมาก</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">02</div>
+        <div class="section-h2">Journey</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>จากห้องแล็บที่ Stanford สู่บริษัทที่ได้รับการอนุมัติจาก FDA สำหรับ blood-based cancer screening — Guardant Health ใช้เวลา 12 ปี</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2002</div>
+          <div class="tl-text"><strong>จุดเริ่มต้น:</strong> AmirAli Talasaz และ Helmy Eltoukhy พบกันที่ Stanford University ทั้งคู่กำลังวิจัยด้าน semiconductor และ genomics — ความสนใจร่วมกันที่จะพา DNA sequencing ออกจากห้องแล็บสู่การใช้งานจริงทางคลินิก</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2007</div>
+          <div class="tl-text"><strong>Avantome → Illumina:</strong> Talasaz ก่อตั้ง Avantome บริษัท semiconductor DNA sequencing ซึ่งถูก Illumina ซื้อกิจการ ประสบการณ์นี้ทำให้เขาเห็นว่า sequencing tech กำลังถูก democratize และมี clinical application ที่รอการ unlock</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2012</div>
+          <div class="tl-text"><strong>ก่อตั้ง Guardant Health:</strong> Talasaz และ Eltoukhy ออกจาก Stanford และ Illumina ตามลำดับ เพื่อก่อตั้ง Guardant Health ใน Palo Alto, CA เป้าหมาย: พัฒนา liquid biopsy ให้เป็น standard of care ในการรักษามะเร็ง</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2014</div>
+          <div class="tl-text"><strong>เปิดตัว Guardant360:</strong> blood-based Comprehensive Genomic Profiling (CGP) test สำหรับผู้ป่วยมะเร็งระยะลุกลาม แพทย์ส่งเลือดผู้ป่วยมาแล็บ GH วิเคราะห์ circulating tumor DNA (ctDNA) และ report กลับว่ามี mutation อะไรที่ตอบสนองต่อ targeted therapy</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2018</div>
+          <div class="tl-text"><strong>IPO บน NASDAQ:</strong> ที่ราคา $19/หุ้น ระดมทุน ~$238M GH กลายเป็น liquid biopsy บริษัทแรกที่ IPO สำเร็จ ตอกย้ำว่าตลาดเชื่อใน concept นี้</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2020</div>
+          <div class="tl-text"><strong>Guardant360 CDx FDA Approval:</strong> ได้รับ FDA approval ในฐานะ Companion Diagnostic (CDx) สำหรับผู้ป่วยมะเร็งปอด NSCLC ที่ treat ด้วย Tagrisso (Osimertinib) นี่คือ liquid biopsy CDx ครั้งแรกที่ FDA อนุมัติ — milestone สำคัญมาก เพราะ payer coverage ตามมาทันที</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2021</div>
+          <div class="tl-text"><strong>เปิดตัว Guardant Reveal:</strong> ctDNA test สำหรับ minimal residual disease (MRD) detection ในผู้ป่วยมะเร็งลำไส้ใหญ่หลังผ่าตัด — ช่วยหาว่าโรคกลับมาหรือเปล่าโดยไม่ต้อง scan</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022–2023</div>
+          <div class="tl-text"><strong>ECLIPSE Trial:</strong> clinical trial ขนาดใหญ่ที่สุดใน liquid biopsy CRC screening — ทดสอบ Shield ใน 20,000+ คน ผลลัพธ์ที่ดีเกินคาด: sensitivity 83% สำหรับ CRC, 13% สำหรับ advanced adenoma ข้อมูลนี้ถูกส่ง FDA ใน 2023</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">กรกฎาคม 2024</div>
+          <div class="tl-text"><strong>Shield FDA Approval:</strong> Shield ได้รับการอนุมัติจาก FDA ในฐานะ blood-based CRC screening test สำหรับ average-risk adults อายุ 45+ — เป็น blood-based CRC screening test ตัวแรกในสหรัฐฯ ที่ได้รับ FDA approval นี่คือ inflection point ที่ทุกคนรอ</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>Commercial Ramp:</strong> Shield tests ใน FY2025: 87,000 ครั้ง (+753% YoY) Revenue FY2025: $982M (+33% YoY) FY2026 guidance: 210,000–225,000 Shield tests, revenue $1.25–1.28B GH กำลังเปลี่ยนจาก "cancer test company" เป็น "cancer prevention platform"</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">03</div>
+        <div class="section-h2">Track Record</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>GH เป็นบริษัทที่กำลัง invest หนักเพื่ออนาคต</strong> — revenue โตสม่ำเสมอ แต่ยังขาดทุนเพราะ R&D, SG&A และ ECLIPSE trial cost ปี 2025 เป็นปีแรกที่ net loss เริ่ม narrow ลงอย่างมีนัยสำคัญ</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี</th>
+            <th>Revenue</th>
+            <th>Gross Profit</th>
+            <th>Net Loss</th>
+            <th>EPS (Loss)</th>
+            <th>Gross Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2021</td><td>~$278M</td><td>~$153M</td><td>~-$571M</td><td>~-$5.55</td><td>~55%</td></tr>
+          <tr><td>2022</td><td>~$383M</td><td>~$222M</td><td>~-$602M</td><td>~-$5.85</td><td>~58%</td></tr>
+          <tr><td>2023</td><td>~$521M</td><td>~$318M</td><td>~-$548M</td><td>~-$5.32</td><td>~61%</td></tr>
+          <tr><td>2024</td><td>~$737M</td><td>~$472M</td><td>~-$489M</td><td>~-$4.74</td><td>~64%</td></tr>
+          <tr class="highlight"><td>2025 ✦</td><td>$982M</td><td>~$648M</td><td>-$416M</td><td>~-$4.03</td><td>66%</td></tr>
+        </tbody>
+      </table>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue 4-yr CAGR</div>
+          <div class="stat-value">~37%</div>
+          <div class="stat-sub">2021 → 2025</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">GM Expansion</div>
+          <div class="stat-value">+11pp</div>
+          <div class="stat-sub">55% → 66% (2021→2025)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Net Loss Narrowing</div>
+          <div class="stat-value">-$416M</div>
+          <div class="stat-sub">จาก -$602M ปีที่แย่สุด</div>
+        </div>
+      </div>
+      <p>สังเกตว่า <strong>net loss peak ที่ปี 2022 ($602M)</strong> — ตรงกับช่วงที่ ECLIPSE trial ดำเนินการเต็มที่และ SG&A สูงมากจากการ build commercial team ตั้งแต่ 2023 เป็นต้นมา losses เริ่ม narrow ลง แม้ revenue จะโตต่อเนื่อง นั่นคือสัญญาณที่ดี</p>
+      <p><strong>Gross margin ขยายจาก ~55% → 66%</strong> แสดง scale benefits ที่กำลังเกิดขึ้นจริง — ต้นทุน per test ลดลงขณะที่ revenue mix ดีขึ้น (Oncology segment ที่มี margin สูงโตเร็วขึ้น)</p>
+      <p class="text-muted" style="font-size:13px;color:var(--text-muted)">* ตัวเลข 2021–2024 เป็นค่าประมาณจาก public filings; ตัวเลข 2025 มาจาก Q4 &amp; FY2025 Earnings Release (Feb 19, 2026)</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">04</div>
+        <div class="section-h2">Know their Boss</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">AmirAli Talasaz</div>
+          <div class="boss-title">Co-CEO &amp; Co-Founder, Guardant Health</div>
+          <div>
+            <div class="boss-fact"><span class="label">ถิ่นฐาน</span><span>Iran → สหรัฐฯ</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>PhD Stanford (EE/Bioengineering)</span></div>
+            <div class="boss-fact"><span class="label">ก่อนหน้า</span><span>ก่อตั้ง Avantome → Illumina</span></div>
+            <div class="boss-fact"><span class="label">ก่อตั้ง GH</span><span>2012</span></div>
+          </div>
+          <hr class="boss-divider" />
+          <div class="boss-name">Helmy Eltoukhy</div>
+          <div class="boss-title">Co-CEO &amp; Co-Founder, Guardant Health</div>
+          <div>
+            <div class="boss-fact"><span class="label">ถิ่นฐาน</span><span>Egypt → สหรัฐฯ</span></div>
+            <div class="boss-fact"><span class="label">การศึกษา</span><span>PhD Stanford (Electrical Engineering)</span></div>
+            <div class="boss-fact"><span class="label">ก่อนหน้า</span><span>Research Scientist, Stanford</span></div>
+            <div class="boss-fact"><span class="label">ก่อตั้ง GH</span><span>2012</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>GH เป็นหนึ่งในไม่กี่บริษัท biotech ขนาดใหญ่ที่ยังดำเนินงานโดย co-founders ทั้งสองคน นาน 12+ ปีหลังก่อตั้ง Talasaz เน้น commercial &amp; operational strategy ส่วน Eltoukhy เน้น science &amp; technology — ทำงานเสริมกันแทนแข่งกัน</p>
+          <p style="margin-top:12px">สไตล์: <strong>scientist-operator hybrid</strong> — ทั้งคู่มาจาก hardcore engineering/science background แต่ต้องบริหารองค์กรขนาดใหญ่ที่กำลัง commercialize ผลิตภัณฑ์ใหม่ที่ไม่เคยมีมาก่อน ความท้าทายใหญ่ที่สุดของพวกเขาตอนนี้คือ ทำให้ Shield เข้า mainstream coverage — Medicare, Medicaid และ private payer ทุกรายจะต้อง cover Shield ก่อนที่ volume จะ scale ได้จริง</p>
+          <p style="margin-top:12px">น่าสังเกตว่า dual-CEO structure ในบริษัทส่วนใหญ่มักไม่ยั่งยืน แต่ GH เป็นข้อยกเว้นที่ชัดเจน — ความสัมพันธ์ตั้งแต่สมัยนักศึกษา Stanford ต่อเนื่อง 20+ ปีทำให้ trust ระดับที่ต้องการสำหรับ co-leadership มีจริง</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">05</div>
+        <div class="section-h2">What do they Actually Do?</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Guardant Health เจาะเลือด วิเคราะห์ DNA ของมะเร็งที่ล่องลอยอยู่ในกระแสเลือด และรายงานผลกลับให้แพทย์หรือผู้ป่วย</strong> ฟังดูเรียบง่าย แต่เบื้องหลังคือ genomics technology ที่ล้ำมากและ clinical validation ที่ใช้เวลานับสิบปี</p>
+      <div class="callout blue">
+        <p><strong>Product 1 — Guardant360 / 360 CDx (Oncology):</strong> ส่งเลือดผู้ป่วยมะเร็งมาที่ GH lab → sequencing หา somatic mutations ใน circulating tumor DNA (ctDNA) → report ว่า tumor ของผู้ป่วยมี mutation อะไรที่ตอบสนองต่อ targeted therapy ใช้กับผู้ป่วยมะเร็งระยะลุกลาม (solid tumors) CDx version ได้รับ FDA approval ใช้เป็น companion diagnostic สำหรับยาหลายตัว</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Product 2 — Shield (Screening):</strong> blood test สำหรับ CRC (colorectal cancer) screening ในคนทั่วไปอายุ 45+ ที่ยังไม่เป็นโรค FDA approved กรกฎาคม 2024 หมายความว่าคนที่กลัวทำ colonoscopy หรือไม่อยากทำ Cologuard (stool test) มีทางเลือกที่ 3 แค่เจาะเลือด</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Product 3 — Guardant Reveal (MRD/Monitoring):</strong> ใช้สำหรับผู้ป่วยมะเร็งลำไส้ใหญ่ที่ผ่าตัดแล้ว เพื่อตรวจว่ายังมีเซลล์มะเร็งเหลืออยู่หรือเปล่า (minimal residual disease) และ monitor ว่าโรคจะกลับมาไหม แทนที่จะต้องรอ CT scan ทุก 3-6 เดือน</p>
+      </div>
+      <p><strong>จริงๆ แล้ว GH กำลัง build "Blood Test Platform for Cancer"</strong> — ตั้งแต่การ screen ก่อนเป็น → ตรวจหา mutation เพื่อรักษา → monitor หลังรักษา ครบ lifecycle ของมะเร็ง ทุก product อยู่บน platform เดียวกัน คือ ctDNA sequencing และ bioinformatics ที่พัฒนามากว่า 10 ปี</p>
+      <p>นอกจาก clinical testing ยัง มี <strong>Biopharma segment</strong> — pharma companies ใช้ Guardant platform ช่วย drug development ทั้ง companion diagnostic development, patient selection สำหรับ clinical trial, และ real-world evidence collection</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">06</div>
+        <div class="section-h2">How they Make Money</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>รายได้มาจากค่าบริการตรวจ DNA ที่ reimbursed โดย insurance companies และ Medicare / Medicaid</strong> รวมถึงค่าบริการให้กับบริษัท pharma ที่ใช้ platform สำหรับ drug development</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 — $982M แบ่งตามประเภท</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🧬 Oncology (Guardant360 + CDx + Reveal)</div>
+            <div class="rev-numbers"><strong>$683.6M</strong> · 70%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-oncology" style="width:70%"></div></div>
+          <div class="rev-note">ฐานรายได้หลัก — ผู้ป่วยมะเร็งที่แพทย์สั่ง test reimbursed โดย payer (+30% YoY ใน Q4 2025)</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">💊 Biopharma (Pharma partnerships)</div>
+            <div class="rev-numbers"><strong>$210.1M</strong> · 21%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-biopharma" style="width:21%"></div></div>
+          <div class="rev-note">ค่าบริการ drug development, companion diagnostic work, clinical trial support ให้ pharma companies (+9% YoY ใน Q4 2025)</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🩸 Screening (Shield)</div>
+            <div class="rev-numbers"><strong>$79.7M</strong> · 8%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-screening" style="width:8%"></div></div>
+          <div class="rev-note">Shield blood test สำหรับ CRC screening — ยังเล็กมาก แต่โต +753% YoY ใน Q4 2025 ($35.1M ใน Q4 เพียงไตรมาสเดียว)</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">📄 Licensing</div>
+            <div class="rev-numbers"><strong>$8.6M</strong> · 1%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-licensing" style="width:1%"></div></div>
+          <div class="rev-note">IP licensing รายได้เล็กน้อย</div>
+        </div>
+      </div>
+      <p><strong>Revenue model:</strong> เป็น test-volume-based business — รายได้ขึ้นอยู่กับจำนวน tests ที่ส่งมาและราคา reimbursement ต่อ test Oncology: ASP ~$3,000-3,500 per test (reimbursed by Medicare/insurance) Biopharma: contract-based milestone payments</p>
+      <p><strong>Shield ที่น่าจับตา:</strong> FY2025 Screening revenue $79.7M จาก 87,000 tests = implied ~$916 ASP per test (แต่ actual cash collection ต่ำกว่านี้ในช่วง launch เพราะ payer coverage ยังอยู่ระหว่าง negotiate) ถ้า Medicare coverage เต็มรูปแบบและ volume ถึง 1M+ tests — potential revenue จาก Screening segment จะเกิน Oncology ได้ใน 3-5 ปีข้างหน้า</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">07</div>
+        <div class="section-h2">How they Compound</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>GH ไม่ได้ compound แบบ traditional moat — เป็น <strong>clinical data flywheel ผสมกับ regulatory approval stack</strong></p>
+      <div class="callout blue">
+        <p><strong>The Clinical Data Flywheel:</strong> ยิ่ง test เยอะ → ยิ่งมี data มาก → algorithm วิเคราะห์ ctDNA ยิ่งแม่น → clinical utility ยิ่งพิสูจน์ได้ → payer ยิ่ง cover → แพทย์สั่ง test มากขึ้น → volume ยิ่งโต GH มี clinical database ที่ใหญ่ที่สุดในโลกสำหรับ liquid biopsy — ข้อได้เปรียบที่ entrant ใหม่ไม่สามารถ replicate ได้ง่ายๆ</p>
+      </div>
+      <p><strong>Regulatory Moat:</strong> การได้รับ FDA approval ไม่ใช่แค่ piece of paper แต่คือ barrier ที่สำคัญ Guardant360 CDx ได้รับ approval เป็น companion diagnostic สำหรับยาหลายตัว (เช่น Tagrisso, Lilly's Jaypirca, Roche's Alecensa) — แต่ละ approval ทำให้ GH เป็น default test ที่ payer จะ cover สำหรับผู้ป่วยที่ได้รับยาเหล่านั้น</p>
+      <div class="callout green">
+        <p><strong>Shield TAM ที่ massive:</strong> มีชาวอเมริกันอายุ 45+ ราว 100 ล้านคนที่ควรตรวจ CRC screening แต่ไม่ได้ตรวจ ในจำนวนนี้ส่วนหนึ่งกลัว colonoscopy ส่วนหนึ่งปฏิเสธ Cologuard (stool test) — Shield เป็นคำตอบสำหรับกลุ่มนั้น ถ้า penetration ถึง 1% ของ 100M คน = 1 ล้าน tests/ปี</p>
+      </div>
+      <p style="margin-top:24px"><strong>Capital Allocation — เงินไปไหน?</strong></p>
+      <div class="stat-grid">
+        <div class="stat-card red">
+          <div class="stat-label">FCF Burn FY2025</div>
+          <div class="stat-value">-$233M</div>
+          <div class="stat-sub">Invest ใน Shield ramp + R&D</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Cash + Securities</div>
+          <div class="stat-value">$1.3B</div>
+          <div class="stat-sub">Runway ~5-6 ปีที่ burn rate ปัจจุบัน</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">FY2026 FCF Guide</div>
+          <div class="stat-value">-$185–195M</div>
+          <div class="stat-sub">Burn rate ลดลง — improving</div>
+        </div>
+      </div>
+      <p>GH ไม่ buyback ไม่จ่าย dividend — เงินทั้งหมด invest เข้า Shield commercialization, R&D และ payer coverage expansion ทิศทางที่ถูกต้องคือ FCF burn กำลัง narrow ลงปีต่อปี แสดงว่า business model กำลัง prove itself</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">08</div>
+        <div class="section-h2">Current Situation &amp; Positioning</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>GH อยู่ใน <strong>critical inflection moment</strong> — Shield ได้รับ FDA approval แล้ว กำลัง ramp, แต่ปัจจัยชี้ขาดคือ Medicare coverage ซึ่งยังไม่ confirmed</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Shield Volume Ramp ชัดมาก</h4>
+        <p>Q4 2025 Shield tests: 35.1M revenue (+753% YoY) คิดเป็น implied volume growth ที่รุนแรงมาก FY2026 guide: 210,000–225,000 tests (vs 87,000 ใน FY2025) ถ้าทำได้ = +140–160% YoY growth ในปีเดียว momentum นี้บอกว่า commercial engine กำลัง fire up จริง</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Oncology Core ยังแข็งแกร่ง</h4>
+        <p>Oncology revenue Q4 2025: $189.9M (+30% YoY) แม้ Shield จะดึง attention ไป แต่ core oncology business ยังโตเร็วมาก CDx approvals ใหม่ๆ จะทำให้ Oncology segment ยังโตต่อเนื่อง</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Medicare Coverage Decision สำหรับ Shield</h4>
+        <p>CMS (Medicare) กำลัง review Shield สำหรับ National Coverage Determination (NCD) นี่คือ catalyst ที่สำคัญที่สุดใน near-term — ถ้า Medicare cover Shield เต็มรูปแบบ ผู้ป่วย Medicare อายุ 65+ หลักสิบล้านคนจะ eligible ทันที ทำให้ volume potential ขยายหลายเท่า</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Path to Profitability</h4>
+        <p>FCF burn improving: FY2025 -$233M → FY2026 guide -$185-195M Adj EBITDA loss FY2025: -$221M Management guiding toward profitability ใน 2-3 ปีข้างหน้า ถ้า Shield ramps ตามแผน gross margin ของ Screening segment จะ improve เร็ว เพราะ fixed cost ส่วนใหญ่ already spent</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Cologuard / EXAS Competition ใน Screening</h4>
+        <p>Exact Sciences' Cologuard Next-Gen กำลัง upgrade ผลิตภัณฑ์ มี brand recognition ที่แข็งกว่า GH ใน screening market และ cost ต่ำกว่า ถ้า payer prefer Cologuard เหนือ Shield อาจกดการ adoption ของ Shield ได้</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Cash Burn ถ้า Medicare ล่าช้า</h4>
+        <p>ถ้า Medicare NCD ใช้เวลานานหรือ coverage rate ต่ำกว่าที่ expect คาดว่า Shield ramp จะช้ากว่า guidance FCF burn $1.3B cash ที่มีอยู่ cover ได้ ~5-6 ปี แต่ถ้า break-even ล่าช้าอาจต้อง raise ทุนเพิ่ม</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">09</div>
+        <div class="section-h2">Peers and Competitors</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>GH แข่งในสองสนามที่แตกต่างกัน — oncology testing ที่ GH เป็นผู้นำ และ CRC screening ที่ GH เป็น new entrant</p>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🧬</div>
+          <div>
+            <div class="comp-segment">Liquid Biopsy / CGP — Advanced Oncology</div>
+            <div class="comp-pos dominant">Leader — ตลาด liquid biopsy CGP</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Guardant360 (GH)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:60%;background:var(--gh-teal)"></div></div>
+            <div class="comp-detail">~55-65% market share ใน liquid biopsy CGP · FDA CDx approvals หลายตัว · database ที่ใหญ่ที่สุด · ครอง solid tumor oncology testing</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Foundation Medicine (Roche)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:#E5001A"></div></div>
+            <div class="comp-detail">Tissue-based CGP leader · FoundationOne Liquid CDx เป็น liquid biopsy competitor โดยตรง · แต่ Roche ownership ทำให้ focus อาจไม่ 100% ที่ liquid biopsy</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Natera (NTRA)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#FF6B35"></div></div>
+            <div class="comp-detail">Signatera สำหรับ MRD testing — แข่งกับ Guardant Reveal โดยตรง · strong ใน kidney cancer &amp; MRD monitoring segment</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Tempus AI</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:10%;background:#6C63FF"></div></div>
+            <div class="comp-detail">Growing player ที่ผสม AI + genomics data · ยังมีขนาดเล็กกว่า GH มาก แต่เติบโตเร็วใน AI-driven oncology</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">GH เป็นผู้นำที่ชัดเจนใน liquid biopsy CGP — การมี FDA CDx approvals หลายตัวและ clinical data ที่สะสมมา 10+ ปีสร้าง moat ที่ entrant ใหม่ยาก replicate ในระยะสั้น</div>
+      </div>
+
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🩸</div>
+          <div>
+            <div class="comp-segment">CRC Screening — Colorectal Cancer Prevention</div>
+            <div class="comp-pos contender">New Entrant — FDA approved ปี 2024</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">Colonoscopy</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:65%;background:#607D8B"></div></div>
+            <div class="comp-detail">Gold standard · ~65% ของ CRC screening ทั้งหมด · invasive, ต้องเตรียมตัว 1 วัน แต่ถือเป็น definitive screening + ตัดโพลิปได้เลย</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Cologuard (Exact Sciences / EXAS)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:#00C853"></div></div>
+            <div class="comp-detail">~30% ของ non-invasive CRC screening · stool-based DNA test · strong brand, Medicare coverage ครบ · ราคา ~$508, รุ่น Next-Gen กำลัง launch</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Shield (GH)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:2%;background:var(--gh-teal)"></div></div>
+            <div class="comp-detail">~1-2% ของ non-invasive screening · blood-based (ง่ายสุด ไม่ต้องเตรียมตัว) · FDA approved กรกฎาคม 2024 · ยังรอ Medicare NCD เพื่อ scale</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Grail (Galleri)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:1%;background:#9C27B0"></div></div>
+            <div class="comp-detail">Multi-cancer early detection · แตกต่างจาก Shield ที่ focus เฉพาะ CRC · ยังอยู่ระหว่าง FDA approval process สำหรับ CRC screening</div>
+          </div>
+        </div>
+        <div class="comp-verdict yellow">ใน CRC screening GH เป็น new entrant ที่มี unique advantage ด้านความสะดวก (แค่เจาะเลือด) แต่ยังต้อง prove ว่า payer จะ cover และ physician จะ prescribe ในปริมาณมากพอ Cologuard ยังเป็น incumbent ที่แข็งแกร่งมาก</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <div class="section-num">10</div>
+        <div class="section-h2">Their Seat in Jay's Universe</div>
+      </div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Mission: Capture future re-rating before consensus recognizes it — find tomorrow's leaders before they're obvious. Wave is opportunistic. Wave accepts uncertainty. Requires validation. Target: 50–100% upside within 2–3 years.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Wave ถือหุ้นที่ <strong>consensus ยังไม่ price in ศักยภาพเต็ม</strong> — enter early, add on confirmation, exit on thesis failure ไม่ทุกตัวต้องชนะ แต่ winner ต้องจ่ายคืนให้ทั้ง portfolio</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">🔬</div>
+              <div class="trait-name">Re-rating Catalyst ที่ชัดเจน</div>
+              <div class="trait-desc">Shield FDA approval กรกฎาคม 2024 → Medicare NCD → commercial ramp ทุก milestone เป็น catalyst ที่ทำให้ consensus ต้อง reprice stock ขึ้น</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">📊</div>
+              <div class="trait-name">TAM ที่ consensus ยังไม่ fully price</div>
+              <div class="trait-desc">100M Americans unscreened for CRC = opportunity ที่ใหญ่มาก ถ้า 1% penetration = 1M tests/ปี × ~$900 ASP = ~$900M จาก Screening เพียงอย่างเดียว</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">✅</div>
+              <div class="trait-name">Clinical Validation ผ่านแล้ว</div>
+              <div class="trait-desc">ECLIPSE trial 20,000+ คน ผ่าน FDA approval มีแล้ว — นี่ไม่ใช่ speculative science แต่เป็น proven technology ที่กำลัง commercialize</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">Cash Runway ที่ Adequate</div>
+              <div class="trait-desc">$1.3B cash + FCF burn กำลัง narrow (-$233M → -$185-195M) = ~5-6 ปี runway พอที่จะ execute Shield commercialization โดยไม่ต้อง dilute ทันที</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-wave">
+            <span class="not-tag">✗ ไม่ใช่ Core — ยังขาดทุน ยังไม่ proven profitability</span>
+            <span class="not-tag">✗ ไม่ใช่ FWB — thesis ยาว ไม่ใช่ tactical trade</span>
+            <span class="not-tag">✗ ไม่ใช่ defensive stock</span>
+            <span class="not-tag">✗ ไม่ใช่ momentum play ระยะสั้น</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: GH → Wave</h4>
+            <p>GH ตอบโจทย์ Wave criteria ครบ — มี re-rating thesis ที่ชัด (Shield FDA → Medicare NCD → volume ramp), consensus ยังไม่ fully price in TAM ของ CRC screening (~$10B+ market), clinical validation ผ่านแล้ว (ไม่ใช่ science bet), และ cash runway เพียงพอที่จะ execute ถ้า Medicare NCD เป็นบวก และ Shield volume ถึง guidance FY2026 (210-225K tests) ราคาหุ้นจะต้อง re-rate ขึ้นอีกมาก — นั่นคือ Wave thesis ที่ชัดเจน exit signal: thesis failure = Medicare denied coverage หรือ volume miss guidance ต่อเนื่อง 2+ ไตรมาส</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — GH / Guardant Health, Inc. · Source: Q4 &amp; FY2025 Earnings Release (Feb 19, 2026) · SEC Filings · Public Sources</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--gh-teal)"></span>
+      <span style="background:var(--gh-dark)"></span>
+      <span style="background:#00CFCA"></span>
+      <span style="background:var(--gh-teal-soft)"></span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EOSE — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --eose-orange:      #F47B20;
+      --eose-dark:        #B85A0E;
+      --eose-navy:        #1A3A5C;
+      --eose-orange-soft: #FEF3E8;
+      --accent:           #F47B20;
+      --accent-soft:      #FEF3E8;
+      --green:            #34A853;
+      --green-soft:       #e6f4ea;
+      --red:              #EA4335;
+      --red-soft:         #fce8e6;
+      --yellow:           #FBBC04;
+      --yellow-soft:      #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--surface); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, var(--eose-orange) 25%, var(--eose-dark) 25% 50%, var(--eose-navy) 50% 75%, var(--eose-orange-soft) 75%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); background: var(--tag-bg); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--eose-orange); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-battery  { background: var(--eose-orange); }
+    .bar-service  { background: var(--eose-navy); }
+    .bar-grant    { background: var(--green); }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--eose-orange-soft); border-color: var(--eose-orange); }
+    .callout.green  { background: var(--green-soft);        border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);       border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);          border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--eose-orange), var(--eose-navy)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--eose-orange); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--eose-orange); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--eose-orange-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);        color: var(--green); }
+    .comp-pos.challenger { background: var(--eose-orange-soft);  color: var(--eose-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);       color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--eose-orange); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--eose-orange-soft); border-color: var(--eose-orange); color: var(--eose-dark); }
+    .comp-verdict.yellow { background: var(--yellow-soft);       border-color: var(--yellow);      color: #8a6000; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: rgba(138, 43, 226, 0.07); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #7b2fff; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-wave { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .bucket-fit { background: #f3eeff; border: 1px solid #c9b2ff; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .bucket-fit h4 { font-size: 15px; font-weight: 700; color: #7b2fff; margin-bottom: 10px; }
+    .bucket-fit p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--eose-orange); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(244,123,32,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--eose-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">EOSE</span> — Eos Energy Enterprises Inc.</h1>
+    <div class="doc-subtitle">Understanding Eos Energy as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NASDAQ: EOSE</span>
+      <span>🏛 Turtle Creek, PA · Founded 2008</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Eos Energy Enterprises คือ <strong>ผู้ผลิต grid-scale energy storage</strong> ที่ใช้เทคโนโลยี <strong>zinc-based battery (Zynth™)</strong> — alternative ต่อ lithium-ion ที่ claim ว่า safer, cheaper long-duration storage สำหรับ utility-scale applications บริษัทอยู่ใน Turtle Creek, Pennsylvania</p>
+      <p>EOSE เป็น story ของ <strong>long-duration energy storage (4-12 ชั่วโมง)</strong> ซึ่งเป็น segment ที่ lithium-ion ทำได้แต่ราคาแพงกว่ามาก zinc battery เหมาะกว่าในเชิง cost-per-kWh สำหรับ duration ยาวขึ้น บริษัทมี technology แต่ต้องการ scale up การผลิตให้ได้ profitable unit economics</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2024</div>
+          <div class="stat-value">~$10M</div>
+          <div class="stat-sub">Very early commercial stage</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Net Loss FY2024</div>
+          <div class="stat-value">~-$150M</div>
+          <div class="stat-sub">Cash burn still heavy</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Battery Tech</div>
+          <div class="stat-value">Zynth™</div>
+          <div class="stat-sub">Zinc-based, aqueous electrolyte</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Target Duration</div>
+          <div class="stat-value">4–12h</div>
+          <div class="stat-sub">Long-duration storage</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Backlog / Pipeline</div>
+          <div class="stat-value">~2+ GWh</div>
+          <div class="stat-sub">Orders + LOIs in pipeline</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">DOE Loan</div>
+          <div class="stat-value">$398M</div>
+          <div class="stat-sub">Conditional commitment (2024)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Eos Energy เป็น deep-tech startup ที่ใช้เวลานานในการพัฒนา zinc battery technology ก่อนจะ go public และเผชิญกับ challenges ในการ commercialize</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2008</div>
+          <div class="tl-text"><strong>ก่อตั้งโดย Steve Hellman:</strong> Steve Hellman ก่อตั้ง Eos Energy Storage เพื่อพัฒนา zinc hybrid cathode (ZHC) battery technology สำหรับ grid storage ซึ่งใช้ zinc เป็น anode แทน lithium ด้วย advantage ด้าน safety (ไม่ติดไฟ) และ cost</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2012–2018</div>
+          <div class="tl-text"><strong>R&D และ Pilot Deployments:</strong> บริษัท develop technology และ deploy pilot projects กับ utilities ขนาดเล็ก รับ venture funding จาก cleantech investors Demonstrate feasibility แต่ commercial scale ยังไม่มา</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2020</div>
+          <div class="tl-text"><strong>SPAC Merger — NASDAQ: EOSE:</strong> Eos Energy เข้า public market ผ่าน SPAC merger กับ B. Riley Principal 150 Merger Corp. ในราคา deal ~$500M valuation ได้เงินทุนเพื่อ scale manufacturing และ commercialize</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2022–2023</div>
+          <div class="tl-text"><strong>Manufacturing Scaling Difficulties:</strong> บริษัทเผชิญ manufacturing challenges ในการ scale zinc battery production เนื่องจาก cell chemistry ต้องการ precision สูง revenue ต่ำกว่า expectations มาก cash burn สูง stock ตกหนัก บริษัทต้อง restructure และ raise additional capital</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024</div>
+          <div class="tl-text"><strong>DOE Loan $398M Conditional Commitment:</strong> กระทรวงพลังงานสหรัฐฯ อนุมัติ conditional loan guarantee $398M เพื่อ build out manufacturing สำหรับ Zynth battery ที่ Pennsylvania — นี่เป็น major de-risking event เพราะ DOE validation ให้ customer confidence สูงขึ้น</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2025</div>
+          <div class="tl-text"><strong>Revenue Ramp + CEO Transition:</strong> บริษัทเริ่ม convert backlog เป็น revenue อย่างเป็นรูปธรรมมากขึ้น กำลังพิสูจน์ว่า Zynth battery สามารถ manufacture at scale ได้จริง ทั้งนี้ยังขาดทุนอยู่</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>EOSE track record สะท้อน pre-revenue → early commercial stage company</strong> — ยังไม่มีประวัติ profitability และอยู่ใน heavy investment phase ทุก metric ต้องดูจากมุม "ความเร็วใน ramp up" ไม่ใช่ absolute numbers</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี (CY)</th>
+            <th>Revenue</th>
+            <th>YoY</th>
+            <th>Gross Margin</th>
+            <th>Net Loss</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2021</td><td>~$2M</td><td>—</td><td>Deeply negative</td><td>~-$100M</td></tr>
+          <tr><td>2022</td><td>~$3M</td><td>+50%</td><td>Deeply negative</td><td>~-$130M</td></tr>
+          <tr><td>2023</td><td>~$5M</td><td>+67%</td><td>Improving, still negative</td><td>~-$140M</td></tr>
+          <tr class="highlight"><td>2024 ✦</td><td>~$10M</td><td>+100%</td><td>Still negative</td><td>~-$150M</td></tr>
+        </tbody>
+      </table>
+      <div class="callout yellow">
+        <p><strong>สำคัญ — Revenue Trajectory vs. Cash Burn:</strong> EOSE revenue เพิ่ง cross $10M ขณะที่ burn ~$150M/year ซึ่งหมายความว่า EOSE ยังต้องการ equity/debt capital อีกหลายปี ก่อนจะถึง breakeven DOE loan $398M จะช่วยลด dilution risk ถ้า finalize ได้</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Joe Mastrangelo</div>
+          <div class="boss-title">CEO, Eos Energy Enterprises (ตั้งแต่ 2020)</div>
+          <div>
+            <div class="boss-fact"><span class="label">ก่อนหน้า</span><span>GE Power — Grid Solutions &amp; Energy Storage</span></div>
+            <div class="boss-fact"><span class="label">Background</span><span>Energy/Utility equipment executive</span></div>
+            <div class="boss-fact"><span class="label">ที่ GE</span><span>ดูแล battery storage &amp; grid divisions</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Joe Mastrangelo เข้ามาเป็น CEO หลัง SPAC merger ในปี 2020 เขามาจาก GE Power ที่ดูแล energy storage และ grid solutions ซึ่ง background นี้เหมาะมากสำหรับ company ที่ต้องขายให้ utilities และ grid operators</p>
+          <p style="margin-top:12px">สไตล์ของ Mastrangelo คือ <strong>operator ที่เน้น partnership และ offtake agreements</strong> — เขา approach ตลาดโดยสร้าง relationship กับ utilities ก่อน แล้วค่อย scale manufacturing ตาม demand แทนที่จะ build overcapacity ก่อน ซึ่งเป็นสาเหตุที่ revenue ramp ช้า</p>
+          <p style="margin-top:12px">ความท้าทายหลักคือ <strong>balance ระหว่าง cash conservation กับ scale up</strong> — ถ้า scale ช้าเกินไป customers อาจ default ไปหา lithium-ion แต่ถ้า scale เร็วเกินไปโดยไม่มี demand จะ burn cash ไปเปล่า</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Eos Energy ผลิต Zynth™ battery system</strong> ที่ใช้ zinc กับ aqueous electrolyte solution (salt water-based) เป็น grid-scale energy storage สำหรับ utilities, C&I (commercial &amp; industrial), และ microgrids</p>
+      <div class="callout blue">
+        <p><strong>Zynth™ Battery ทำงานอย่างไร:</strong> ใช้ zinc เป็น anode, manganese dioxide เป็น cathode, และ aqueous (water-based) electrolyte — ทำให้ไม่ติดไฟ (non-flammable) ซึ่งต่างจาก lithium-ion ที่มีความเสี่ยง thermal runaway ที่สูงกว่า สามารถ discharge ได้ 4-12 ชั่วโมงอย่างมีประสิทธิภาพ</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Target Use Cases:</strong> Renewable energy firming (hold solar/wind ไว้ discharge ตอน peak demand), transmission deferral (ลด CapEx ของ grid expansion), peaking replacement (แทน gas peaker plants) ลูกค้าหลักคือ electric utilities, grid operators, renewable energy developers</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Manufacturing:</strong> โรงงานหลักที่ Turtle Creek, Pennsylvania — ใช้ modular manufacturing approach ที่แต่ละ module สามารถ snap together เป็น system ขนาดต่างๆ ได้ ตอนนี้กำลัง ramp up capacity ด้วยเงินจาก DOE loan (ถ้า finalize)</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Eos Energy ขาย battery storage systems ให้ utilities และ developers</strong> — revenue model เป็น product sales + service contracts สำหรับ O&amp;M (operations &amp; maintenance)</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2024 (est.) — ~$10M แบ่งตาม Stream</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔋 Battery System Sales (Zynth™)</div>
+            <div class="rev-numbers"><strong>~$8M</strong> · ~80%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-battery" style="width:80%"></div></div>
+          <div class="rev-note">หลักรายได้ — ขาย battery modules &amp; systems ให้ utilities, C&I customers, developers · กำลัง ramp up deliveries จาก backlog</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔧 Service &amp; Maintenance</div>
+            <div class="rev-numbers"><strong>~$1.5M</strong> · ~15%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-service" style="width:15%"></div></div>
+          <div class="rev-note">O&amp;M contracts สำหรับ deployed systems — recurring แต่ยังน้อยเพราะ installed base เล็กมาก</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🏛 Government Grants / Development Income</div>
+            <div class="rev-numbers"><strong>~$0.5M</strong> · ~5%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-grant" style="width:5%"></div></div>
+          <div class="rev-note">DOE grants, ARPA-E funding, state incentives — non-recurring แต่ meaningful ในช่วง early stage</div>
+        </div>
+      </div>
+      <div class="callout red">
+        <p><strong>Unit Economics ยังเป็น Challenge:</strong> Gross margin ยังเป็นลบ เพราะ manufacturing cost per kWh สูงกว่า selling price ในระยะนี้ ถ้า production volume เพิ่มขึ้น 5-10x จาก current levels unit economics จะ flip positive ตาม scale manufacturing cost curve</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Eos Energy compound ไม่ได้ผ่าน earnings reinvestment (ยังขาดทุน) แต่ compound ผ่าน <strong>technology learning curves + installed base feedback loop</strong></p>
+      <div class="callout blue">
+        <p><strong>Manufacturing Learning Curve:</strong> ทุกๆ ครั้งที่ production doubles cost per unit จะลดลง 15-25% (Wright's Law) ยิ่ง Eos scale production เร็ว ยิ่ง unit cost ลดเร็ว และยิ่ง competitive ต่อ lithium-ion มากขึ้น pathway ไปสู่ profitability ขึ้นอยู่กับ การ hit volume milestones</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Long-Duration Structural Advantage:</strong> Grid operators ต้องการ storage ที่ชาร์จตอนกลางวัน (solar) และ discharge ข้ามคืน (12+ ชั่วโมง) lithium-ion ในราคาปัจจุบัน แพงเกินไปสำหรับ 8-hour+ duration Eos มี cost advantage ทางทฤษฎีในช่วงนี้ที่จะ expand ตาม grid storage เปลี่ยนไปสู่ longer duration</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Government Policy Tailwind:</strong> IRA (Inflation Reduction Act) มี tax credits สำหรับ domestic energy storage manufacturing และ deployment Eos เป็น US-based manufacturer ที่ qualify Domestic Content Bonus ให้ลูกค้าได้ ITC bonus เพิ่ม ทำให้ competitive ต่อ imported Chinese batteries</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>EOSE อยู่ใน <strong>make-or-break moment</strong> — DOE loan ถ้า finalize ได้จะเป็น major catalyst แต่ถ้าล้มเหลว บริษัทต้องหาทุนแหล่งอื่น ซึ่งยากในสภาพแวดล้อมดอกเบี้ยสูง</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Catalyst</div>
+        <h4>DOE Loan $398M — Conditional Commitment (2024)</h4>
+        <p>กระทรวงพลังงานอนุมัติ conditional loan guarantee $398M ให้ Eos — ถ้า finalize ได้จะ fund manufacturing expansion ที่ Pennsylvania และ reduce equity dilution risk อย่างมาก DOE backing ยังเป็น customer validation signal</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Revenue Doubling YoY จาก Backlog Conversion</h4>
+        <p>FY2024 revenue ~$10M (+100% YoY จาก ~$5M) เริ่ม convert pipeline เป็น actual deliveries แม้ยังเล็กมากในเชิง absolute แต่ trajectory สำคัญกว่า</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>IRA Policy Uncertainty ภายใต้การเมืองสหรัฐฯ</h4>
+        <p>นโยบาย IRA tax credits ที่ support domestic energy storage ถูก debate ทางการเมือง ถ้า credits ลดลงหรือหมดก่อนกำหนด demand ต่อ Eos products จะกระทบ เพราะ credit เป็น key price advantage</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Cash Burn vs. Capital Access — Existential Risk</h4>
+        <p>บริษัทยัง burn ~$150M/year ขณะที่ revenue เพิ่ง $10M ถ้า DOE loan ล่าช้าหรือล้มเหลว และตลาด equity ไม่เอื้ออำนวย Eos จะต้องหาทุน emergency ในเงื่อนไขที่แย่ลง นี่คือ survival risk ที่ต้อง monitor อย่างใกล้ชิด</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Chinese Battery Competition ราคาถูก</h4>
+        <p>BYD และ CATL ทำ grid-scale lithium-ion battery ราคาถูกมาก ($70-100/kWh) ถ้า Chinese manufacturers รุกตลาดสหรัฐฯ ได้ (ผ่าน partnerships/waivers) หรือถ้า IRA Domestic Content ถูก rollback Eos จะสูญเสีย cost competitiveness</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Eos Energy แข่งใน Long-Duration Energy Storage (LDES) ที่มีทั้ง established players (lithium-ion) และ alternative chemistry startups</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🔋</div>
+          <div>
+            <div class="comp-segment">Grid-Scale Energy Storage — Utility Market</div>
+            <div class="comp-pos contender">Niche Player — Long-Duration Alternative</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player">
+            <div class="comp-name">Tesla / BYD / Fluence (Li-ion, Dominant)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:75%;background:#EA4335"></div></div>
+            <div class="comp-detail">~75% grid storage market — lithium-ion dominated · Tesla Megapack, Fluence (AES+Siemens), BYD grid products · Price aggressively, short to 4h duration sweet spot</div>
+          </div>
+          <div class="comp-player self">
+            <div class="comp-name">Eos Energy (EOSE) — Zinc</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:2%;background:var(--eose-orange)"></div></div>
+            <div class="comp-detail">&lt;2% market share — niche player · Zynth zinc battery 4-12h · Competing on safety (non-flammable) + long-duration cost advantage vs. lithium-ion · Still pre-scale</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Form Energy (Iron-Air, private)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:2%;background:#6B46C1"></div></div>
+            <div class="comp-detail">Private startup — iron-air battery สำหรับ 100+ hour storage · Different segment (longer duration) · Significant backing from Bill Gates</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Invinity Energy (Vanadium Flow)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:1%;background:#FBBC04"></div></div>
+            <div class="comp-detail">Vanadium flow batteries — long cycle life แต่ higher capital cost · Competitor ใน utility-scale LDES</div>
+          </div>
+        </div>
+        <div class="comp-verdict yellow">Eos Energy เป็น niche ใน niche — long-duration zinc battery ที่ยัง pre-scale จริงๆ ยังต้องพิสูจน์ unit economics ก่อนที่จะแข่ง head-to-head กับ lithium-ion ได้ในปริมาณมาก ตอนนี้ thesis ขึ้นอยู่กับ "lithium-ion ไม่ work สำหรับ 8h+ duration ในราคาที่ acceptable" ซึ่งยังต้องพิสูจน์</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%) — Small Size</h3>
+          <p>Wave = long-duration grid storage thesis ที่ถ้าถูกจะ asymmetric มาก แต่ execution risk สูงและ binary ใกล้ DOE loan outcome — position sizing ต้องเล็ก</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">EOSE เป็น <strong>highest-conviction binary bet ใน cleantech</strong> — ถ้า DOE loan finalize + manufacturing scales + unit economics flip positive ใน 2-3 ปี upside ใหญ่มาก แต่ถ้าล้มเหลวด้าน capital หรือ technology ได้ 0 ดังนั้น sizing ต้องสะท้อนความเสี่ยงนี้</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">⚡</div>
+              <div class="trait-name">Long-Duration Structural Gap</div>
+              <div class="trait-desc">Grid ต้องการ 8-12h storage ที่ราคาสมเหตุสมผล lithium-ion ยังแพงเกินไปสำหรับ duration ยาว ถ้า Zynth scale ได้ cost-per-kWh จะ competitive</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🏛</div>
+              <div class="trait-name">DOE $398M De-risking</div>
+              <div class="trait-desc">Conditional DOE loan ทำให้ capital access risk ลดลงและเป็น technology validation signal สำหรับ utility customers ที่ conservative มาก</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🇺🇸</div>
+              <div class="trait-name">IRA Domestic Manufacturer</div>
+              <div class="trait-desc">Eos manufacture ใน Pennsylvania = qualify Domestic Content Bonus ภายใต้ IRA ทำให้ project economics ดีกว่า Chinese-sourced battery เมื่อ customer คำนวณ blended cost</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🔒</div>
+              <div class="trait-name">Safety Advantage</div>
+              <div class="trait-desc">Zinc battery ไม่ติดไฟ ซึ่งสำคัญมากสำหรับ urban deployments ที่ fire risk ของ lithium-ion เป็นปัญหาใหญ่ (เช่น NYC, LA ที่มีกฎหมายเข้มงวด)</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-wave">
+            <span class="not-tag">✗ ไม่ใช่ Core — ขาดทุนหนัก, ยังไม่ scale</span>
+            <span class="not-tag">✗ ไม่ใช่ safe position — binary outcome risk</span>
+            <span class="not-tag">✗ ไม่ใช่ near-term EPS story</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: EOSE → Wave (Micro Position)</h4>
+            <p>EOSE เป็น highest-risk Wave ใน EisenTower — ให้ exposure ต่อ long-duration grid storage thesis โดยไม่ต้องลงทุนใหญ่ Trigger ที่ต้องติดตาม: (1) DOE loan finalization, (2) Unit gross margin flip positive, (3) ยอด backlog conversion acceleration Exit signal: DOE loan ถูก cancel, cash runway &lt;6 เดือนโดยไม่มี solution, หรือ lithium-ion price ลดจนทำลาย LDES thesis ทั้งหมด</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — EOSE / Eos Energy Enterprises Inc. · Source: FY2024 Annual Reports · DOE Loan Announcement · Public Disclosures</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--eose-orange)"></span>
+      <span style="background:var(--eose-dark)"></span>
+      <span style="background:var(--eose-navy)"></span>
+      <span style="background:var(--eose-orange-soft)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NET — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --net-orange:      #F6821F;
+      --net-dark:        #C0551A;
+      --net-navy:        #2C3E70;
+      --net-orange-soft: #FEF4EC;
+      --accent:          #F6821F;
+      --accent-soft:     #FEF4EC;
+      --green:           #34A853;
+      --green-soft:      #e6f4ea;
+      --red:             #EA4335;
+      --red-soft:        #fce8e6;
+      --yellow:          #FBBC04;
+      --yellow-soft:     #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--surface); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, var(--net-orange) 25%, var(--net-dark) 25% 50%, var(--net-navy) 50% 75%, var(--net-orange-soft) 75%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); background: var(--tag-bg); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--net-orange); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-cloud    { background: var(--net-orange); }
+    .bar-network  { background: var(--net-navy); }
+    .bar-security { background: var(--green); }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--net-orange-soft); border-color: var(--net-orange); }
+    .callout.green  { background: var(--green-soft);      border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);     border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);        border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--net-orange), var(--net-navy)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--net-orange); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--net-orange); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--net-orange-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);      color: var(--green); }
+    .comp-pos.challenger { background: var(--net-orange-soft); color: var(--net-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);     color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--net-orange); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--net-orange-soft); border-color: var(--net-orange); color: var(--net-dark); }
+    .comp-verdict.yellow { background: var(--yellow-soft);     border-color: var(--yellow);     color: #8a6000; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: rgba(138, 43, 226, 0.07); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #7b2fff; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-wave { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .bucket-fit { background: #f3eeff; border: 1px solid #c9b2ff; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .bucket-fit h4 { font-size: 15px; font-weight: 700; color: #7b2fff; margin-bottom: 10px; }
+    .bucket-fit p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--net-orange); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(246,130,31,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--net-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">NET</span> — Cloudflare, Inc.</h1>
+    <div class="doc-subtitle">Understanding Cloudflare as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NYSE: NET</span>
+      <span>🏛 San Francisco, CA · Founded 2009</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Cloudflare คือ <strong>connectivity cloud company</strong> — ให้บริการ network security, performance, และ developer platform ผ่าน global network ที่มี 300+ data centers ใน 100+ ประเทศ เป็นหนึ่งใน most densely distributed networks บนโลก</p>
+      <p>ถ้าจะเข้าใจ Cloudflare ต้องเข้าใจ concept ว่า <strong>บริษัทคือ "security + connectivity + compute layer" ที่ sit ตรงกลางระหว่าง internet กับ customers ของ Cloudflare</strong> — ทุก traffic ผ่าน Cloudflare จะ inspected, filtered, optimized ก่อนถึง origin server ทำให้ add value ได้เยอะมากพร้อมกัน</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2024</div>
+          <div class="stat-value">$1.63B</div>
+          <div class="stat-sub">+28% YoY</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Non-GAAP Op. Margin</div>
+          <div class="stat-value">+14%</div>
+          <div class="stat-sub">FY2024 — expanding fast</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">~78%</div>
+          <div class="stat-sub">Non-GAAP FY2024</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Large Customers ($100k+)</div>
+          <div class="stat-value">3,265</div>
+          <div class="stat-sub">FY2024 — +26% YoY</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Dollar-Based NRR</div>
+          <div class="stat-value">111%</div>
+          <div class="stat-sub">FY2024 — sticky expansion</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">GAAP Net Loss</div>
+          <div class="stat-value">-$89M</div>
+          <div class="stat-sub">FY2024 — SBC heavy</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Cloudflare ก่อตั้งด้วย vision ว่า internet security ต้องเป็น commodity ที่ทุกคนเข้าถึงได้ — ไม่ใช่ luxury ของ enterprise ใหญ่เท่านั้น journey จาก DDoS mitigation เล็กๆ สู่ connectivity cloud platform ขนาดใหญ่</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2009</div>
+          <div class="tl-text"><strong>ก่อตั้งโดย Matthew Prince, Michelle Zatlyn, Lee Holloway:</strong> เริ่มจาก Project Honey Pot (spam tracking) และ idea ว่าสามารถ offer security-as-a-service ผ่าน internet โดยไม่ต้องติดตั้ง hardware บน-premise เข้า Y Combinator รุ่น Summer 2009</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2010</div>
+          <div class="tl-text"><strong>Launch สู่ Public:</strong> เปิดตัว beta ต่อ public ด้วย free tier — anyone สามารถ protect website ด้วย Cloudflare โดยเพียงแค่ change DNS ไม่ต้องเปลี่ยน hardware ใดๆ model นี้สร้าง massive user base อย่างรวดเร็ว</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2012–2016</div>
+          <div class="tl-text"><strong>Scale Free Tier + Build Enterprise:</strong> Cloudflare expand network ไปทั่วโลกอย่างรวดเร็ว โดย fund expansion ด้วย venture capital (Sequoia, Google Ventures ฯลฯ) เริ่ม convert free users เป็น paid enterprise customers ด้วย advanced security features</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019</div>
+          <div class="tl-text"><strong>IPO บน NYSE — $3.5B Valuation:</strong> List บน NYSE ในราคา $15/share ที่ market cap ~$5B ณ วัน IPO Cloudflare reveal ครั้งแรกว่ามี revenue ใกล้ $300M และ growing เร็วมาก ขณะที่ยังขาดทุน</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2020–2021</div>
+          <div class="tl-text"><strong>Covid Acceleration + SASE Platform Pivot:</strong> Remote work drove cybersecurity demand สูงมาก Cloudflare launch Zero Trust / SASE products (Cloudflare Access, Magic WAN) เปลี่ยนจาก CDN/DDoS company เป็น network security platform stock ขึ้น 6x ใน 2 ปี</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2023–2025</div>
+          <div class="tl-text"><strong>AI Inference Edge + Workers AI:</strong> Cloudflare launch Workers AI (run AI models ที่ edge ใกล้ users) และ AI Gateway เป็น infrastructure สำหรับ AI applications ที่ต้องการ low-latency inference บริษัทเริ่ม re-position เป็น AI infrastructure company ด้วย</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Cloudflare มี track record ที่ consistent และ impressive</strong> — ทุกปี grow revenue 25-50%, gross margin สูงและเพิ่มขึ้น, non-GAAP operating leverage ชัดเจน GAAP loss ลดลงทุกปี</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปี (CY)</th>
+            <th>Revenue</th>
+            <th>YoY</th>
+            <th>Non-GAAP Op. Margin</th>
+            <th>GAAP Net Loss</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2020</td><td>$431M</td><td>+50%</td><td>-16%</td><td>-$119M</td></tr>
+          <tr><td>2021</td><td>$656M</td><td>+52%</td><td>-2%</td><td>-$260M</td></tr>
+          <tr><td>2022</td><td>$975M</td><td>+49%</td><td>+5%</td><td>-$193M</td></tr>
+          <tr><td>2023</td><td>$1.30B</td><td>+33%</td><td>+10%</td><td>-$184M</td></tr>
+          <tr class="highlight"><td>2024 ✦</td><td>$1.63B</td><td>+28%</td><td>+14%</td><td>-$89M</td></tr>
+        </tbody>
+      </table>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">5-Year Revenue CAGR</div>
+          <div class="stat-value">+40%</div>
+          <div class="stat-sub">ตั้งแต่ IPO FY2019 ถึง FY2024</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">NRR Trend</div>
+          <div class="stat-value">111%</div>
+          <div class="stat-sub">Existing customers expand ทุกปี</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Operating FCF Margin</div>
+          <div class="stat-value">+16%</div>
+          <div class="stat-sub">FY2024 — cash generating</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Matthew Prince</div>
+          <div class="boss-title">Co-Founder, CEO &amp; Chairman, Cloudflare (ตั้งแต่ 2009)</div>
+          <div>
+            <div class="boss-fact"><span class="label">ก่อนหน้า</span><span>ก่อตั้ง Unspam Technologies</span></div>
+            <div class="boss-fact"><span class="label">Education</span><span>Harvard Law, U of Chicago MBA</span></div>
+            <div class="boss-fact"><span class="label">Co-founded</span><span>กับ Michelle Zatlyn (COO)</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Matthew Prince เป็น CEO ที่ visionary มาก — เขา articulate ภาพรวมของ Cloudflare ได้ชัดเจนมาก ทั้งในแง่ technology mission ("help build a better internet") และ business strategy (network effects + platform expansion)</p>
+          <p style="margin-top:12px">Prince มีสไตล์ที่ <strong>เน้น long-term platform thinking มากกว่า short-term profitability</strong> — เขา invest aggressively ใน products ใหม่ (Workers, R2, AI Gateway ฯลฯ) โดย bet ว่า network ที่ใหญ่ขึ้นทุกปีจะ monetize ได้มากขึ้นผ่าน platform upsell</p>
+          <p style="margin-top:12px">Cloudflare ภายใต้ Prince <strong>ไม่เคย miss revenue guidance</strong> ตั้งแต่ IPO และ typically guide conservatively แล้ว beat ซึ่งทำให้ investor trust สูง แม้ GAAP loss ยังมีอยู่</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Cloudflare ทำงานเป็น "intermediary layer" ระหว่าง internet กับ customers</strong> — เมื่อ user ทั่วโลก request ไปยัง website ที่ใช้ Cloudflare request จะถูก route ผ่าน Cloudflare network ก่อน ซึ่ง inspect, filter, cache, accelerate แล้วค่อยส่งต่อ</p>
+      <div class="callout blue">
+        <p><strong>Network Services (CDN + Performance + DDoS):</strong> ลดเวลา load website ด้วย edge caching, DDoS protection ป้องกัน volumetric attacks สูงถึง Tbps, DNS ที่เร็วที่สุด (1.1.1.1 — fastest public resolver), Load balancing, Bot management</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Zero Trust / SASE Security:</strong> Cloudflare Access (ควบคุมว่าใคร access อะไรได้), Magic WAN (replace erbate SD-WAN), Cloudflare Gateway (secure DNS + HTTP filtering), CASB, DLP — ทั้งหมดนี้รวมกันเป็น Zero Trust Network Access (ZTNA) platform แทน traditional VPN</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Developer Platform (Workers, R2, AI):</strong> Workers (serverless compute at edge — run JavaScript/Python ใกล้ users ทั่วโลก), R2 (object storage คล้าย S3 แต่ไม่มี egress fee), Workers AI (run AI models at edge), AI Gateway (proxy + caching สำหรับ LLM calls) — segment นี้เป็น future growth engine</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Cloudflare ขาย subscriptions</strong> — ทั้ง self-serve (credit card, เล็ก) และ enterprise (contract, ใหญ่) model ที่มี land-and-expand แรงมาก: เริ่มจาก network security แล้ว upsell Zero Trust แล้ว upsell developer platform</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2024 — $1.63B แบ่งตาม Product Category (est.)</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🌐 Network Services (CDN, DDoS, DNS, Performance)</div>
+            <div class="rev-numbers"><strong>~$815M</strong> · ~50%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-cloud" style="width:50%"></div></div>
+          <div class="rev-note">Core legacy business · Mature แต่ยัง growing · ทุก customer เริ่มจากนี่ · Gross margin สูงมาก</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔐 Zero Trust &amp; SASE (Access, Gateway, Magic WAN)</div>
+            <div class="rev-numbers"><strong>~$570M</strong> · ~35%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-network" style="width:35%"></div></div>
+          <div class="rev-note">Fastest growing segment · Replace traditional VPN/MPLS · High ASP (average selling price) · Enterprise contracts</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">⚡ Developer Platform (Workers, R2, AI Gateway)</div>
+            <div class="rev-numbers"><strong>~$245M</strong> · ~15%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-security" style="width:15%"></div></div>
+          <div class="rev-note">Emerging แต่ strategic — AI inference edge potential ใหญ่มาก · Pay-as-you-go + subscription · Key future revenue driver</div>
+        </div>
+      </div>
+      <div class="callout green">
+        <p><strong>Land-and-Expand Flywheel:</strong> Customer เริ่มซื้อ CDN → buy Zero Trust → buy Developer Platform → NRR 111% NRR เพราะ spending ต่อ customer เพิ่มทุกปีแม้ ไม่มี new customer ใหม่เลย ทำให้ revenue predictable สูง</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Cloudflare compound ผ่าน <strong>network effects ที่แข็งแกร่งมาก</strong> — ยิ่ง network ใหญ่ขึ้น ยิ่ง protect ดีขึ้น (เห็น attack patterns เยอะขึ้น) ยิ่งเร็วขึ้น (peering ดีขึ้น) ทำให้ network ยิ่ง valuable ยิ่งขึ้นในวงกลม</p>
+      <div class="callout blue">
+        <p><strong>Threat Intelligence Network Effect:</strong> ทุก traffic ที่ผ่าน Cloudflare (หลาย Trillion requests/day) ทำให้ Cloudflare เห็น attack patterns ก่อน competitors เปลี่ยน DDoS signatures, bot patterns, phishing domains ก่อนที่จะ spread ไปยัง internet ทั่วไป — ยิ่ง network ใหญ่ยิ่ง intelligence ดี</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Platform Expansion Optionality:</strong> ทุก product ใหม่ที่ Cloudflare launch (R2 storage, Workers AI, AI Gateway, Queues) ใช้ network เดิมที่มีอยู่แล้ว ดังนั้น incremental cost ต่ำมากแต่ TAM expand ทุกครั้ง เหมือน Cloudflare "unlock" new revenue streams โดยใช้ existing infrastructure</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Free Tier as Moat:</strong> Cloudflare มี ~35M+ websites ใช้ free tier อยู่ ซึ่ง (1) สร้าง massive developer affinity (2) feed data ให้ improve services (3) create pipeline สำหรับ enterprise conversion บริษัทอื่นทำแบบนี้ไม่ได้ เพราะต้นทุน network infrastructure สูงมาก</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Cloudflare อยู่ใน <strong>transition จาก "network security company" สู่ "AI infrastructure layer"</strong> — timing ของ AI boom ดีมากเพราะ Cloudflare network เหมาะอย่างมากสำหรับ low-latency AI inference at edge</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Large Customer Growth Acceleration</h4>
+        <p>$100k+ customers เพิ่ม +26% YoY เป็น 3,265 รายใน FY2024 — enterprise adoption เร็วขึ้น ซึ่ง drives higher ASP และ better NRR เหล่านี้เป็น multi-product customers ที่ sticky มาก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Workers AI / AI Gateway — AI Inference Edge</h4>
+        <p>Developer นิยม deploy AI inference บน Cloudflare Workers เพราะ latency ต่ำกว่า cloud (ใกล้ users มากกว่า) และ no egress fees Workers AI เป็น fastest growing product ในประวัติบริษัท — แม้ contribution ต่อ revenue ยังเล็กอยู่ใน FY2024</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Competition จาก AWS + Azure Zero Trust</h4>
+        <p>AWS และ Microsoft กำลัง push Zero Trust / SASE products ของตัวเอง ลูกค้าที่อยู่ใน AWS/Azure ecosystem อาจ prefer native solutions แม้ Cloudflare ยังดีกว่าใน features ปัจจุบัน</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>Valuation Premium ต้องการ Execution Perfect</h4>
+        <p>Cloudflare trade ที่ premium valuation (P/S ~20x+) ซึ่ง embed high-growth expectation ใดๆ ที่ growth slowdown จาก 28% → 20% จะทำให้ multiple compress หนัก ต้อง execution perfect ทุกไตรมาส</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>GAAP EPS ยังเป็นลบ — SBC Dilution</h4>
+        <p>GAAP loss ส่วนใหญ่มาจาก stock-based compensation (SBC) ที่สูง จาก equity-heavy compensation culture ซึ่งหมายความว่า shareholder ถูก dilute ทุกปีในขณะที่ management ได้รับ compensation ใหญ่</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Cloudflare แข่งในหลาย markets พร้อมกัน — CDN, cybersecurity, edge compute ทำให้ comparison complex</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">🔐</div>
+          <div>
+            <div class="comp-segment">Network Security + SASE + Edge Compute</div>
+            <div class="comp-pos challenger">Strong #2 Platform — Fast Gaining</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Cloudflare (NET)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:18%;background:var(--net-orange)"></div></div>
+            <div class="comp-detail">~18% SASE market share (est.) · FY2024 Revenue $1.63B · Only company combining CDN + ZT + Edge Compute seamlessly · Developer-friendly</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Zscaler (ZS)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:22%;background:#00B5D8"></div></div>
+            <div class="comp-detail">~22% SASE share · Pure-play Zero Trust · Faster enterprise adoption แต่ ไม่มี CDN/edge compute · FY2024 Revenue $2.2B</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Akamai (AKAM)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:#6B46C1"></div></div>
+            <div class="comp-detail">~25% CDN market share · Incumbent แต่ slower innovation · Revenue $3.8B แต่ low growth · Cloudflare กำลัง take share</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">AWS/Azure/GCP Edge</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#34A853"></div></div>
+            <div class="comp-detail">Hyperscalers มี native edge/security solutions แต่ vendor lock-in ทำให้ multi-cloud customers prefer independent Cloudflare</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">Cloudflare เป็น "best-of-breed" platform ที่ดีกว่า incumbents (Akamai) ใน innovation speed และดีกว่า pure-play ZT (Zscaler) ใน breadth of platform จุด differentiation ที่ชัดสุดคือ Developer Platform + AI Edge ที่ competitors ทำไม่ได้ในระดับเดียวกัน</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Wave = market ยังมองว่า NET เป็น "expensive CDN company" — แต่ถ้า AI inference edge thesis เป็นจริง Cloudflare จะ re-rate เป็น AI infrastructure platform ที่ valuation gap ปิดได้เร็วมาก</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">Cloudflare มีคุณสมบัติของ Core (compounding, NRR 111%, network effects ชัดเจน) แต่อยู่ใน Wave เพราะ <strong>AI inference edge re-rating catalyst ที่ยังไม่ price in อย่างเต็มที่</strong> — ถ้า Workers AI monetize ได้จริง TAM ขยายไปอีก 3-5x จาก current size</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">🌐</div>
+              <div class="trait-name">Network Effect Compounding</div>
+              <div class="trait-desc">300+ PoP ทั่วโลก · ยิ่ง grow ยิ่ง see more attacks · ยิ่ง see more ยิ่ง protect better · อัตราเร่งนี้ทำให้ competitive moat wide ขึ้นทุกปีโดยอัตโนมัติ</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🤖</div>
+              <div class="trait-name">AI Inference Edge Optionality</div>
+              <div class="trait-desc">Workers AI เป็น fastest-adopted product ในประวัติ Cloudflare — developer ชอบ run AI inference ที่ edge เพราะ latency ต่ำ นี่คือ TAM expansion ที่ยังไม่ price in อย่างเต็มที่</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">Land-and-Expand + NRR 111%</div>
+              <div class="trait-desc">Customer ที่ซื้อ CDN จะซื้อ ZT ต่อ แล้วซื้อ Workers ต่อ NRR 111% หมายความว่า revenue base ขยาย 11% ทุกปี even without new customers</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">💰</div>
+              <div class="trait-name">Operating Leverage เพิ่ม</div>
+              <div class="trait-desc">Non-GAAP Op. Margin จาก -16% → +14% ใน 4 ปี trajectory ชัดว่า จะถึง 25%+ ใน 2-3 ปีถ้า growth ยังคงที่ Free Cash Flow กำลัง compound</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-wave">
+            <span class="not-tag">✗ ไม่ใช่ ราคาถูก — premium valuation ต้องการ perfect execution</span>
+            <span class="not-tag">✗ ไม่ใช่ GAAP profitable — SBC dilution ยังมี</span>
+            <span class="not-tag">✗ ไม่ใช่ defensive — cyclical risk ถ้า tech spending slowdown</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: NET → Wave (Higher Conviction)</h4>
+            <p>Cloudflare เป็น Wave ที่ risk/reward ดีที่สุดใน portfolio — foundation ของ business แข็งมาก (NRR 111%, network effects, CEO excellent) AI catalyst ยังอยู่ใน early innings Exit signal: growth decelerate ต่ำกว่า 20% สองไตรมาสติดต่อกัน, NRR ลดต่ำกว่า 105%, หรือ hyperscaler ออก product ที่ competitive กว่า Workers โดยตรง</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — NET / Cloudflare, Inc. · Source: FY2024 Annual Report · Earnings Calls · Cloudflare Investor Relations</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--net-orange)"></span>
+      <span style="background:var(--net-dark)"></span>
+      <span style="background:var(--net-navy)"></span>
+      <span style="background:var(--net-orange-soft)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

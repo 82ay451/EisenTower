@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LITE — Company File</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --tag-bg: #f1f3f4;
+      --lite-teal:      #00B5D8;
+      --lite-dark:      #006F85;
+      --lite-navy:      #1B2B4B;
+      --lite-teal-soft: #E0F7FB;
+      --accent:         #00B5D8;
+      --accent-soft:    #E0F7FB;
+      --green:          #34A853;
+      --green-soft:     #e6f4ea;
+      --red:            #EA4335;
+      --red-soft:       #fce8e6;
+      --yellow:         #FBBC04;
+      --yellow-soft:    #fef9e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+    .doc-header { background: var(--surface); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, var(--lite-teal) 25%, var(--lite-dark) 25% 50%, var(--lite-navy) 50% 75%, var(--lite-teal-soft) 75%) 1; padding: 48px 0 36px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    .label-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); background: var(--tag-bg); border-radius: 4px; padding: 3px 8px; margin-bottom: 16px; }
+    .doc-header h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .ticker-main { color: var(--lite-teal); }
+    .doc-subtitle { margin-top: 10px; font-size: 18px; color: var(--text-secondary); }
+    .doc-meta { margin-top: 20px; font-size: 13px; color: var(--text-muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .toc { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .toc-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 4px; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-inner a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-decoration: none; transition: all 0.15s; margin: 8px 2px; }
+    .toc-inner a:hover { background: var(--accent-soft); color: var(--accent); }
+    .doc-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { padding: 52px 0 0; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 12px; }
+    .section-header:hover .section-h2 { color: var(--accent); }
+    .section-header-left { display: flex; flex-direction: column; }
+    .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .section-h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-primary); transition: color 0.15s; }
+    .toggle-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.25s; font-size: 16px; color: var(--text-secondary); }
+    .section-header:hover .toggle-icon { background: var(--accent-soft); color: var(--accent); }
+    .section-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+    .section-content { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; max-height: 9999px; opacity: 1; }
+    .section-content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+    .section-divider { height: 1px; background: var(--border); margin-top: 52px; }
+    p { color: var(--text-primary); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin: 28px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); line-height: 1.1; }
+    .stat-card .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.blue   { border-left: 3px solid var(--accent); }
+    .stat-card.green  { border-left: 3px solid var(--green); }
+    .stat-card.red    { border-left: 3px solid var(--red); }
+    .stat-card.yellow { border-left: 3px solid var(--yellow); }
+    .revenue-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .revenue-breakdown h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
+    .rev-item { margin-bottom: 18px; }
+    .rev-item:last-child { margin-bottom: 0; }
+    .rev-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .rev-name { font-size: 14px; font-weight: 600; }
+    .rev-numbers { font-size: 13px; color: var(--text-secondary); }
+    .rev-bar-bg { height: 8px; background: var(--tag-bg); border-radius: 4px; overflow: hidden; }
+    .rev-bar-fill { height: 100%; border-radius: 4px; }
+    .bar-cloud   { background: var(--lite-teal); }
+    .bar-telecom { background: var(--lite-navy); }
+    .bar-laser   { background: #F59E0B; }
+    .rev-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .callout { border-radius: 12px; padding: 18px 22px; margin: 20px 0; border-left: 4px solid; }
+    .callout.blue   { background: var(--lite-teal-soft); border-color: var(--lite-teal); }
+    .callout.green  { background: var(--green-soft);     border-color: var(--green); }
+    .callout.yellow { background: var(--yellow-soft);    border-color: var(--yellow); }
+    .callout.red    { background: var(--red-soft);       border-color: var(--red); }
+    .callout p { color: var(--text-primary); }
+    .timeline { position: relative; margin: 28px 0; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--lite-teal), var(--lite-dark)); }
+    .tl-item { position: relative; margin-bottom: 26px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--lite-teal); border: 2px solid var(--bg); }
+    .tl-year { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--lite-teal); margin-bottom: 2px; }
+    .tl-text { font-size: 15px; color: var(--text-primary); line-height: 1.55; }
+    .boss-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 28px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 28px; }
+    @media (max-width: 600px) { .boss-card { grid-template-columns: 1fr; } }
+    .boss-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .boss-title { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .boss-fact { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+    .boss-fact .label { color: var(--text-muted); min-width: 80px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .boss-right p { font-size: 15px; }
+    .track-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14px; }
+    .track-table thead tr { border-bottom: 2px solid var(--border); }
+    .track-table th { text-align: right; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .track-table th:first-child { text-align: left; }
+    .track-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    .track-table td:first-child { text-align: left; font-weight: 600; }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr.highlight { background: var(--lite-teal-soft); }
+    .sit-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .sit-item p { font-size: 15px; }
+    .sit-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-up    { background: var(--green-soft);  color: #1e6e3a; }
+    .tag-watch { background: var(--yellow-soft); color: #8a6000; }
+    .tag-risk  { background: var(--red-soft);    color: #b71c1c; }
+    .comp-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+    .comp-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .comp-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+    .comp-segment { font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .comp-pos { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; }
+    .comp-pos.dominant   { background: var(--green-soft);     color: var(--green); }
+    .comp-pos.challenger { background: var(--lite-teal-soft); color: var(--lite-dark); }
+    .comp-pos.contender  { background: var(--yellow-soft);    color: #8a6000; }
+    .comp-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+    .comp-player.self .comp-name { color: var(--lite-teal); font-weight: 700; }
+    .comp-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-share-bar { height: 6px; background: var(--tag-bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .comp-bar-fill { height: 100%; border-radius: 3px; }
+    .comp-detail { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .comp-verdict { font-size: 13px; font-weight: 500; padding: 12px 16px; border-radius: 8px; line-height: 1.5; border-left: 3px solid; }
+    .comp-verdict.blue   { background: var(--lite-teal-soft); border-color: var(--lite-teal); color: var(--lite-dark); }
+    .comp-verdict.yellow { background: var(--yellow-soft);    border-color: var(--yellow);    color: #8a6000; }
+    .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin: 28px 0; }
+    .portfolio-card-header { padding: 28px 32px; color: white; }
+    .portfolio-card-header .port-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+    .portfolio-card-header h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .portfolio-card-header p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 15px; }
+    .portfolio-card-body { padding: 28px 32px; }
+    .wave-traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .wave-trait { background: rgba(138, 43, 226, 0.07); border-radius: 10px; padding: 16px 18px; }
+    .wave-trait .trait-icon { font-size: 20px; margin-bottom: 8px; }
+    .wave-trait .trait-name { font-size: 13px; font-weight: 700; color: #7b2fff; margin-bottom: 4px; }
+    .wave-trait .trait-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+    .not-wave { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .not-tag { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .bucket-fit { background: #f3eeff; border: 1px solid #c9b2ff; border-radius: 12px; padding: 20px 24px; margin-top: 20px; }
+    .bucket-fit h4 { font-size: 15px; font-weight: 700; color: #7b2fff; margin-bottom: 10px; }
+    .bucket-fit p { font-size: 15px; }
+    #back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: var(--lite-teal); color: white; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,181,216,0.4); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; z-index: 200; }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--lite-dark); }
+    .doc-footer { border-top: 1px solid var(--border); margin-top: 80px; padding: 28px 0; font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.8; }
+    .g-dot { display: inline-flex; gap: 3px; margin-top: 12px; }
+    .g-dot span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="top"></div>
+<div class="doc-header">
+  <div class="container">
+    <div class="label-tag">EisenTower · Hall of Frames</div>
+    <h1><span class="ticker-main">LITE</span> — Lumentum Holdings Inc.</h1>
+    <div class="doc-subtitle">Understanding Lumentum as a Business — Before Thinking Anything Else</div>
+    <div class="doc-meta">
+      <span>📅 Written June 15, 2026</span>
+      <span>📊 NASDAQ: LITE</span>
+      <span>🏛 San Jose, CA · Founded 2015</span>
+    </div>
+  </div>
+</div>
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a>
+    <a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a><a href="#s9">9</a><a href="#s10">10</a>
+  </div>
+</nav>
+<div class="doc-body">
+
+  <!-- ══ 1 ══ -->
+  <section class="section" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">01</div><div class="section-h2">Who are they?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Lumentum Holdings คือ <strong>ผู้นำด้าน optical และ photonic products</strong> — สร้าง lasers, optical components และ transceivers ที่ใช้ใน fiber optic networks, AI data centers, 3D sensing (เช่น iPhone Face ID) และ industrial/defense applications บริษัทก่อตั้งขึ้นในปี 2015 เมื่อ Viavi Solutions แยก optical products division ออกมา</p>
+      <p>Lumentum อยู่ใน <strong>transition จาก 3D sensing (Apple iPhone) ไปสู่ AI data center</strong> — ช่วงปี 2021-2023 revenue ถูกกดดันจาก Apple ลด 3D sensing orders แต่ตั้งแต่ FY2024-2025 เป็นต้นมา AI data center demand สำหรับ 800G/400G transceivers และ EML lasers เริ่ม offset ได้</p>
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Revenue FY2025 (Jun)</div>
+          <div class="stat-value">~$1.7B</div>
+          <div class="stat-sub">ปีงบ Jun 2025 (est.) — recovering</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Cloud & Networking Growth</div>
+          <div class="stat-value">+60%+</div>
+          <div class="stat-sub">YoY H1 FY2025 — AI demand</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">GAAP Net Loss</div>
+          <div class="stat-value">Ongoing</div>
+          <div class="stat-sub">Transition + D&A burden</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Adj. Op. Margin</div>
+          <div class="stat-value">~15%</div>
+          <div class="stat-sub">Recovering from trough ~5%</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Gross Margin</div>
+          <div class="stat-value">~47%</div>
+          <div class="stat-sub">Adj. Non-GAAP FY2025</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Key Customer</div>
+          <div class="stat-value">Diversified</div>
+          <div class="stat-sub">Hyperscalers, Telecom, Apple</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 2 ══ -->
+  <section class="section" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">02</div><div class="section-h2">Journey</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Lumentum เป็น spin-off ที่เพิ่งเติบโตเต็มที่ — journey จาก division ของ Viavi สู่ publicly traded photonics leader ที่ต้องผ่านทั้ง 3D sensing euphoria และ subsequent hangover</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2015</div>
+          <div class="tl-text"><strong>Spin-off จาก Viavi Solutions:</strong> Lumentum Holdings Inc. ก่อตั้งเมื่อ Viavi Solutions (เดิม JDSU) แยก optical products division ออกเป็น stand-alone บริษัท List บน NASDAQ ในฐานะ photonics specialist</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2017</div>
+          <div class="tl-text"><strong>Apple 3D Sensing Windfall — iPhone X:</strong> Apple iPhone X ใช้ Face ID technology ที่อาศัย VCSEL (Vertical-Cavity Surface-Emitting Laser) ที่ Lumentum produce Lumentum เป็น key supplier ของ Apple 3D sensing system stock พุ่งหลาย 100%</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2019</div>
+          <div class="tl-text"><strong>ซื้อ Oclaro ด้วย $1.8B:</strong> Oclaro เป็น telecom optical products company ที่เพิ่ม telecom/datacom transceiver capabilities ให้ Lumentum ได้อย่างมีนัยสำคัญ acquisition ทำให้ portfolio ครบเครื่องมากขึ้น</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2021–2023</div>
+          <div class="tl-text"><strong>Apple 3D Sensing Decline + Telecom Slowdown:</strong> Apple ลด VCSEL content ใน iPhone, telecom spending ลดลงจาก over-investment ก่อนหน้า ทำให้ revenue ลดลงอย่างชัดเจน GAAP losses ใหญ่ รวมถึง goodwill impairment</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">2024–2025</div>
+          <div class="tl-text"><strong>AI Data Center Rescue:</strong> AI data center boom ทำให้ demand สำหรับ 800G optical transceivers และ EML (electro-absorption modulated laser) chips ที่ go INTO transceivers พุ่งสูง Lumentum เป็น key EML supplier ให้ Coherent และ others Cloud & Networking segment กลับมา grow เร็วมาก</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 3 ══ -->
+  <section class="section" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">03</div><div class="section-h2">Track Record</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Lumentum track record คือ high volatility business ที่ขึ้นอยู่กับ end-market cycles มาก</strong> — 3D sensing boom แล้ว bust แล้ว AI transceiver recovery เป็น pattern ที่ชัดเจน</p>
+      <table class="track-table">
+        <thead>
+          <tr>
+            <th>ปีงบ (มิ.ย.)</th>
+            <th>Revenue</th>
+            <th>YoY</th>
+            <th>Adj. Op. Margin</th>
+            <th>Net Income</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>FY2021</td><td>$1.57B</td><td>+16%</td><td>~17%</td><td>GAAP loss</td></tr>
+          <tr><td>FY2022</td><td>$1.71B</td><td>+9%</td><td>~15%</td><td>GAAP loss</td></tr>
+          <tr><td>FY2023</td><td>$1.56B</td><td>-9%</td><td>~8%</td><td>-$1.1B (impairment)</td></tr>
+          <tr><td>FY2024</td><td>$1.38B</td><td>-12%</td><td>~5%</td><td>GAAP loss</td></tr>
+          <tr class="highlight"><td>FY2025 (est.) ✦</td><td>~$1.7B</td><td>+23%</td><td>~15%</td><td>est. -$200M GAAP</td></tr>
+        </tbody>
+      </table>
+      <p>FY2025 เป็นปีที่ recovery ชัดเจน — Cloud &amp; Networking segment grow เร็วมากจาก AI transceiver demand ขณะที่ Lasers segment ยังทรงตัว ถ้า trajectory นี้ดำเนินต่อ LITE จะกลับมา record revenue ใน FY2026</p>
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">C&N Revenue Growth</div>
+          <div class="stat-value">+60%+</div>
+          <div class="stat-sub">Cloud & Networking YoY FY2025</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Peak-to-Trough</div>
+          <div class="stat-value">-19%</div>
+          <div class="stat-sub">Revenue FY2022 → FY2024</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Margin Recovery</div>
+          <div class="stat-value">5%→15%</div>
+          <div class="stat-sub">Adj. Op. Margin FY2024→FY2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 4 ══ -->
+  <section class="section" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">04</div><div class="section-h2">Know their Boss</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="boss-card">
+        <div class="boss-left">
+          <div class="boss-name">Alan Lowe</div>
+          <div class="boss-title">President &amp; CEO, Lumentum Holdings (ตั้งแต่ มีนาคม 2015)</div>
+          <div>
+            <div class="boss-fact"><span class="label">ก่อนหน้า</span><span>JDSU (Viavi) — ก่อน spin-off</span></div>
+            <div class="boss-fact"><span class="label">Background</span><span>Photonics / Semiconductor industry</span></div>
+            <div class="boss-fact"><span class="label">CEO ตั้งแต่</span><span>วันก่อตั้ง Lumentum (2015)</span></div>
+          </div>
+        </div>
+        <div class="boss-right">
+          <p>Alan Lowe เป็น CEO ตั้งแต่วันแรกของ Lumentum — เขาเป็นหนึ่งในคนสำคัญที่ pitch ว่า optical products division ควรเป็น stand-alone company เพื่อ unlock value ที่ถูก Viavi conglomerate structure hide อยู่</p>
+          <p style="margin-top:12px">Lowe navigate ได้ทั้ง 3D sensing boom และ bust รวมถึง Oclaro acquisition ที่ complex โดยไม่ล้มละลาย สไตล์ของเขาคือ <strong>disciplined in operations, patient in technology cycles</strong> — รู้ว่า photonics business มี cycles และ manage accordingly</p>
+          <p style="margin-top:12px">ความท้าทายปัจจุบันคือ manage AI tailwind ให้ดีที่สุด ขณะที่ Apple 3D sensing ยังไม่ชัดว่าจะ recover เป็น growth driver ได้อีกไหม และ telecom spending ยังชะลออยู่</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 5 ══ -->
+  <section class="section" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">05</div><div class="section-h2">What do they Actually Do?</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Lumentum ทำ "light" — ผลิตอุปกรณ์ที่ใช้ laser และ optical technology</strong> สำหรับ applications หลากหลาย ตั้งแต่ fiber optic internet (ROADM) ไปจนถึง iPhone Face ID (VCSEL) และ AI data center connectivity (EML chips + transceivers)</p>
+      <div class="callout blue">
+        <p><strong>Cloud & Networking (65%):</strong> 800G/400G optical transceivers, ROADM (Reconfigurable Optical Add-Drop Multiplexer) สำหรับ long-haul fiber, EML laser chips ที่ supply ให้ transceiver manufacturers รวมถึง coherent transceivers สำหรับ submarine cables</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Lasers (35%):</strong> 3D sensing VCSELs (iPhone Face ID, Android sensors), industrial high-power lasers สำหรับ cutting/welding, semiconductor manufacturing lasers, EUV light sources สำหรับ ASML-type lithography</p>
+      </div>
+      <p>Key insight: Lumentum ไม่แค่ทำ finished transceivers แต่ยัง supply <strong>EML chips (Electro-absorption Modulated Lasers)</strong> ที่เป็น key component ภายใน 800G transceiver ทำให้ competitor อย่าง COHR, HGC ก็ยังต้อง depend on Lumentum ใน supply chain บางส่วน</p>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 6 ══ -->
+  <section class="section" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">06</div><div class="section-h2">How they Make Money</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p><strong>Lumentum ขาย photonic components และ sub-systems</strong> — ให้ telecom carriers (through OEMs), cloud hyperscalers (directly + through ODMs) และ consumer electronics (through Apple supply chain)</p>
+      <div class="revenue-breakdown">
+        <h3>รายได้ FY2025 (est.) — ~$1.7B แบ่งตาม Segment</h3>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">☁️ Cloud &amp; Networking (Datacom + Telecom)</div>
+            <div class="rev-numbers"><strong>~$1.1B</strong> · ~65%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-cloud" style="width:65%"></div></div>
+          <div class="rev-note">800G transceivers, EML laser chips, ROADMs · Growing fast from AI data center demand · +60%+ YoY H1 FY2025 · Key customers: hyperscalers, telecom carriers</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-header">
+            <div class="rev-name">🔆 Lasers (3D Sensing + Industrial + Defense)</div>
+            <div class="rev-numbers"><strong>~$0.6B</strong> · ~35%</div>
+          </div>
+          <div class="rev-bar-bg"><div class="rev-bar-fill bar-laser" style="width:35%"></div></div>
+          <div class="rev-note">3D sensing VCSELs (Apple iPhone Face ID), industrial lasers, semiconductor mfg, defense/aerospace · 3D sensing ลดลงจาก peak แต่ industrial/defense growing</div>
+        </div>
+      </div>
+      <div class="callout blue">
+        <p><strong>EML Laser Chips — Hidden Revenue Driver:</strong> Lumentum เป็น one of very few companies ที่ make 800G EML chips ซึ่งเป็น core component ที่ทุก 800G transceiver maker ต้องการ ทำให้ Lumentum มี revenue ทั้งจาก finished transceivers และจาก components ที่ supply ให้คู่แข่ง</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 7 ══ -->
+  <section class="section" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">07</div><div class="section-h2">How they Compound</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Lumentum compound ผ่าน <strong>technology leadership ใน photonics ที่ require high R&D investment</strong> แต่ payoff ยาวนานเพราะ optical technology เปลี่ยนช้าและ qualified suppliers มีน้อย</p>
+      <div class="callout blue">
+        <p><strong>Speed Race: 800G → 1.6T → 3.2T:</strong> AI data centers ต้องการ bandwidth มากขึ้นทุกปีตามที่ GPU clusters ขยายตัว Lumentum invest R&D เพื่อเป็น first-to-market ใน each new speed tier ลูกค้าต้องการ qualified supplier ก่อนใคร ทำให้ market leadership ที่ทำได้ในรุ่น 800G จะ extend ไปสู่ 1.6T</p>
+      </div>
+      <div class="callout green">
+        <p><strong>EML Chip Monopoly-like Position:</strong> EML laser chip manufacturing มีความยาก (epitaxial growth ที่ precise มาก) ทำให้มี few qualified manufacturers Lumentum เป็น one of two main EML suppliers ทั่วโลก ทำให้มี pricing power สูงและ customers ต้อง design-in ล่วงหน้านาน</p>
+      </div>
+      <div class="callout yellow">
+        <p><strong>Operating Leverage จาก Fixed Cost Structure:</strong> Fabs และ R&D เป็น fixed cost ขนาดใหญ่ เมื่อ revenue recover จาก trough margin expand เร็วมาก ดังที่เห็น FY2024 Op. Margin ~5% → FY2025 ~15% ถ้า revenue ยังโตต่อ margin จะขยายต่อไปอีก</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 8 ══ -->
+  <section class="section" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">08</div><div class="section-h2">Current Situation &amp; Positioning</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Lumentum อยู่ใน <strong>recovery mode ที่ AI-driven</strong> — worst ผ่านไปแล้ว revenue กำลัง recover แต่ยังต้องพิสูจน์ว่า margin expansion จะ sustainable</p>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>AI Data Center Demand — Cloud & Networking +60%+ YoY</h4>
+        <p>800G transceiver demand ยังแข็งแกร่ง hyperscalers สั่ง เพิ่มจำนวนมาก Lumentum benefit ทั้งจาก finished transceivers และ EML chips ที่ supply ให้คู่แข่ง</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-up">📈 Momentum</div>
+        <h4>Margin Recovery เร็วมาก</h4>
+        <p>Adj. Op. Margin จาก trough ~5% ใน FY2024 กลับมาที่ ~15% ใน FY2025 ถ้า revenue ยังโตต่อ margin จะ expand ต่อ ทำให้ EPS growth ดีกว่า revenue growth มาก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-watch">👁 จับตา</div>
+        <h4>3D Sensing (Apple) — จะ Recover ได้ไหม?</h4>
+        <p>Apple ยังเป็น customer ใหญ่สำหรับ 3D sensing VCSELs แต่ Apple กำลัง develop in-house solutions ถ้า Apple ลด dependency ใน Lumentum สำหรับ future iPhone รายได้ Lasers segment จะกดดันมาก</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Oclaro Acquisition Overhang — Goodwill ยังสูง</h4>
+        <p>การซื้อ Oclaro ในราคา $1.8B ทำให้มี goodwill สูงบน balance sheet ซึ่งยัง impair ได้ถ้า business unit ไม่ perform GAAP net loss ยังใหญ่อยู่ส่วนหนึ่งจาก amortization</p>
+      </div>
+      <div class="sit-item">
+        <div class="sit-tag tag-risk">⚠️ Risk</div>
+        <h4>Chinese Competition ใน EML Chips</h4>
+        <p>Chinese manufacturers กำลัง try to build EML chip capabilities ของตัวเอง ถ้าสำเร็จในอีก 3-5 ปี pricing power ของ Lumentum จะลดลง ตอนนี้ยังไม่ใช่ immediate threat แต่ต้อง monitor</p>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 9 ══ -->
+  <section class="section" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">09</div><div class="section-h2">Peers and Competitors</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <p>Lumentum แข่งในตลาด photonics ที่ consolidated มากและมีผู้เล่นน้อยรายที่ทำได้ครบ</p>
+      <div class="comp-block">
+        <div class="comp-header">
+          <div class="comp-icon">💡</div>
+          <div>
+            <div class="comp-segment">Optical Components &amp; Transceivers</div>
+            <div class="comp-pos challenger">Top 3 Global — Strong in Specific Niches</div>
+          </div>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-player self">
+            <div class="comp-name">Lumentum (LITE)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:25%;background:var(--lite-teal)"></div></div>
+            <div class="comp-detail">~25% optical components/trans. share (est.) · Strongest in EML chips · Also in ROADM dominant with ~60%+ market share · 3D sensing VCSEL leader</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Coherent Corp (COHR)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:30%;background:#00A3C9"></div></div>
+            <div class="comp-detail">~30% combined share · Overlap in 800G transceivers · Actually buys some EML chips from LITE · Larger overall but overlapping</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">II-VI / Finisar (now COHR)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:20%;background:#6B46C1"></div></div>
+            <div class="comp-detail">Absorbed into COHR — already counted above</div>
+          </div>
+          <div class="comp-player">
+            <div class="comp-name">Viavi (VIAV)</div>
+            <div class="comp-share-bar"><div class="comp-bar-fill" style="width:10%;background:#EA4335"></div></div>
+            <div class="comp-detail">Former parent — network test equipment focus ไม่ใช่ direct competitor ใน optical components</div>
+          </div>
+        </div>
+        <div class="comp-verdict blue">Lumentum และ COHR ครอง US-based optical components market ด้วยกัน ทั้งคู่ benefit จาก AI tailwind และมี overlap บางส่วน แต่ Lumentum แข็งกว่าใน ROADM (60%+ market share) และ EML chips ขณะที่ COHR ใหญ่กว่าใน overall transceiver assembly</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- ══ 10 ══ -->
+  <section class="section" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left"><div class="section-num">10</div><div class="section-h2">Their Seat in Jay's Universe</div></div>
+      <div class="toggle-icon">›</div>
+    </div>
+    <div class="section-content">
+      <div class="portfolio-card">
+        <div class="portfolio-card-header" style="background: linear-gradient(135deg, #1a1a3e 0%, #2a1a4e 100%);">
+          <div class="port-label">Shon's Assessment — Bucket Recommendation</div>
+          <h3>Wave Portfolio (25%)</h3>
+          <p>Wave = catch re-rating before consensus. LITE กำลัง re-rate จาก "3D sensing victim" เป็น "AI infrastructure picks-and-shovels" — valuation discount ยังมีอยู่เพราะ market ยังจำ cycle down ล่าสุด.</p>
+        </div>
+        <div class="portfolio-card-body">
+          <p style="margin-bottom:20px">LITE เป็น <strong>recovery Wave ที่ catalyst ชัดเจนกว่า COHR</strong> — AI transceiver demand อยู่ใน early innings, margin ยัง significantly underearning จาก peak, และ ROADM monopoly-like position ใน long-haul fiber ยังไม่ price in อย่างเต็มที่</p>
+          <div class="wave-traits">
+            <div class="wave-trait">
+              <div class="trait-icon">💡</div>
+              <div class="trait-name">EML Chip Monopoly-like</div>
+              <div class="trait-desc">One of two main EML chip makers ที่ enable 800G transceivers globally — ทั้ง COHR และ others ต้องซื้อ chips จาก LITE นี่คือ hidden moat ที่ตลาดยัง underappreciate</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">📡</div>
+              <div class="trait-name">ROADM ~60% Market Share</div>
+              <div class="trait-desc">Lumentum มี ~60% global market share ใน ROADM ซึ่งเป็น critical long-haul fiber network component ความ dominant นี้ generate recurring revenue จาก network upgrades</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">📈</div>
+              <div class="trait-name">Margin Recovery Leverage</div>
+              <div class="trait-desc">จาก 5% → 15% Adj. Op. Margin ใน 1 ปี — ถ้า revenue ยังโตต่อ margin จะ expand ไปสู่ 20%+ ได้ ทำให้ EPS grow เร็วกว่า revenue มาก</div>
+            </div>
+            <div class="wave-trait">
+              <div class="trait-icon">🔄</div>
+              <div class="trait-name">3D Sensing Optionality</div>
+              <div class="trait-desc">ถ้า Apple กลับมาใช้ VCSEL เพิ่มใน AR/VR devices (Vision Pro ฯลฯ) จะเป็น additional revenue catalyst ที่ตลาดยังไม่ count</div>
+            </div>
+          </div>
+          <p style="margin: 20px 0 10px"><strong>Wave ≠ อะไร</strong></p>
+          <div class="not-wave">
+            <span class="not-tag">✗ ไม่ใช่ Core — ยังขาดทุน GAAP, business cyclical มาก</span>
+            <span class="not-tag">✗ ไม่ใช่ stable dividend payer</span>
+            <span class="not-tag">✗ ไม่ใช่ quick turnaround — cycle time ยาว</span>
+          </div>
+          <div class="bucket-fit">
+            <h4>✅ Verdict: LITE → Wave</h4>
+            <p>LITE เป็น Wave ที่ catalyst ชัดกว่าหลายตัวในกลุ่ม — AI transceiver demand ยังอยู่ใน early innings, ROADM share dominant, EML chip position unique แต่ 3D sensing uncertainty และ Apple dependency เป็น question marks Exit signal: AI data center capex cycle ชะลอ, Chinese EML competition เริ่ม materialize, หรือ Apple ประกาศ VCSEL ทำเองได้แล้ว</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="doc-footer">
+  <div class="container">
+    <p>EisenTower · Hall of Frames — LITE / Lumentum Holdings Inc. · Source: FY2025 Earnings Reports · Investor Presentations · Public Sources</p>
+    <p style="margin-top:6px">Written June 15, 2026 · For informational purposes only. Not investment advice.</p>
+    <div class="g-dot">
+      <span style="background:var(--lite-teal)"></span>
+      <span style="background:var(--lite-dark)"></span>
+      <span style="background:var(--lite-navy)"></span>
+      <span style="background:var(--lite-teal-soft)"></span>
+    </div>
+  </div>
+</footer>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script>
+  function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+    header.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('collapsed', !isCollapsed);
+  }
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { btn.classList.toggle('visible', window.scrollY > 300); });
+  document.querySelectorAll('.toc-inner a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
