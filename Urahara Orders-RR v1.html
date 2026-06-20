@@ -94,108 +94,96 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
     <div>
       <div class="hdr-sub">Urahara &middot; FWB System</div>
       <div class="hdr-title">Orders &amp; R:R</div>
-      <div class="hdr-desc">Source: IBKR API (live) &middot; Jun 13, 2026 13:13 ICT &middot; Shon run</div>
+      <div class="hdr-desc">Source: IBKR API (live) &middot; Jun 16, 2026 13:13 ICT &middot; Shon run</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end;">
       <div class="hdr-badge" style="background:#0b6b56;font-size:13px;">
-        &#9989; HEAT 5.8% &mdash; HEALTHY
-        <div class="hdr-badge-sub">All 11 positions protected &middot; NLV $9,663</div>
+        &#9989; HEAT 4.0% &mdash; HEALTHY
+        <div class="hdr-badge-sub">All 10 positions protected &middot; NLV $9,836</div>
       </div>
       <div class="hdr-badge" style="background:#0b6b56;font-size:13px;">
-        OCO 11/11 &middot; STOPS 11/11 &#10003;
-        <div class="hdr-badge-sub">Full book protected &middot; R:R 1.21:1</div>
+        OCO 10/10 &middot; STOPS 10/10 &#10003;
+        <div class="hdr-badge-sub">Full book protected &middot; R:R 0.94:1</div>
       </div>
     </div>
   </div>
   <!-- /AUTO-UPDATE:DATE -->
 
   <!-- AUTO-UPDATE:PORT_RR -->
-  <div class="sl">Portfolio Summary &middot; Jun 13, 2026 (Live)</div>
+  <div class="sl">Portfolio Summary &middot; Jun 16, 2026 (Live)</div>
   <div class="kg" style="grid-template-columns:repeat(5,1fr);margin-bottom:14px;">
     <div class="kc" style="border-color:rgba(13,143,122,.3);background:var(--teal-bg);">
       <div class="kl">&#9989; Portfolio Heat</div>
-      <div class="kv g">5.8%</div>
-      <div class="ks" style="color:var(--teal)">All 11 stops set &middot; fully protected</div>
+      <div class="kv g">4.1%</div>
+      <div class="ks" style="color:var(--teal)">All 10 stops set &middot; fully protected</div>
     </div>
     <div class="kc" style="border-color:rgba(13,143,122,.3);background:var(--teal-bg);">
       <div class="kl">R:R (Protected)</div>
-      <div class="kv a">1.21:1</div>
-      <div class="ks" style="color:var(--teal)">11 positions with full OCO</div>
+      <div class="kv a">0.90:1</div>
+      <div class="ks" style="color:var(--teal)">10 positions with full OCO</div>
     </div>
     <div class="kc">
       <div class="kl">Total at Risk</div>
-      <div class="kv a">$558</div>
+      <div class="kv a">$405</div>
       <div class="ks">if all stops hit</div>
     </div>
     <div class="kc">
       <div class="kl">Total Reward</div>
-      <div class="kv g">$673</div>
+      <div class="kv g">$365</div>
       <div class="ks">if all targets hit</div>
     </div>
     <div class="kc">
       <div class="kl">Unrealized P&amp;L</div>
-      <div class="kv g">+$77</div>
-      <div class="ks">11 open positions</div>
+      <div class="kv g">+$99</div>
+      <div class="ks">10 open positions</div>
     </div>
   </div>
-  <div class="info" style="margin-bottom:14px;"><span>&#8505;</span><span>Heat formula: (Sum of stop distances &times; qty) &divide; NLV. All 11 positions have stops confirmed in IBKR. Full book heat = protected heat = 5.8%. 3 GTC buy orders (COHR, CRWD, SPCX) have no OCO set &mdash; do not let fill unprotected.</span></div>
+  <div class="info" style="margin-bottom:14px;"><span>&#8505;</span><span>Heat formula: (Sum of stop distances &times; qty) &divide; NLV $9,836. All 10 positions have stops confirmed in IBKR. 1 pending GTC buy order (AVAV add-on 2sh @ $169) has no OCO set &mdash; do not let fill unprotected.</span></div>
   <!-- /AUTO-UPDATE:PORT_RR -->
 
 
-  <div class="alert"><span>&#10071;</span><span><strong>P1 &mdash; Before Open:</strong> MU ($989.89 value, +$64.54 profit) and ADI ($409.10 value, -$5.25 loss) have NO stop orders confirmed in IBKR. Combined unprotected capital: <strong>$1,399</strong>. Set stops before market opens.</span></div>
-
-  <div class="warn"><span>&#9888;</span><span><strong>Orphaned orders detected:</strong> CRWV (Sell 10 Lmt $122 + STP $95) and NBIS (Sell 6 Lmt $270 + STP $204) have NO corresponding open positions. These are live orders with no position &mdash; cancel immediately to prevent accidental short triggers.</span></div>
-
   <!-- AUTO-UPDATE:RISK_SUMMARY -->
   <div class="kg">
-    <div class="kc"><div class="kl">Unprotected Capital</div><div class="kv g">$0</div><div class="ks">All 11 positions have stops &#10003;</div></div>
-    <div class="kc"><div class="kl">Total Open P&amp;L</div><div class="kv g">+$77</div><div class="ks">11 positions &middot; IBKR live</div></div>
-    <div class="kc"><div class="kl">P1 Actions</div><div class="kv a">3</div><div class="ks">3 GTC entries without OCO</div></div>
-    <div class="kc"><div class="kl">Clean Positions</div><div class="kv g">11</div><div class="ks">stops set &middot; OCO complete &middot; in window</div></div>
+    <div class="kc"><div class="kl">Unprotected Capital</div><div class="kv g">$0</div><div class="ks">All 10 positions have stops &#10003;</div></div>
+    <div class="kc"><div class="kl">Total Open P&amp;L</div><div class="kv g">+$99</div><div class="ks">10 positions &middot; IBKR live</div></div>
+    <div class="kc"><div class="kl">P1 Actions</div><div class="kv a">1</div><div class="ks">AVAV add-on without OCO</div></div>
+    <div class="kc"><div class="kl">Clean Positions</div><div class="kv g">10</div><div class="ks">stops set &middot; OCO complete &middot; in window</div></div>
   </div>
   <!-- /AUTO-UPDATE:RISK_SUMMARY -->
 
   <!-- AUTO-UPDATE:ACTIONS -->
-  <div class="sl">Pre-Market Actions &mdash; Jun 13, 2026</div>
+  <div class="sl">Actions &mdash; Jun 16, 2026</div>
   <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px;">
     <div style="background:var(--red-bg);border:1px solid rgba(212,43,58,.25);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;" class="act-row">
-      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--red);">P1 &middot; BEFORE OPEN</span> &nbsp;<span style="font-size:11px;">Add OCO to <strong>COHR</strong> GTC buy (2 sh @ $344.93) &mdash; no stop or TP defined. Do not let fill until OCO is set.</span></div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--red);">NO OCO</span>
-    </div>
-    <div style="background:var(--red-bg);border:1px solid rgba(212,43,58,.25);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;" class="act-row">
-      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--red);">P1 &middot; BEFORE OPEN</span> &nbsp;<span style="font-size:11px;">Add OCO to <strong>CRWD</strong> GTC buy (1 sh @ $670.00) &mdash; no stop or TP defined. Do not let fill until OCO is set.</span></div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--red);">NO OCO</span>
-    </div>
-    <div style="background:var(--red-bg);border:1px solid rgba(212,43,58,.25);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;" class="act-row">
-      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--red);">P1 &middot; BEFORE OPEN</span> &nbsp;<span style="font-size:11px;">Add OCO to <strong>SPCX</strong> GTC buy (1 sh @ $149.00) &mdash; no stop or TP defined. Do not let fill until OCO is set.</span></div>
+      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--red);">P1 &middot; BEFORE OPEN</span> &nbsp;<span style="font-size:11px;">Add OCO to <strong>AVAV</strong> GTC buy (2 sh @ $169.00) &mdash; add-on to existing position, no stop or TP defined. Do not let fill until OCO is set.</span></div>
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--red);">NO OCO</span>
     </div>
     <div style="background:var(--amber-bg);border:1px solid rgba(224,123,0,.25);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;" class="act-row">
-      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--amber);">P2 &middot; DURING SESSION</span> &nbsp;<span style="font-size:11px;"><strong>GH</strong> at +0.45R &mdash; only $3.49 left to target $135.33, stop $124.87 ($6.97 away). Live R:R 0.50:1. Consider taking profit near target or tightening trail stop.</span></div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--teal);">+0.45R</span>
+      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--amber);">P2 &middot; DURING SESSION</span> &nbsp;<span style="font-size:11px;"><strong>CDNS</strong> at +2.35R &mdash; price $394.24 vs target $400.47, only $6.23 remaining. R:R 0.29:1. Near target &mdash; tighten trail or let limit take it.</span></div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--teal);">+2.35R</span>
     </div>
     <div style="background:var(--amber-bg);border:1px solid rgba(224,123,0,.25);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;" class="act-row">
-      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--amber);">P2 &middot; DURING SESSION</span> &nbsp;<span style="font-size:11px;"><strong>HIMX</strong> at +1.03R &mdash; $17.78, target $20.60 ($2.82 away), well past midpoint. Live R:R 1.48:1. Consider tightening trail or taking partial.</span></div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--teal);">+1.03R</span>
+      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--amber);">P2 &middot; DURING SESSION</span> &nbsp;<span style="font-size:11px;"><strong>HIMX</strong> at +1.21R &mdash; price $17.95 vs target $19.60 ($1.65 away). R:R 0.80:1. Consider partial trail &mdash; protect gains while allowing full target.</span></div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--teal);">+1.21R</span>
     </div>
     <div style="background:var(--amber-bg);border:1px solid rgba(224,123,0,.25);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;" class="act-row">
-      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--amber);">P2 &middot; DURING SESSION</span> &nbsp;<span style="font-size:11px;"><strong>CDNS, VRTX, NOK</strong> have Live R:R &lt;1.0 (0.59, 0.72, 0.82). Stops confirmed on all three &mdash; let system manage unless price action deteriorates.</span></div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--amber);">WATCH</span>
+      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--amber);">P2 &middot; WATCH</span> &nbsp;<span style="font-size:11px;"><strong>KTOS</strong> (12sh, M size 7.1% NLV) &mdash; upsize planned. Below cost at $56.97 (cost $58.66). Dip technically supported; resistance at $63.78 is the hard ceiling. Add only if price holds above $54.06 stop &mdash; OCO required on any add.</span></div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--amber);">UPSIZE PENDING</span>
     </div>
-    <div style="background:var(--blue-bg);border:1px solid rgba(26,111,196,.25);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;" class="act-row">
-      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--blue);">P3 &middot; MONITOR</span> &nbsp;<span style="font-size:11px;"><strong>EOSE</strong> (R:R 2.26) and <strong>ILMN</strong> (R:R 1.86) best positioned &mdash; stops confirmed, leave alone. <strong>KTOS</strong> and <strong>EOSE</strong> mildly negative (&minus;0.20R, &minus;0.05R) but within tolerance. <strong>AAOI, MDB, AXON</strong> early &mdash; leave alone.</span></div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--teal);">+$77</span>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;" class="act-row">
+      <div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--muted);">P3 &middot; LEAVE</span> &nbsp;<span style="font-size:11px;"><strong>EOSE</strong> collecting dip (30sh, 1.94:1 R:R, building toward M) &mdash; limits set, leave. All other positions: stops &amp; targets active. Let the book work.</span></div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--muted);">HOLD</span>
     </div>
   </div>
-  <!-- /AUTO-UPDATE:ACTIONS -->
+<!-- /AUTO-UPDATE:ACTIONS -->
 
   <!-- AUTO-UPDATE:ORDERS -->
-  <div class="sl">Pending Entry Orders &mdash; Setup Quality Review &middot; Jun 13, 2026</div>
+  <div class="sl">Pending Entry Orders &mdash; Setup Quality Review &middot; Jun 16, 2026</div>
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
     <div class="kc" style="border-color:rgba(13,143,122,.3);background:var(--teal-bg);">
       <div class="kl">Strong Setups</div>
       <div class="kv g">0</div>
-      <div class="ks" style="color:var(--text3)">None with full OCO</div>
+      <div class="ks" style="color:var(--text3)">None pending</div>
     </div>
     <div class="kc" style="border-color:rgba(224,123,0,.3);background:var(--amber-bg);">
       <div class="kl">Borderline</div>
@@ -204,8 +192,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
     </div>
     <div class="kc" style="border-color:rgba(212,43,58,.3);background:var(--red-bg);">
       <div class="kl">Do Not Enter</div>
-      <div class="kv r">3</div>
-      <div class="ks" style="color:var(--red)">COHR, CRWD, SPCX &mdash; no OCO</div>
+      <div class="kv r">1</div>
+      <div class="ks" style="color:var(--red)">AVAV add-on &mdash; no OCO</div>
     </div>
     <div class="kc" style="border-color:rgba(13,143,122,.3);background:var(--teal-bg);">
       <div class="kl">Cancel Now</div>
@@ -221,51 +209,48 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
         <th class="r">Target</th><th class="r">Stop</th><th class="r">R:R</th><th class="r">GTC Age</th><th>Status</th><th>Note</th>
       </tr></thead>
       <tbody>
-        <tr style="background:var(--red-bg);"><td class="sym">COHR</td><td class="r"><span class="wb">BUY</span></td><td class="r">$344.93</td><td class="r">2</td><td class="r neg">—</td><td class="r neg">—</td><td class="r neg">—</td><td class="r" style="color:var(--text3)">1D</td><td><span style="display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber);border:1px solid rgba(224,123,0,.2)">GTC &middot; Waiting</span></td><td style="font-size:11px;color:var(--red)">&#10071; No TP or STP defined. Do not let fill &mdash; add OCO first.</td></tr>
-        <tr style="background:var(--red-bg);"><td class="sym">CRWD</td><td class="r"><span class="wb">BUY</span></td><td class="r">$670.00</td><td class="r">1</td><td class="r neg">—</td><td class="r neg">—</td><td class="r neg">—</td><td class="r" style="color:var(--text3)">1D</td><td><span style="display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber);border:1px solid rgba(224,123,0,.2)">GTC &middot; Waiting</span></td><td style="font-size:11px;color:var(--red)">&#10071; No TP or STP defined. Do not let fill &mdash; add OCO first.</td></tr>
-        <tr style="background:var(--red-bg);"><td class="sym">SPCX</td><td class="r"><span class="wb">BUY</span></td><td class="r">$149.00</td><td class="r">1</td><td class="r neg">—</td><td class="r neg">—</td><td class="r neg">—</td><td class="r" style="color:var(--text3)">1D</td><td><span style="display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber);border:1px solid rgba(224,123,0,.2)">GTC &middot; Waiting</span></td><td style="font-size:11px;color:var(--red)">&#10071; No TP or STP defined. Do not let fill &mdash; add OCO first.</td></tr>
+        <tr style="background:var(--red-bg);"><td class="sym">AVAV</td><td class="r"><span class="wb">BUY</span></td><td class="r">$169.00</td><td class="r">2</td><td class="r neg">—</td><td class="r neg">—</td><td class="r neg">—</td><td class="r" style="color:var(--text3)">1D</td><td><span style="display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber);border:1px solid rgba(224,123,0,.2)">GTC &middot; Waiting</span></td><td style="font-size:11px;color:var(--red)">&#10071; Add-on to existing 2sh. No OCO for additional shares. Do not let fill &mdash; add OCO first.</td></tr>
       </tbody>
     </table>
   </div>
   <!-- /AUTO-UPDATE:ORDERS -->
 
   <!-- AUTO-UPDATE:POSITIONS -->
-  <div class="sl">R:R Status &mdash; 11 Open Positions &middot; IBKR Live &middot; Jun 13, 2026</div>
+  <div class="sl">R:R Status &mdash; 10 Open Positions &middot; IBKR Live &middot; Jun 16, 2026</div>
   <div class="tbl-wrap card mb">
     <table class="tbl">
       <thead><tr>
         <th>Sym</th><th class="r">Qty</th><th class="r">Avg Cost</th><th class="r">Price</th><th class="r">Unr. P&amp;L</th><th class="r">R</th><th class="r">Stop</th><th class="r">Target</th><th class="r">Live R:R</th><th>Window</th><th>Priority</th>
       </tr></thead>
       <tbody>
-        <tr><td class="sym">HIMX</td><td class="r">20</td><td class="r">$16.81</td><td class="r">$17.78</td><td class="r g">+$19.30</td><td class="r g">+1.03R</td><td class="r">$15.88</td><td class="r g">$20.60</td><td class="r a">1.48:1</td><td><span class="wb">3D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">P2 &mdash; Near target, tighten trail</td></tr>
-        <tr><td class="sym">NOK</td><td class="r">30</td><td class="r">$14.29</td><td class="r">$14.89</td><td class="r g">+$17.85</td><td class="r g">+0.41R</td><td class="r">$12.84</td><td class="r g">$16.56</td><td class="r neg">0.82:1</td><td><span class="wb">4D &middot; Fresh</span></td><td style="font-size:10px;color:var(--amber)">P2 &mdash; Watch, low remaining R:R</td></tr>
-        <tr><td class="sym">AAOI</td><td class="r">4</td><td class="r">$165.53</td><td class="r">$169.05</td><td class="r g">+$14.07</td><td class="r g">+0.16R</td><td class="r">$143.02</td><td class="r g">$206.11</td><td class="r a">1.42:1</td><td><span class="wb">4D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">P3 &mdash; Leave alone, early</td></tr>
-        <tr><td class="sym">CDNS</td><td class="r">2</td><td class="r">$379.36</td><td class="r">$385.22</td><td class="r g">+$11.71</td><td class="r g">+0.30R</td><td class="r">$359.58</td><td class="r g">$400.47</td><td class="r neg">0.59:1</td><td><span class="wb">4D &middot; Fresh</span></td><td style="font-size:10px;color:var(--amber)">P2 &mdash; Watch, reward thinning</td></tr>
-        <tr><td class="sym">MDB</td><td class="r">2</td><td class="r">$339.86</td><td class="r">$343.28</td><td class="r g">+$6.83</td><td class="r g">+0.07R</td><td class="r">$291.46</td><td class="r g">$396.00</td><td class="r a">1.02:1</td><td><span class="wb">4D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">P3 &mdash; Early, leave alone</td></tr>
-        <tr><td class="sym">GH</td><td class="r">2</td><td class="r">$129.67</td><td class="r">$131.84</td><td class="r g">+$4.33</td><td class="r g">+0.45R</td><td class="r">$124.87</td><td class="r g">$135.33</td><td class="r neg">0.50:1</td><td><span class="wb">3D &middot; Fresh</span></td><td style="font-size:10px;color:var(--amber)">P2 &mdash; Near target, consider profit</td></tr>
-        <tr><td class="sym">VRTX</td><td class="r">1</td><td class="r">$440.70</td><td class="r">$444.91</td><td class="r g">+$4.21</td><td class="r g">+0.25R</td><td class="r">$424.00</td><td class="r g">$460.00</td><td class="r neg">0.72:1</td><td><span class="wb">3D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">P3 &mdash; Leave alone</td></tr>
-        <tr><td class="sym">AXON</td><td class="r">1</td><td class="r">$438.35</td><td class="r">$441.73</td><td class="r g">+$3.38</td><td class="r g">+0.06R</td><td class="r">$379.00</td><td class="r g">$507.00</td><td class="r a">1.04:1</td><td><span class="wb">3D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">P3 &mdash; Leave alone, early</td></tr>
-        <tr><td class="sym">EOSE</td><td class="r">30</td><td class="r">$6.25</td><td class="r">$6.19</td><td class="r neg">-$1.86</td><td class="r a">-0.05R</td><td class="r">$4.90</td><td class="r g">$9.10</td><td class="r g">2.26:1</td><td><span class="wb">4D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">P3 &mdash; Best R:R remaining, leave alone</td></tr>
-        <tr><td class="sym">ILMN</td><td class="r">3</td><td class="r">$161.13</td><td class="r">$160.30</td><td class="r neg">-$2.48</td><td class="r a">-0.12R</td><td class="r">$154.00</td><td class="r g">$172.00</td><td class="r g">1.86:1</td><td><span class="wb">2D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">P3 &mdash; Good R:R, mild negative, leave</td></tr>
-        <tr><td class="sym">KTOS</td><td class="r">12</td><td class="r">$58.66</td><td class="r">$57.75</td><td class="r neg">-$10.91</td><td class="r a">-0.20R</td><td class="r">$54.06</td><td class="r g">$63.78</td><td class="r g">1.63:1</td><td><span class="wb">4D &middot; Fresh</span></td><td style="font-size:10px;color:var(--amber)">P2 &mdash; Largest $ loss, stops set, watch</td></tr>
+        <tr><td class="sym">AVAV</td><td class="r">2</td><td class="r">$170.89</td><td class="r">$172.30</td><td class="r g">+2.82</td><td class="r" style="color:var(--teal)">+1.17R</td><td class="r">$158.00</td><td class="r g">$186.00</td><td><span class="wb">0D &middot; Fresh</span></td><td style="font-size:10px;color:var(--muted)">Dip buy add-on &mdash; GTC pending (2sh @ $169). Current 2sh +$2.82. Add fires below market: set OCO immediately or cancel GTC. Watch: does price hold $172+ after add fills?</td></tr>
+        <tr><td class="sym">AXON</td><td class="r">1</td><td class="r">$438.35</td><td class="r">$443.70</td><td class="r g">+5.35</td><td class="r" style="color:var(--teal)">+1.82R</td><td class="r">$416.00</td><td class="r g">$479.00</td><td><span class="wb">5D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">Momentum breakout &mdash; 5D Fresh, +0.24R. Entry on strength. Watch: holds above $438 cost = thesis intact. Fails if closes below $416 stop. Let run to $479 target.</td></tr>
+        <tr><td class="sym">CDNS</td><td class="r">2</td><td class="r">$379.35</td><td class="r">$394.24</td><td class="r g">+29.78</td><td class="r" style="color:var(--teal)">+3.33R</td><td class="r">$373.00</td><td class="r g">$400.47</td><td><span class="wb">6D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">Momentum run &mdash; +2.35R, $6.23 to target $400.47. R:R 0.29:1 (near end). Action: tighten trail stop to lock +2R minimum. Let limit take it or trail fires first.</td></tr>
+        <tr><td class="sym">CIEN</td><td class="r">1</td><td class="r">$450.88</td><td class="r">$462.47</td><td class="r g">+11.59</td><td class="r" style="color:var(--amber)">+0.96R</td><td class="r">$415.97</td><td class="r g">$484.48</td><td><span class="wb">0D &middot; Fresh</span></td><td style="font-size:10px;color:var(--muted)">Breakout entry &mdash; 0D Fresh, +0.33R. Too early to manage. Watch: holds above $450 cost next 2 sessions. Fails if gaps below $416 stop. Leave alone.</td></tr>
+        <tr><td class="sym">ENPH</td><td class="r">10</td><td class="r">$51.22</td><td class="r">$53.78</td><td class="r g">+25.64</td><td class="r" style="color:var(--teal)">+1.80R</td><td class="r">$48.00</td><td class="r g">$57.00</td><td><span class="wb">0D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">Dip buy recovery &mdash; 0D Fresh, +0.80R. 10sh, moving well from entry. Watch: $54+ confirms recovery trend. Target $57 (+$37 total). Let limits work.</td></tr>
+        <tr><td class="sym">EOSE</td><td class="r">30</td><td class="r">$6.25</td><td class="r">$6.33</td><td class="r g">+2.34</td><td class="r" style="color:var(--teal)">+2.11R</td><td class="r">$4.90</td><td class="r g">$9.10</td><td><span class="wb">6D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">Dip buy range &mdash; collecting position. Support zone $6.00&ndash;$6.25 holds historically. Hard resistance $9.10 (TP). Breakout above $7 = momentum shift. Best R:R 1.94:1. Leave limits.</td></tr>
+        <tr><td class="sym">HIMX</td><td class="r">20</td><td class="r">$16.81</td><td class="r">$17.95</td><td class="r g">+22.71</td><td class="r" style="color:var(--teal)">+3.00R</td><td class="r">$15.88</td><td class="r g">$19.60</td><td><span class="wb">5D &middot; Fresh</span></td><td style="font-size:10px;color:var(--teal)">Dip buy recovery &mdash; +1.21R, $1.65 to target $19.60. Approaching TP. Action: trail stop up to $17.50+ to protect +1R if reversal. Let limit fire or trail takes it.</td></tr>
+        <tr><td class="sym">ILMN</td><td class="r">3</td><td class="r">$161.12</td><td class="r">$167.00</td><td class="r g">+17.65</td><td class="r" style="color:var(--teal)">+1.53R</td><td class="r">$154.00</td><td class="r g">$172.00</td><td><span class="wb">3D &middot; Fresh</span></td><td style="font-size:10px;color:var(--amber)">Momentum hold &mdash; +0.83R, 3D Fresh. R:R thinning (0.38:1, only $5 to target vs $13 to stop). Review: if price stalls below $170 for 2 sessions, tighten trail. Target $172.</td></tr>
+        <tr><td class="sym">KTOS</td><td class="r">12</td><td class="r">$58.66</td><td class="r">$56.97</td><td class="r a">&minus;20.24</td><td class="r" style="color:var(--teal)">+1.11R</td><td class="r">$54.06</td><td class="r g">$63.78</td><td><span class="wb">12D &middot; Mid</span></td><td style="font-size:10px;color:var(--amber)">Dip buy accumulation &mdash; below cost $58.66, now $56.97. 12D Mid. Upsize pending. Support ~$54 holds historically; same level is hard to break down. Resistance $63.78 (TP) equally hard to break up. Thesis: range holds, accumulate at support. OCO required on any add.</td></tr>
+        <tr><td class="sym">NOK</td><td class="r">30</td><td class="r">$14.29</td><td class="r">$14.75</td><td class="r g">+13.66</td><td class="r" style="color:var(--teal)">+1.22R</td><td class="r">$13.30</td><td class="r g">$15.50</td><td><span class="wb">6D &middot; Fresh</span></td><td style="font-size:10px;color:var(--muted)">Dip buy income &mdash; 30sh, +0.46R. 6D Fresh. R:R 0.52:1 thinning. Low volatility name, slow mover. Target $15.50 (+$21 total). Let limit work. Exit only on stop or target.</td></tr>
       </tbody>
     </table>
   </div>
   <!-- /AUTO-UPDATE:POSITIONS -->
 
   <!-- AUTO-UPDATE:COMPLIANCE -->
-  <div class="sl">FWB Compliance &middot; Jun 13, 2026</div>
+  <div class="sl">FWB Compliance &middot; Jun 16, 2026</div>
   <div class="card mb">
-    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">Stops defined</div><div class="sb-trk"><div class="sb-fil" style="width:100%;background:var(--teal);"></div></div><div class="sb-val g">11/11</div></div>
-    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">OCO Complete (stop + TP)</div><div class="sb-trk"><div class="sb-fil" style="width:100%;background:var(--teal);"></div></div><div class="sb-val g">11/11</div></div>
-    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">Reward Tier Met</div><div class="sb-trk"><div class="sb-fil" style="width:100%;background:var(--teal);"></div></div><div class="sb-val g">11/11</div></div>
-    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">Window (&le;20D)</div><div class="sb-trk"><div class="sb-fil" style="width:100%;background:var(--teal);"></div></div><div class="sb-val g">11/11</div></div>
-    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">Conviction &ge;$1K</div><div class="sb-trk"><div class="sb-fil" style="width:0%;background:var(--amber);"></div></div><div class="sb-val a">0/11</div></div>
+    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">Stops defined</div><div class="sb-trk"><div class="sb-fil" style="width:100%;background:var(--teal);"></div></div><div class="sb-val g">10/10</div></div>
+    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">OCO Complete (stop + TP)</div><div class="sb-trk"><div class="sb-fil" style="width:100%;background:var(--teal);"></div></div><div class="sb-val g">10/10</div></div>
+    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">Reward Tier Met</div><div class="sb-trk"><div class="sb-fil" style="width:100%;background:var(--teal);"></div></div><div class="sb-val g">10/10</div></div>
+    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">Window (&le;20D)</div><div class="sb-trk"><div class="sb-fil" style="width:100%;background:var(--teal);"></div></div><div class="sb-val g">10/10</div></div>
+    <div class="sb-row"><div class="sb-lbl" style="font-size:11px;">Conviction &ge;$1K</div><div class="sb-trk"><div class="sb-fil" style="width:0%;background:var(--amber);"></div></div><div class="sb-val a">0/10</div></div>
   </div>
   <!-- /AUTO-UPDATE:COMPLIANCE -->
 
   <!-- AUTO-UPDATE:COACH_NOTE -->
-  <div class="refl"><div style="font-size:22px">&#129504;</div><div><div class="refl-lbl">Coach Note &middot; Jun 13, 2026</div><div class="refl-txt">The book is clean: <strong>all 11 positions have full OCO protection, heat is 5.8%, no orphaned orders, every position is within the FWB window.</strong> Three items before the bell: COHR, CRWD, and SPCX each have a live GTC buy order with no stop or TP &mdash; add OCO to each before Monday open or cancel. GH (+0.45R) is $3.49 from its target with $6.97 to stop; the reward is nearly exhausted &mdash; either let the limit take it or tighten the trail to lock in gains. HIMX at +1.03R is the leading trade; target $20.60 is $2.82 away and the trail could be raised. The difficult week (W3: 38 closes, 40% win rate, &minus;$398 net) has resolved &mdash; cumulative realized stands at $1,501. The current 11-position book has lower gross exposure ($5,456 market value) with superior risk discipline versus the prior 16-position book. EOSE (R:R 2.26) and ILMN (R:R 1.86) have the best remaining reward &mdash; leave them alone. KTOS (&minus;0.20R) and EOSE (&minus;0.05R) are within normal tolerance. Let the system work.</div></div></div>
+  <div class="refl"><div style="font-size:22px">&#129504;</div><div><div class="refl-lbl">Coach Note &middot; Jun 16, 2026</div><div class="refl-txt">Book is clean and rebounding: <strong>10 positions, all with full OCO, heat 4.0%, NLV $9,836 (up from $9,663 on Jun 13).</strong> W4 starts with +$150.94 banked on Jun 15 &mdash; a clean recovery day. One action before open: AVAV has a GTC add-on buy (2sh @ $169) with no OCO &mdash; set stop + TP before market, or cancel. CDNS is the priority position to manage: +2.35R at $394 with target $400.47 just $6.23 away &mdash; tighten the trail stop now to guarantee the gain. HIMX +1.21R with $1.65 to target &mdash; also consider raising trail. Three new entries today (AVAV, CIEN, ENPH) are all Fresh with stops set &mdash; leave alone and let them develop. KTOS remains the weak link at &minus;0.37R over 12 days &mdash; stops firm at $54.06, R:R 2.34 justifies holding. EOSE has the best remaining R:R at 1.88 &mdash; do not touch. Cumulative realized: <strong>+$1,632.51</strong> (82 trades, 55% WR, 2.7&times; PF).</div></div></div>
   <!-- /AUTO-UPDATE:COACH_NOTE -->
 
   <!-- AUTO-UPDATE:END -->
