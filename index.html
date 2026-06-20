@@ -152,72 +152,132 @@
     <div class="wrap">
       <h1>EisenTower</h1>
       <p class="sub">A personal decision system for Jay. Direct from EisenTower Cockpit by Jay's crew.</p>
-      <p class="source">Last updated 2026-06-20 14:16 +07 · Data source: EisenTower local workspace</p>
+      <p class="source" id="hubSource">Last updated: checking source · Data source: EisenTower local workspace</p>
     </div>
   </header>
 
   <main>
     <section class="grid">
-      <a class="card" href="catch_a_wave_dashboard.html">
+      <a class="card" href="catch_a_wave_dashboard.html" data-source-path="catch_a_wave_dashboard.html">
         <div class="top">
           <h2>Catcha Wave</h2>
           <span class="pill wave">weekly</span>
         </div>
         <p class="tagline">Stay in Momentum.</p>
-        <div class="updated">Updated 2026-06-13 13:03 BKK</div>
+        <div class="updated" data-updated>Updated: checking source</div>
         <div class="meta">02_Operation/Catcha/Catcha_wave.html</div>
       </a>
 
-      <a class="card" href="Nixon_Cockpit.html">
+      <a class="card" href="Nixon_Cockpit.html" data-source-path="Nixon_Cockpit.html">
         <div class="top">
           <h2>NixonCockpit</h2>
           <span class="pill nixon">weekly</span>
         </div>
         <p class="tagline">Portfolio Reflection.</p>
-        <div class="updated">Updated 2026-06-12 11:23 +07</div>
+        <div class="updated" data-updated>Updated: checking source</div>
         <div class="meta">02_Operation/Nixon/Nixon_Cockpit.html</div>
       </a>
 
-      <a class="card" href="_Hall_of_Frames/index.html">
+      <a class="card" href="_Hall_of_Frames/index.html" data-source-path="_Hall_of_Frames/index.html">
         <div class="top">
           <h2>Hall of Frames</h2>
           <span class="pill hall">library</span>
         </div>
         <p class="tagline">Company profiles, one ticker at a time.</p>
-        <div class="updated">Updated 2026-06-16 09:21 +07</div>
+        <div class="updated" data-updated>Updated: checking source</div>
         <div class="meta">02_Operation/_Hall_of_Frames/index.html</div>
       </a>
 
-      <a class="card" href="Urahara%20Dashboard%20v2.html">
+      <a class="card" href="Urahara%20Dashboard%20v2.html" data-source-path="Urahara Dashboard v2.html">
         <div class="top">
           <h2>Urahara Trading Dashboard</h2>
           <span class="pill urahara">daily</span>
         </div>
         <p class="tagline">Every trade tells.</p>
-        <div class="updated">Updated Jun 13, 2026 13:13 ICT</div>
+        <div class="updated" data-updated>Updated: checking source</div>
         <div class="meta">02_Operation/Urahara/Urahara Dashboard v2.html</div>
       </a>
 
-      <a class="card" href="Urahara%20Orders-RR%20v1.html">
+      <a class="card" href="Urahara%20Orders-RR%20v1.html" data-source-path="Urahara Orders-RR v1.html">
         <div class="top">
           <h2>Urahara Orders &amp; R:R</h2>
           <span class="pill urahara">daily</span>
         </div>
         <p class="tagline">Risk defined. Gain aligned.</p>
-        <div class="updated">Updated Jun 13, 2026 13:13 ICT</div>
+        <div class="updated" data-updated>Updated: checking source</div>
         <div class="meta">02_Operation/Urahara/Urahara Orders-RR v1.html</div>
       </a>
 
-      <a class="card" href="board.html">
+      <a class="card" href="board.html" data-source-path="board.html">
         <div class="top">
           <h2>Tower Board</h2>
           <span class="pill nixon">board</span>
         </div>
         <p class="tagline">Hear the crew!</p>
-        <div class="updated">Updated 2026-06-13 15:56 BKK</div>
+        <div class="updated" data-updated>Updated: checking source</div>
         <div class="meta">02_Operation/Board/board.html</div>
       </a>
     </section>
   </main>
+
+  <script>
+    const repo = "82ay451/EisenTower";
+    const apiBase = `https://api.github.com/repos/${repo}/commits`;
+    const timeFormatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Bangkok",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
+
+    function formatBkk(date) {
+      return `${timeFormatter.format(date).replace(",", "")} +07`;
+    }
+
+    async function sourceUpdatedAt(path) {
+      const url = `${apiBase}?path=${encodeURIComponent(path)}&per_page=1`;
+      const response = await fetch(url, {
+        headers: { "Accept": "application/vnd.github+json" }
+      });
+      if (!response.ok) throw new Error(`GitHub source check failed for ${path}`);
+      const commits = await response.json();
+      if (!commits.length) throw new Error(`No source commits found for ${path}`);
+      return new Date(commits[0].commit.author.date);
+    }
+
+    async function refreshSourceTimes() {
+      const cards = Array.from(document.querySelectorAll("[data-source-path]"));
+      const results = await Promise.all(cards.map(async (card) => {
+        const path = card.dataset.sourcePath;
+        const target = card.querySelector("[data-updated]");
+        try {
+          const updatedAt = await sourceUpdatedAt(path);
+          target.textContent = `Updated: ${formatBkk(updatedAt)}`;
+          target.dataset.sourceStatus = "verified";
+          return updatedAt;
+        } catch (error) {
+          target.textContent = "Updated: source check unavailable";
+          target.dataset.sourceStatus = "unavailable";
+          return null;
+        }
+      }));
+
+      const latest = results
+        .filter(Boolean)
+        .sort((a, b) => b.getTime() - a.getTime())[0];
+
+      const hubSource = document.getElementById("hubSource");
+      if (latest) {
+        hubSource.textContent = `Last updated: ${formatBkk(latest)} · Data source: GitHub Pages source files`;
+      } else {
+        hubSource.textContent = "Last updated: source check unavailable · Data source: GitHub Pages source files";
+      }
+    }
+
+    refreshSourceTimes();
+  </script>
 </body>
 </html>
